@@ -5,7 +5,7 @@ import {
 
 export type NavLinkProps = ChakraLinkProps;
 
-export function NavLink(props: NavLinkProps) {
+export const NavLink = (props: NavLinkProps) => {
   return (
     <ChakraLink
       fontSize="sm"
@@ -25,4 +25,4 @@ export function NavLink(props: NavLinkProps) {
       {...props}
     />
   );
-}
+};

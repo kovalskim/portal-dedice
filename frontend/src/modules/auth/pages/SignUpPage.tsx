@@ -18,7 +18,7 @@ const SIGNUP_MUTATION = gql(/* GraphQL */ `
   }
 `);
 
-export function SignUpPage() {
+export const SignUpPage = () => {
   const auth = useAuth();
   const navigate = useNavigate();
   const [signUpRequest, signUpRequestState] = useMutation(SIGNUP_MUTATION, {
@@ -52,4 +52,4 @@ export function SignUpPage() {
       </Box>
     </MainLayout>
   );
-}
+};

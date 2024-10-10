@@ -18,7 +18,7 @@ const SIGNIN_MUTATION = gql(/* GraphQL */ `
   }
 `);
 
-export function SignInPage() {
+export const SignInPage = () => {
   const auth = useAuth();
   const navigate = useNavigate();
 
@@ -52,4 +52,4 @@ export function SignInPage() {
       </Box>
     </MainLayout>
   );
-}
+};

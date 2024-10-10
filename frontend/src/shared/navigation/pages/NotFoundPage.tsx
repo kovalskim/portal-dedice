@@ -3,7 +3,7 @@ import { Box, MainLayout } from '@frontend/shared/design-system';
 
 import { RouterLink } from '../atoms';
 
-export function NotFoundPage() {
+export const NotFoundPage = () => {
   return (
     <MainLayout>
       <Box p="8">
@@ -14,4 +14,4 @@ export function NotFoundPage() {
       </Box>
     </MainLayout>
   );
-}
+};

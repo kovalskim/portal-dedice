@@ -22,7 +22,7 @@ type Props = {
   children: ReactNode;
 };
 
-export function EnhancedApolloProvider({ children }: Props) {
+export const EnhancedApolloProvider = ({ children }: Props) => {
   const navigate = useNavigate();
   const { token, signOut } = useAuth();
 
@@ -69,7 +69,7 @@ export function EnhancedApolloProvider({ children }: Props) {
   });
 
   return <ApolloProvider client={client}>{children}</ApolloProvider>;
-}
+};
 
 const UNAUTHENTICATED_CODE = 'UNAUTHENTICATED';
 

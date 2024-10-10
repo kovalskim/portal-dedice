@@ -8,6 +8,6 @@ import {
 
 type Props = Omit<LinkProps, 'as'>;
 
-export const RouterLink = forwardRef(function RouterLink(props: Props, ref) {
+export const RouterLink = forwardRef((props: Props, ref) => {
   return <Link as={ReactRouterLink} ref={ref} {...props} />;
 });

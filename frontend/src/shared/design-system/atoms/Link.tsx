@@ -8,16 +8,15 @@ export type LinkProps = ChakraLinkProps & {
   noUnderline?: boolean;
 };
 
-export const Link = forwardRef<HTMLAnchorElement, LinkProps>(function Link(
-  { noUnderline, ...rest }: LinkProps,
-  ref,
-) {
-  return (
-    <ChakraLink
-      color="green.600"
-      _hover={{ textDecoration: noUnderline ? 'none' : 'underline' }}
-      ref={ref}
-      {...rest}
-    />
-  );
-});
+export const Link = forwardRef<HTMLAnchorElement, LinkProps>(
+  ({ noUnderline, ...rest }: LinkProps, ref) => {
+    return (
+      <ChakraLink
+        color="green.600"
+        _hover={{ textDecoration: noUnderline ? 'none' : 'underline' }}
+        ref={ref}
+        {...rest}
+      />
+    );
+  },
+);

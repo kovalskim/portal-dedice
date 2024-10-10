@@ -7,7 +7,7 @@ import { NotFoundPage } from '@frontend/shared/navigation/pages/NotFoundPage';
 
 import { route } from './route';
 
-export function Routes() {
+export const Routes = () => {
   return (
     <RouterRoutes>
       <Route path={route.home()} element={<HomePage />} />
@@ -16,4 +16,4 @@ export function Routes() {
       <Route path="*" element={<NotFoundPage />} />
     </RouterRoutes>
   );
-}
+};

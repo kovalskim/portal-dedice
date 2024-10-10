@@ -7,6 +7,6 @@ import { NavLink, type NavLinkProps } from '@frontend/shared/design-system';
 
 type Props = Omit<NavLinkProps, 'as'> & ReactRouterNavLinkProps;
 
-export function RouterNavLink(props: Props) {
+export const RouterNavLink = (props: Props) => {
   return <NavLink {...props} as={ReactRouterNavLink} />;
-}
+};

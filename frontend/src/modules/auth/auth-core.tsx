@@ -34,15 +34,15 @@ const AuthContext = createContext(
 );
 
 // eslint-disable-next-line react-refresh/only-export-components
-export function useAuth() {
+export const useAuth = () => {
   return useContext(AuthContext);
-}
+};
 
 type Props = {
   children: ReactNode;
 };
 
-export function AuthProvider({ children }: Props) {
+export const AuthProvider = ({ children }: Props) => {
   const [state, setState] = usePersistedAuth(initialState);
 
   const contextValue = useMemo(() => {
@@ -53,7 +53,7 @@ export function AuthProvider({ children }: Props) {
   return (
     <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>
   );
-}
+};
 
 function createContextValue({
   token,

@@ -4,7 +4,7 @@ import { Button, Stack } from '@frontend/shared/design-system';
 
 import { RouterNavLink } from '../atoms';
 
-export function TopNavigation() {
+export const TopNavigation = () => {
   const { user, signOut } = useAuth();
   return (
     <Stack bg="white" p="4" direction="row" spacing="0" alignItems="center">
@@ -21,4 +21,4 @@ export function TopNavigation() {
       )}
     </Stack>
   );
-}
+};

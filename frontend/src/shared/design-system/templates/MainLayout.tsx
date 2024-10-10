@@ -1,14 +1,13 @@
-import { FC } from 'react';
 import { Box, Flex } from '@chakra-ui/layout';
 
 import { Footer } from '@frontend/shared/design-system';
 import { TopNavigation } from '@frontend/shared/navigation/organisms/TopNavigation';
 
-interface MainLayoutProps {
+type MainLayoutProps = {
   children: React.ReactNode;
-}
+};
 
-export const MainLayout: FC<MainLayoutProps> = ({ children }) => {
+export const MainLayout = ({ children }: MainLayoutProps) => {
   return (
     <Flex direction="column" flex="1">
       <TopNavigation />

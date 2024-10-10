@@ -6,7 +6,7 @@ import { ChakraProvider, theme } from '@frontend/shared/design-system';
 import { ScrollToTop } from '@frontend/shared/navigation/atoms';
 import { EnhancedApolloProvider } from '@frontend/utils/apollo.tsx';
 
-export function App() {
+export const App = () => {
   return (
     <ChakraProvider theme={theme}>
       <BrowserRouter>
@@ -19,4 +19,4 @@ export function App() {
       </BrowserRouter>
     </ChakraProvider>
   );
-}
+};

@@ -10,7 +10,7 @@ const EMPTY_QUERY = gql(/* GraphQL */ `
   }
 `);
 
-export function HomePage() {
+export const HomePage = () => {
   const { user } = useAuth();
   const queryState = useQuery(EMPTY_QUERY);
 
@@ -25,4 +25,4 @@ export function HomePage() {
       </Box>
     </MainLayout>
   );
-}
+};
