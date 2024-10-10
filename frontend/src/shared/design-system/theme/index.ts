@@ -21,7 +21,12 @@ export const theme = extendTheme({
     },
   },
   styles: {
-    global: {},
+    global: {
+      '#root': {
+        display: 'flex',
+        minHeight: '100vh',
+      },
+    },
   },
   components: {},
 });

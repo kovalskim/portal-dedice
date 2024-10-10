@@ -2,8 +2,7 @@ import { useQuery } from '@apollo/client';
 
 import { gql } from '@frontend/gql';
 import { useAuth } from '@frontend/modules/auth';
-import { Box } from '@frontend/shared/design-system';
-import { TopNavigation } from '@frontend/shared/navigation/organisms/TopNavigation';
+import { Box, MainLayout } from '@frontend/shared/design-system';
 
 const EMPTY_QUERY = gql(/* GraphQL */ `
   query Quacks {
@@ -16,8 +15,7 @@ export function HomePage() {
   const queryState = useQuery(EMPTY_QUERY);
 
   return (
-    <Box>
-      <TopNavigation />
+    <MainLayout>
       <Box p="8">
         <Box>Hello: {user ? user.name : '(not logged in)'}</Box>
         <Box pt="4">GraphQL query result:</Box>
@@ -25,6 +23,6 @@ export function HomePage() {
           {JSON.stringify(queryState.data)}
         </Box>
       </Box>
-    </Box>
+    </MainLayout>
   );
 }

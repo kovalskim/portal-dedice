@@ -3,8 +3,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { gql } from '@frontend/gql';
 import { useAuth } from '@frontend/modules/auth';
-import { Box, Button } from '@frontend/shared/design-system';
-import { TopNavigation } from '@frontend/shared/navigation/organisms/TopNavigation';
+import { Box, Button, MainLayout } from '@frontend/shared/design-system';
 
 const SIGNUP_MUTATION = gql(/* GraphQL */ `
   mutation SignUp($email: String!, $name: String!, $password: String!) {
@@ -31,8 +30,7 @@ export function SignUpPage() {
   });
 
   return (
-    <Box>
-      <TopNavigation />
+    <MainLayout>
       <Box p="8">
         <Button
           onClick={() => {
@@ -52,6 +50,6 @@ export function SignUpPage() {
           <Box color="red">{signUpRequestState.error.message}</Box>
         ) : null}
       </Box>
-    </Box>
+    </MainLayout>
   );
 }

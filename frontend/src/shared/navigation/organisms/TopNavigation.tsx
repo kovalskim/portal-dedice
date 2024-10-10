@@ -7,7 +7,7 @@ import { RouterNavLink } from '../atoms';
 export function TopNavigation() {
   const { user, signOut } = useAuth();
   return (
-    <Stack bg="gray.200" p="4" direction="row" spacing="0" alignItems="center">
+    <Stack bg="white" p="4" direction="row" spacing="0" alignItems="center">
       <RouterNavLink to={route.home()}>Home</RouterNavLink>
       {user === null ? (
         <>

@@ -3,8 +3,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { gql } from '@frontend/gql';
 import { useAuth } from '@frontend/modules/auth';
-import { Box, Button } from '@frontend/shared/design-system';
-import { TopNavigation } from '@frontend/shared/navigation/organisms/TopNavigation';
+import { Box, Button, MainLayout } from '@frontend/shared/design-system';
 
 const SIGNIN_MUTATION = gql(/* GraphQL */ `
   mutation SignIn($email: String!, $password: String!) {
@@ -32,8 +31,7 @@ export function SignInPage() {
   });
 
   return (
-    <Box>
-      <TopNavigation />
+    <MainLayout>
       <Box p="8">
         <Button
           onClick={() => {
@@ -52,6 +50,6 @@ export function SignInPage() {
           <Box color="red">{signInRequestState.error.message}</Box>
         ) : null}
       </Box>
-    </Box>
+    </MainLayout>
   );
 }
