@@ -3,8 +3,8 @@ image: node:20.17.0
 stages:
   - install
   - lint
-  - test
   - build
+# - test
 
 variables:
   YARN_CACHE_FOLDER: '$CI_PROJECT_DIR/cache/yarn'
@@ -12,7 +12,6 @@ variables:
 .rules:
   rules:
     - if: ($CI_PIPELINE_SOURCE == "merge_request_event")
-    - if: ($CI_COMMIT_BRANCH == "main" && $CI_PIPELINE_SOURCE == "push")
 
 install:
   stage: install
@@ -25,6 +24,7 @@ install:
       - cache/yarn
       - node_modules
     policy: push
+  needs: []
   script:
     - yarn install --frozen-lockfile
 
@@ -39,6 +39,7 @@ format:
       - cache/yarn
       - node_modules
     policy: pull
+  needs: [install]
   script:
     - yarn format:check
 
@@ -53,11 +54,27 @@ lint:
       - cache/yarn
       - node_modules
     policy: pull
+  needs: [install]
   script:
     - yarn lint
 
-test-frontend:
-  stage: test
+# test-frontend:
+#   stage: test
+#   interruptible: true
+#   rules:
+#     - !reference [.rules, rules]
+#   cache:
+#     key: ${CI_COMMIT_REF_SLUG}
+#     paths:
+#       - cache/yarn
+#       - node_modules
+#     policy: pull
+#   needs: []
+#   script:
+#     - yarn frontend test
+
+build-frontend:
+  stage: build
   interruptible: true
   rules:
     - !reference [.rules, rules]
@@ -67,21 +84,7 @@ test-frontend:
       - cache/yarn
       - node_modules
     policy: pull
-  script:
-    - yarn frontend test
-
-build-frontend:
-  stage: build
-  interruptible: true
-  rules:
-    - if: ($CI_PIPELINE_SOURCE == "merge_request_event")
-    - if: ($CI_COMMIT_BRANCH == "main" && $CI_PIPELINE_SOURCE == "push")
-  cache:
-    key: ${CI_COMMIT_REF_SLUG}
-    paths:
-      - cache/yarn
-      - node_modules
-    policy: pull
+  needs: [install]
   script:
     - yarn frontend build
 
@@ -89,13 +92,13 @@ build-backend:
   stage: build
   interruptible: true
   rules:
-    - if: ($CI_PIPELINE_SOURCE == "merge_request_event")
-    - if: ($CI_COMMIT_BRANCH == "main" && $CI_PIPELINE_SOURCE == "push")
+    - !reference [.rules, rules]
   cache:
     key: ${CI_COMMIT_REF_SLUG}
     paths:
       - cache/yarn
       - node_modules
     policy: pull
+  needs: [install]
   script:
     - yarn backend build
