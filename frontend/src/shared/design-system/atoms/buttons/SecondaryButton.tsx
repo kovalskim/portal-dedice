@@ -1,8 +1,9 @@
+import { MouseEventHandler } from 'react';
 import { Button, ButtonProps } from '@chakra-ui/react';
 
 export type SecondaryButtonProps = ButtonProps & {
   label: string;
-  onClick: () => void;
+  onClick?: MouseEventHandler<HTMLButtonElement>;
 };
 
 export const SecondaryButton = ({
@@ -20,7 +21,7 @@ export const SecondaryButton = ({
       colorScheme="gray"
       variant={variant}
       leftIcon={leftIcon}
-      px="3"
+      px="4"
       py="2"
       isLoading={isLoading}
       isDisabled={isDisabled}
