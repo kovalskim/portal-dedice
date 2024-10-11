@@ -15,7 +15,7 @@ import { GraphQLFormattedError } from 'graphql';
 import { useNavigate } from 'react-router-dom';
 
 import { config } from '@frontend/config';
-import { useAuth } from '@frontend/modules/auth';
+import { useAuth } from '@frontend/context/auth';
 import { route } from '@frontend/route';
 
 type Props = {
