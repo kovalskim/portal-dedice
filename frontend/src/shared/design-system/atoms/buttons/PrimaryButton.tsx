@@ -1,8 +1,9 @@
+import { MouseEventHandler } from 'react';
 import { Button, ButtonProps } from '@chakra-ui/react';
 
 export type PrimaryButtonProps = ButtonProps & {
   label: string;
-  onClick: () => void;
+  onClick?: MouseEventHandler<HTMLButtonElement>;
 };
 
 export const PrimaryButton = ({
