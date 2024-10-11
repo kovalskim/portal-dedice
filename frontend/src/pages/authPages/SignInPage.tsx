@@ -2,7 +2,6 @@ import { useMutation } from '@apollo/client';
 import { Box, Button } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 
-import { MainLayout } from '@frontend/components/';
 import { useAuth } from '@frontend/context/auth';
 import { gql } from '@frontend/gql';
 
@@ -32,25 +31,23 @@ export const SignInPage = () => {
   });
 
   return (
-    <MainLayout>
-      <Box p="8">
-        <Button
-          onClick={() => {
-            signInRequest({
-              variables: {
-                email: 'a@a.com',
-                password: 'pass',
-              },
-            });
-          }}
-          isLoading={signInRequestState.loading}
-        >
-          Sign In
-        </Button>
-        {signInRequestState.error ? (
-          <Box color="red">{signInRequestState.error.message}</Box>
-        ) : null}
-      </Box>
-    </MainLayout>
+    <Box p="8">
+      <Button
+        onClick={() => {
+          signInRequest({
+            variables: {
+              email: 'a@a.com',
+              password: 'pass',
+            },
+          });
+        }}
+        isLoading={signInRequestState.loading}
+      >
+        Sign In
+      </Button>
+      {signInRequestState.error ? (
+        <Box color="red">{signInRequestState.error.message}</Box>
+      ) : null}
+    </Box>
   );
 };

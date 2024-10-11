@@ -1,7 +1,6 @@
 import { useQuery } from '@apollo/client';
 import { Box } from '@chakra-ui/react';
 
-import { MainLayout } from '@frontend/components';
 import { useAuth } from '@frontend/context/auth';
 import { gql } from '@frontend/gql';
 
@@ -16,14 +15,12 @@ export const HomePage = () => {
   const queryState = useQuery(EMPTY_QUERY);
 
   return (
-    <MainLayout>
-      <Box p="8">
-        <Box>Hello: {user ? user.name : '(not logged in)'}</Box>
-        <Box pt="4">GraphQL query result:</Box>
-        <Box as="pre" fontFamily="mono">
-          {JSON.stringify(queryState.data)}
-        </Box>
+    <Box p="8">
+      <Box>Hello: {user ? user.name : '(not logged in)'}</Box>
+      <Box pt="4">GraphQL query result:</Box>
+      <Box as="pre" fontFamily="mono">
+        {JSON.stringify(queryState.data)}
       </Box>
-    </MainLayout>
+    </Box>
   );
 };
