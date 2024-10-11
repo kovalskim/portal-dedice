@@ -59,16 +59,13 @@ export const TopNavigation = () => {
         <RouterNavLink to={Routes.educator}>Nachytřovadlo</RouterNavLink>
       </Flex>
       {user === null ? (
-        <RouterNavButton
-          to={Routes.signIn}
-          label={navButtonlabel || ''}
-        ></RouterNavButton>
+        <RouterNavButton to={Routes.signIn}>
+          {navButtonlabel || ''}
+        </RouterNavButton>
       ) : (
-        <SecondaryButton
-          ml="2"
-          onClick={() => signOut()}
-          label="Sign out"
-        ></SecondaryButton>
+        <SecondaryButton ml="2" onClick={() => signOut()}>
+          Sign out
+        </SecondaryButton>
       )}
     </Stack>
   );

@@ -53,8 +53,9 @@ export const SingleFileUploadField = ({
                 as="span" // little hack (there cannot be a button in a label)
                 colorScheme="goldenYellow"
                 cursor="pointer"
-                label="Nahrát soubor"
-              />
+              >
+                Nahrát soubor
+              </PrimaryButton>
             </label>
             {selectedFile && <Text mt={2}>{selectedFile.name}</Text>}
           </Flex>
