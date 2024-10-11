@@ -14,7 +14,8 @@
     "format:check": "run-s \"format:no-write --check\"",
     "format:no-write": "prettier \"**/*.{cjs,js,ts,tsx,json,css,scss,graphql,md,yaml,yml}\"",
     "lint": "eslint --ext .js,.ts,.tsx --report-unused-disable-directives --max-warnings=0 .",
-    "lint:fix": "run-s \"lint --fix --cache\""
+    "lint:fix": "run-s \"lint --fix --cache\"",
+    "postinstall": "yarn chakra-cli tokens frontend/src/shared/design-system/theme/index.ts"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^7.13.0",

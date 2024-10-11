@@ -16,8 +16,7 @@
     "graphql": "run-s download-schema \"graphql:*\"",
     "graphql:codegen": "graphql-codegen",
     "graphql-watch": "graphql-codegen --watch",
-    "preview": "vite preview",
-    "postinstall": "yarn chakra-cli tokens src/shared/design-system/theme/index.ts"
+    "preview": "vite preview"
   },
   "dependencies": {
     "@apollo/client": "^3.11.8",
