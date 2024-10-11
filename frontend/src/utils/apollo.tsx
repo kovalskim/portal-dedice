@@ -16,7 +16,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { config } from '@frontend/config';
 import { useAuth } from '@frontend/context/auth';
-import { route } from '@frontend/route';
+import { Routes } from '@frontend/routes';
 
 type Props = {
   children: ReactNode;
@@ -28,7 +28,7 @@ export const EnhancedApolloProvider = ({ children }: Props) => {
 
   const handleSignOut = useCallback(() => {
     signOut();
-    navigate(route.signIn());
+    navigate(Routes.signIn);
     window.location.reload();
   }, [signOut, navigate]);
 

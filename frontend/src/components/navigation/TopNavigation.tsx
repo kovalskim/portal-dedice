@@ -4,7 +4,7 @@ import { Image, useBreakpointValue } from '@chakra-ui/react';
 import { SecondaryButton } from '@frontend/components/buttons/SecondaryButton';
 import { RouterNavButton } from '@frontend/components/navigation/atoms/RouterNavButton.tsx';
 import { useAuth } from '@frontend/context/auth';
-import { route } from '@frontend/route';
+import { Routes } from '@frontend/routes';
 
 import { RouterLink, RouterNavLink } from './atoms';
 
@@ -34,7 +34,7 @@ export const TopNavigation = () => {
         fontWeight="bold"
         display="flex"
         alignItems="center"
-        to={route.home()}
+        to={Routes.home}
       >
         <Image src={'/logo.png'} width="60px" me="4"></Image>
         <Box lineHeight="shorter" textAlign="left">
@@ -55,12 +55,12 @@ export const TopNavigation = () => {
           md: 6,
         }}
       >
-        <RouterNavLink to={route.home()}>O portálu</RouterNavLink>
-        <RouterNavLink to={route.educator()}>Nachytřovadlo</RouterNavLink>
+        <RouterNavLink to={Routes.home}>O portálu</RouterNavLink>
+        <RouterNavLink to={Routes.educator}>Nachytřovadlo</RouterNavLink>
       </Flex>
       {user === null ? (
         <RouterNavButton
-          to={route.signIn()}
+          to={Routes.signIn}
           label={navButtonlabel || ''}
         ></RouterNavButton>
       ) : (

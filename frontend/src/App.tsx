@@ -2,8 +2,9 @@ import { BrowserRouter } from 'react-router-dom';
 
 import { ChakraProvider, theme } from '@frontend/components/design-system';
 import { AuthProvider } from '@frontend/context/auth';
-import { Routes } from '@frontend/Routes';
 import { EnhancedApolloProvider } from '@frontend/utils/apollo.tsx';
+
+import { Router } from './Router';
 
 export const App = () => {
   return (
@@ -11,7 +12,7 @@ export const App = () => {
       <BrowserRouter>
         <AuthProvider>
           <EnhancedApolloProvider>
-            <Routes />
+            <Router />
           </EnhancedApolloProvider>
         </AuthProvider>
       </BrowserRouter>

@@ -1,6 +1,6 @@
 import { Box } from '@chakra-ui/react';
 
-import { route } from '@frontend/route';
+import { Routes } from '@frontend/routes';
 
 import { RouterLink } from '../../components/navigation/atoms';
 
@@ -9,7 +9,7 @@ export const NotFoundPage = () => {
     <Box p="8">
       <Box>
         Page not found, please return to{' '}
-        <RouterLink to={route.home()}>Home</RouterLink>.
+        <RouterLink to={Routes.home}>Home</RouterLink>.
       </Box>
     </Box>
   );
