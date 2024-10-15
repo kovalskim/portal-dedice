@@ -42,19 +42,28 @@ export const EnhancedApolloProvider = ({ children }: Props) => {
     return forward(operation);
   });
 
-  const logoutLink = onError(({ graphQLErrors, networkError }) => {
+  const errorLink = onError(({ graphQLErrors, networkError }) => {
+    //  auth error handling
     if (
       hasUnauthenticatedErrorCode(graphQLErrors) ||
       hasNetworkStatusCode(networkError, 401)
     ) {
       handleSignOut();
     }
+    // if 50x - throw error to catch it with react router dom error boundary
+    if (
+      networkError &&
+      'statusCode' in networkError &&
+      networkError.statusCode >= 500
+    ) {
+      throw networkError;
+    }
   });
 
   const cache = useMemo(() => new InMemoryCache(), []);
 
   const client = new ApolloClient({
-    link: from([logoutLink, authLink, uploadLink]),
+    link: from([errorLink, authLink, uploadLink]),
     cache,
     defaultOptions: {
       watchQuery: {
