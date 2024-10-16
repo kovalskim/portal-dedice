@@ -12,7 +12,7 @@ export const Link = forwardRef<HTMLAnchorElement, LinkProps>(
   ({ noUnderline, ...rest }: LinkProps, ref) => {
     return (
       <ChakraLink
-        color="green.600"
+        color="goldenYellow.500"
         _hover={{ textDecoration: noUnderline ? 'none' : 'underline' }}
         ref={ref}
         {...rest}
