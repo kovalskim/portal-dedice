@@ -3,7 +3,7 @@ import { eq } from 'drizzle-orm';
 import { GraphQLError } from 'graphql/error';
 import { Arg, Ctx, Mutation, Query, Resolver } from 'type-graphql';
 
-import { user } from '@backend/db/schema';
+import { users } from '@backend/db/schema';
 import { createToken } from '@backend/libs/jwt';
 import { type CustomContext } from '@backend/types/types';
 
@@ -17,7 +17,7 @@ export class UserResolver {
     @Ctx() { db }: CustomContext,
   ): Promise<User | null> {
     const id = parseInt(stringId, 10);
-    const userRecord = await db.select().from(user).where(eq(user.id, id));
+    const userRecord = await db.select().from(users).where(eq(users.id, id));
 
     if (userRecord.length === 0) {
       return null;
@@ -28,7 +28,7 @@ export class UserResolver {
 
   @Query(() => [User])
   async users(@Ctx() { db }: CustomContext): Promise<User[]> {
-    return await db.select().from(user);
+    return await db.select().from(users);
   }
 
   @Mutation(() => AuthInfo)
@@ -39,8 +39,8 @@ export class UserResolver {
   ): Promise<AuthInfo> {
     const userRecord = await db
       .select()
-      .from(user)
-      .where(eq(user.email, email));
+      .from(users)
+      .where(eq(users.email, email));
 
     if (userRecord.length === 0) {
       throw new GraphQLError('Unauthorized.');
@@ -63,15 +63,16 @@ export class UserResolver {
   async signUp(
     @Arg('email') email: string,
     @Arg('password') password: string,
-    @Arg('name') name: string,
+    @Arg('firstname') firstname: string,
+    @Arg('lastname') lastname: string,
     @Ctx() { db }: CustomContext,
   ): Promise<AuthInfo> {
     /* VALIDATION */
 
     const userByEmail = await db
       .select()
-      .from(user)
-      .where(eq(user.email, email));
+      .from(users)
+      .where(eq(users.email, email));
 
     if (userByEmail.length > 0) {
       throw new GraphQLError('Email already registered');
@@ -84,11 +85,13 @@ export class UserResolver {
     /* DATABASE INSERT */
 
     const insertResult = await db
-      .insert(user)
+      .insert(users)
       .values({
+        roleId: 1,
         email,
         password: passwordHash,
-        name,
+        firstname,
+        lastname,
       })
       .$returningId();
 
@@ -101,7 +104,7 @@ export class UserResolver {
     const userObject = {
       id,
       email,
-      name,
+      firstname,
     };
 
     return { user: userObject, token: token };
