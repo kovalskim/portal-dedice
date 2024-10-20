@@ -12,7 +12,7 @@ export const Footer: FC = () => {
         justify="center"
         gap="1"
       >
-        <Text fontSize="xs">© 2024 by VŠE</Text>
+        <Text fontSize="xs">© 2024 by Team 5</Text>
         <Text fontSize="xs" color="gray.500">
           <Link href="https://www.nkcr.cz/" isExternal>
             Notářská komora ČR

@@ -36,7 +36,7 @@ export const TopNavigation = () => {
         alignItems="center"
         to={Routes.home}
       >
-        <Image src={'/logo.png'} width="60px" me="4"></Image>
+        <Image src={'/logo.png'} width="50px" me="4"></Image>
         <Box lineHeight="shorter" textAlign="left">
           Portál <br />
           dědice
