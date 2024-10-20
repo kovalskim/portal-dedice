@@ -3,6 +3,8 @@ import { Route, Routes as RouterRoutes } from 'react-router-dom';
 import { ProceedingsParticipants } from './pages/proceedings/participants/ProceedingsParticipants';
 import { MainLayout } from './components';
 import {
+  EmailConfirmationPage,
+  EmailVerificationPage,
   HomePage,
   NotFoundPage,
   ProceedingsLayout,
@@ -19,6 +21,14 @@ export const Router = () => {
         <Route path={Routes.home} element={<HomePage />} />
         <Route path={Routes.signIn} element={<SignInPage />} />
         <Route path={Routes.signUp} element={<SignUpPage />} />
+        <Route
+          path={Routes.emailConfirmation}
+          element={<EmailConfirmationPage />}
+        />
+        <Route
+          path={Routes.emailVerification}
+          element={<EmailVerificationPage />}
+        />
         <Route element={<ProceedingsLayout />}>
           <Route
             path={Routes.proceedingsOverview}

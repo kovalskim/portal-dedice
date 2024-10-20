@@ -3,6 +3,8 @@ export enum Routes {
   educator = '/nachytrovadlo',
   signIn = '/auth/signin',
   signUp = '/auth/signup',
+  emailConfirmation = '/auth/email-confirmation',
+  emailVerification = '/auth/verify-email',
   proceedings = '/proceedings',
   proceedingsOverview = '/proceedings/:id/overview',
   proceedingsParticipants = '/proceedings/:id/participants',

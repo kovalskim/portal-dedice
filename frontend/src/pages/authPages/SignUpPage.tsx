@@ -1,53 +1,38 @@
 import { useMutation } from '@apollo/client';
-import { Box, Button } from '@chakra-ui/react';
+import { Box, Center, Heading } from '@chakra-ui/react';
+import { SubmitHandler } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 
-import { useAuth } from '@frontend/context/auth';
-import { gql } from '@frontend/gql';
+import { SIGN_UP_MUTATION } from '@frontend/gql/user/mutations';
+import { Routes } from '@frontend/routes';
 
-const SIGNUP_MUTATION = gql(/* GraphQL */ `
-  mutation SignUp($email: String!, $name: String!, $password: String!) {
-    signUp(email: $email, name: $name, password: $password) {
-      user {
-        id
-        name
-        email
-      }
-      token
-    }
-  }
-`);
+import { FormFields, RegistrationForm } from './components/RegistrationForm';
 
 export const SignUpPage = () => {
-  const auth = useAuth();
   const navigate = useNavigate();
-  const [signUpRequest, signUpRequestState] = useMutation(SIGNUP_MUTATION, {
-    onCompleted: ({ signUp: { user, token } }) => {
-      auth.signIn({ token, user });
-      navigate('/');
-    },
-    onError: () => {},
-  });
+  const [signUp, { loading, error }] = useMutation(SIGN_UP_MUTATION);
 
+  const onSubmit: SubmitHandler<FormFields> = async (data) => {
+    try {
+      await signUp({
+        variables: {
+          firstname: data.firstname,
+          lastname: data.lastname,
+          email: data.email,
+          password: data.password,
+        },
+      });
+      navigate(Routes.emailConfirmation);
+    } catch (err) {
+      console.error(err);
+    }
+  };
   return (
-    <Box p="8">
-      <Button
-        onClick={() => {
-          signUpRequest({
-            variables: {
-              email: 'a@a.com',
-              name: 'John Doe',
-              password: 'pass',
-            },
-          });
-        }}
-        isLoading={signUpRequestState.loading}
-      >
-        Sign Up
-      </Button>
-      {signUpRequestState.error ? (
-        <Box color="red">{signUpRequestState.error.message}</Box>
-      ) : null}
+    <Box p="8" alignItems="center">
+      <Center mb="10">
+        <Heading>Registrace do portálu dědice</Heading>
+      </Center>
+      <RegistrationForm onSubmit={onSubmit} loading={loading} error={error} />
     </Box>
   );
 };

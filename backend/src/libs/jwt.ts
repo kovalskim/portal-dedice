@@ -12,12 +12,11 @@ export const verifyToken = (token: string): JwtPayload | string => {
 };
 
 export const parseAndVerifyJWT = (token: string): JWTPayload | null => {
-  const jwt = token.split(' ')[1];
-  if (!jwt) {
+  if (!token) {
     return null;
   }
   try {
-    const payload = verifyToken(jwt) as JWTPayload;
+    const payload = verifyToken(token) as JWTPayload;
     return payload;
   } catch (err) {
     return null;

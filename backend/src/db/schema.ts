@@ -1,4 +1,5 @@
 import {
+  boolean,
   date,
   datetime,
   int,
@@ -24,6 +25,7 @@ export const users = mysqlTable('users', {
   afterTitle: varchar('after_title', { length: 255 }),
   email: varchar('email', { length: 255 }).notNull(),
   password: varchar('password', { length: 255 }).notNull(),
+  isVerified: boolean('isVerified').default(false).notNull(),
 });
 
 const VerificationReason: [string, ...string[]] = [

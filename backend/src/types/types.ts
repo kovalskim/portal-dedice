@@ -8,4 +8,6 @@ export type CustomContext = {
 export type JWTPayload = {
   id: number;
   iat: number;
+  email?: string;
+  userId: number;
 };
