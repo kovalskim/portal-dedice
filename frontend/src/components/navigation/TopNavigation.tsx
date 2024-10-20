@@ -1,4 +1,4 @@
-import { Box, Flex, Stack } from '@chakra-ui/layout';
+import { Box, Flex, Stack, Text } from '@chakra-ui/layout';
 import { Image, useBreakpointValue } from '@chakra-ui/react';
 
 import { SecondaryButton } from '@frontend/components/buttons/SecondaryButton';
@@ -59,13 +59,18 @@ export const TopNavigation = () => {
         <RouterNavLink to={Routes.educator}>Nachytřovadlo</RouterNavLink>
       </Flex>
       {user === null ? (
-        <RouterNavButton to={Routes.signIn}>
+        <RouterNavButton to={Routes.logIn}>
           {navButtonlabel || ''}
         </RouterNavButton>
       ) : (
-        <SecondaryButton ml="2" onClick={() => signOut()}>
-          Sign out
-        </SecondaryButton>
+        <Stack>
+          <Text>
+            {`${user.beforeTitle ? `${user.beforeTitle} ` : ''}${user.firstname} ${user.lastname}${user.afterTitle ? ` ${user.afterTitle}` : ''}`}
+          </Text>
+          <SecondaryButton onClick={() => signOut()}>
+            Odhlásit se
+          </SecondaryButton>
+        </Stack>
       )}
     </Stack>
   );

@@ -23,3 +23,19 @@ export const VERIFY_EMAIL_MUTATION = gql`
     verifyEmail(token: $token)
   }
 `;
+
+export const SIGN_IN_MUTATION = gql`
+  mutation signIn($email: String!, $password: String!) {
+    signIn(email: $email, password: $password) {
+      user {
+        id
+        beforeTitle
+        firstname
+        lastname
+        afterTitle
+        email
+      }
+      token
+    }
+  }
+`;

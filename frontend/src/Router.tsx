@@ -4,6 +4,8 @@ import {
   Route,
 } from 'react-router-dom';
 
+import { ForgottenPasswordPage } from '@frontend/pages/authPages/ForgottenPasswordPage.tsx';
+
 import { ErrorPage } from './pages/errorPages/ErrorPage';
 import { ProceedingsParticipants } from './pages/proceedings/participants/ProceedingsParticipants';
 import { App } from './App';
@@ -12,10 +14,10 @@ import {
   EmailConfirmationPage,
   EmailVerificationPage,
   HomePage,
+  LogInPage,
   NotFoundPage,
   ProceedingsLayout,
   ProceedingsOverview,
-  SignInPage,
   SignUpPage,
 } from './pages';
 import { Routes } from './routes';
@@ -27,7 +29,11 @@ export const getRouter = () => {
         <Route element={<MainLayout />}>
           <Route errorElement={<ErrorPage />}>
             <Route path={Routes.home} element={<HomePage />} />
-            <Route path={Routes.signIn} element={<SignInPage />} />
+            <Route path={Routes.logIn} element={<LogInPage />} />
+            <Route
+              path={Routes.forgottenPassword}
+              element={<ForgottenPasswordPage />}
+            />
             <Route path={Routes.signUp} element={<SignUpPage />} />
             <Route
               path={Routes.emailConfirmation}

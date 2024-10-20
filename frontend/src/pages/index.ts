@@ -1,6 +1,6 @@
 export * from './authPages/EmailConfirmationPage';
 export * from './authPages/EmailVerificationPage';
-export * from './authPages/SignInPage';
+export * from './authPages/LogInPage';
 export * from './authPages/SignUpPage';
 export * from './errorPages/NotFoundPage';
 export * from './home/HomePage';

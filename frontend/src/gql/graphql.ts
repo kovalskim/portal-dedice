@@ -1,5 +1,6 @@
 /* eslint-disable */
 import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/core';
+
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = {
@@ -68,6 +69,7 @@ export type User = {
   email: Scalars['String']['output'];
   id: Scalars['ID']['output'];
   name: Scalars['String']['output'];
+  lastname: Scalars['String']['output'];
 };
 
 export type SignInMutationVariables = Exact<{
@@ -80,7 +82,13 @@ export type SignInMutation = {
   signIn: {
     __typename?: 'AuthInfo';
     token: string;
-    user: { __typename?: 'User'; id: string; name: string; email: string };
+    user: {
+      __typename?: 'User';
+      id: string;
+      name: string;
+      email: string;
+      lastname: string;
+    };
   };
 };
 
@@ -176,6 +184,10 @@ export const SignInDocument = {
                       { kind: 'Field', name: { kind: 'Name', value: 'id' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'name' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'email' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'lastname' },
+                      }, // Přidáno lastname
                     ],
                   },
                 },

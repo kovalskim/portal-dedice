@@ -154,8 +154,10 @@ export class UserResolver {
     const userObject = {
       id,
       email,
+      beforeTitle: null,
       firstname,
       lastname,
+      afterTitle: null,
       isVerified: false,
     };
 

@@ -14,7 +14,10 @@ type AuthState = {
 
 export type AuthUser = {
   id: string;
-  name: string;
+  beforeTitle: string | null;
+  firstname: string;
+  lastname: string;
+  afterTitle: string | null;
 };
 
 const LOCAL_STORAGE_AUTH_KEY = 'project-auth';
@@ -96,7 +99,7 @@ function getStorageState(defaultState: AuthState): AuthState {
   try {
     const { user, token } = JSON.parse(rawData);
 
-    if (token && user && user.id && user.name) {
+    if (token && user && user.id && user.firstname) {
       return { token, user };
     }
   } catch {}

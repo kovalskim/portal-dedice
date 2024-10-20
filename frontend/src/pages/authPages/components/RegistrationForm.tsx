@@ -1,10 +1,10 @@
-import { Center, Container, Link, Stack, Text } from '@chakra-ui/react';
+import { Center, Container, Stack, Text } from '@chakra-ui/react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { SubmitHandler } from 'react-hook-form';
-import { useNavigate } from 'react-router-dom';
 import * as z from 'zod';
 
 import { Form, InputField, PrimaryButton } from '@frontend/components';
+import { RouterLink } from '@frontend/components/navigation/atoms';
 import { Routes } from '@frontend/routes';
 
 export type FormFields = z.infer<typeof schema>;
@@ -33,8 +33,6 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
   loading,
   error,
 }) => {
-  const navigate = useNavigate();
-
   return (
     <Container
       p="8"
@@ -85,10 +83,8 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
         )}
         <Center mt="4">
           <Text>
-            Already have an account?{' '}
-            <Link color="teal.500" onClick={() => navigate(Routes.signIn)}>
-              Sign In
-            </Link>
+            Již máte založený účet?{' '}
+            <RouterLink to={Routes.logIn}>Přihlaste se</RouterLink>
           </Text>
         </Center>
       </Form>

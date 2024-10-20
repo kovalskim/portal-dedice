@@ -5,11 +5,23 @@ export class User {
   @Field(() => ID)
   id!: number;
 
+  @Field(() => String, { nullable: true })
+  beforeTitle!: string | null;
+
   @Field()
   firstname!: string;
 
   @Field()
+  lastname!: string;
+
+  @Field(() => String, { nullable: true })
+  afterTitle!: string | null;
+
+  @Field()
   email!: string;
+
+  @Field()
+  isVerified!: boolean;
 }
 
 @ObjectType()

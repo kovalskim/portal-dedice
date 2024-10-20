@@ -1,7 +1,8 @@
 export enum Routes {
   home = '/',
   educator = '/nachytrovadlo',
-  signIn = '/auth/signin',
+  logIn = '/auth/login',
+  forgottenPassword = '/auth/forgotten-password',
   signUp = '/auth/signup',
   emailConfirmation = '/auth/email-confirmation',
   emailVerification = '/auth/verify-email',

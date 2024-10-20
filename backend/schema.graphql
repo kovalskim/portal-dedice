@@ -10,7 +10,8 @@ type AuthInfo {
 
 type Mutation {
   signIn(email: String!, password: String!): AuthInfo!
-  signUp(email: String!, name: String!, password: String!): AuthInfo!
+  signUp(email: String!, firstname: String!, lastname: String!, password: String!): AuthInfo!
+  verifyEmail(token: String!): String!
 }
 
 type Query {
@@ -20,7 +21,11 @@ type Query {
 }
 
 type User {
+  afterTitle: String
+  beforeTitle: String
   email: String!
+  firstname: String!
   id: ID!
-  name: String!
+  isVerified: Boolean!
+  lastname: String!
 }

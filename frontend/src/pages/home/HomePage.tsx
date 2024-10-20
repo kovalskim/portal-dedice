@@ -16,7 +16,9 @@ export const HomePage = () => {
 
   return (
     <Box p="8">
-      <Box>Hello: {user ? user.name : '(not logged in)'}</Box>
+      <Box>
+        {`Hello: ${user ? `${user.firstname} ${user.lastname}` : '(not logged in)'}`}
+      </Box>
       <Box pt="4">GraphQL query result:</Box>
       <Box as="pre" fontFamily="mono">
         {JSON.stringify(queryState.data)}
