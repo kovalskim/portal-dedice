@@ -5,6 +5,7 @@ import {
 } from 'react-router-dom';
 
 import { ForgottenPasswordPage } from '@frontend/pages/authPages/ForgottenPasswordPage.tsx';
+import { EducatorPage } from '@frontend/pages/educator/EducatorPages.tsx';
 
 import { ErrorPage } from './pages/errorPages/ErrorPage';
 import { ProceedingsParticipants } from './pages/proceedings/participants/ProceedingsParticipants';
@@ -30,6 +31,7 @@ export const getRouter = () => {
           <Route errorElement={<ErrorPage />}>
             <Route path={Routes.home} element={<HomePage />} />
             <Route path={Routes.logIn} element={<LogInPage />} />
+            <Route path={Routes.educator} element={<EducatorPage />} />
             <Route
               path={Routes.forgottenPassword}
               element={<ForgottenPasswordPage />}

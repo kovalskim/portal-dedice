@@ -8,7 +8,26 @@ type AuthInfo {
   user: User!
 }
 
+type Court {
+  attribute: String!
+  id: ID!
+  name: String!
+}
+
+input DeceasedPersonInput {
+  birthdate: String!
+  city: String!
+  deathdate: String!
+  district: String!
+  firstname: String!
+  lastname: String!
+  postalCode: String!
+  sex: String!
+  streetWithNumber: String!
+}
+
 type Mutation {
+  identifyNotary(data: DeceasedPersonInput!): Schedule!
   signIn(email: String!, password: String!): AuthInfo!
   signUp(email: String!, firstname: String!, lastname: String!, password: String!): AuthInfo!
   verifyEmail(token: String!): String!
@@ -18,6 +37,17 @@ type Query {
   _empty: String!
   user(id: String!): User
   users: [User!]!
+}
+
+type Schedule {
+  court: Court!
+  courtId: Float!
+  id: ID!
+  notaryId: Float
+  notaryName: String!
+  pattern: String!
+  secondaryNotaryId: Float
+  secondaryNotaryName: String!
 }
 
 type User {

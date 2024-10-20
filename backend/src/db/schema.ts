@@ -60,12 +60,12 @@ export const districts = mysqlTable('districts', {
 
 export const schedules = mysqlTable('schedules', {
   id: int('id').primaryKey().autoincrement(),
-  notaryId: int('notary_id')
-    .notNull()
-    .references(() => users.id),
-  secondaryNotaryId: int('secondary_notary_id')
-    .notNull()
-    .references(() => users.id),
+  notaryId: int('notary_id').references(() => users.id),
+  notaryName: varchar('notary_name', { length: 255 }).notNull(),
+  secondaryNotaryId: int('secondary_notary_id').references(() => users.id),
+  secondaryNotaryName: varchar('secondary_notary_name', {
+    length: 255,
+  }).notNull(),
   courtId: int('court_id')
     .notNull()
     .references(() => courts.id),

@@ -29,6 +29,13 @@
       "when": 1729166527529,
       "tag": "0003_motionless_wong",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "5",
+      "when": 1729166527529,
+      "tag": "0003_organic_nick_fury",
+      "breakpoints": true
     }
   ]
 }

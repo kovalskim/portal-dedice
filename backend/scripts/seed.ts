@@ -1,5 +1,9 @@
 import { getConnection } from '../src/db/db';
-import { roles, users } from '../src/db/schema';
+import { courts, districts, roles, schedules, users } from '../src/db/schema';
+
+import { courtsData } from './data/courts';
+import { districtsData } from './data/districts';
+import { schedulesData } from './data/schedules';
 
 async function seed() {
   console.log('Starting seed function');
@@ -61,6 +65,21 @@ async function seed() {
     } else {
       console.log('Users already exist, skipping seed');
     }
+    console.log('Deleting tables');
+    await db.delete(schedules);
+    await db.delete(districts);
+    await db.delete(courts);
+    console.log('Tables deleted');
+
+    console.log('Inserting courts');
+    await db.insert(courts).values(courtsData);
+
+    console.log('Inserting districts');
+    await db.insert(districts).values(districtsData);
+
+    console.log('Inserting schedules');
+    await db.insert(schedules).values(schedulesData);
+    console.log('Seed function completed');
     console.log('Seed function completed');
   } finally {
     await connection.connection.end();

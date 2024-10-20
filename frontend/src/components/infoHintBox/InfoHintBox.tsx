@@ -1,4 +1,4 @@
-import { ReactNode, useEffect } from 'react';
+import { FC, PropsWithChildren, useEffect } from 'react';
 import { Box } from '@chakra-ui/layout';
 import {
   Alert,
@@ -12,10 +12,12 @@ import {
 
 export type InfoHintBoxProps = {
   title: string;
-  children: ReactNode;
 };
 
-export const InfoHintBox = ({ title, children }: InfoHintBoxProps) => {
+export const InfoHintBox: FC<PropsWithChildren<InfoHintBoxProps>> = ({
+  title,
+  children,
+}) => {
   const isMobile: boolean | undefined = useBreakpointValue({
     base: true,
     md: false,

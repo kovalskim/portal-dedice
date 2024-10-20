@@ -9,12 +9,14 @@ import {
 
 export type FormProps<TFieldValues extends FieldValues = FieldValues> =
   UseFormProps<TFieldValues> & {
+    id?: string;
     children: ReactNode;
     onSubmit: SubmitHandler<TFieldValues>;
     noValidate?: boolean;
   };
 
 export function Form<TFieldValues extends FieldValues = FieldValues>({
+  id,
   children,
   onSubmit,
   noValidate = false,
@@ -24,7 +26,11 @@ export function Form<TFieldValues extends FieldValues = FieldValues>({
 
   return (
     <FormProvider {...methods}>
-      <form onSubmit={methods.handleSubmit(onSubmit)} noValidate={noValidate}>
+      <form
+        id={id}
+        onSubmit={methods.handleSubmit(onSubmit)}
+        noValidate={noValidate}
+      >
         {children}
       </form>
     </FormProvider>

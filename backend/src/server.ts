@@ -10,7 +10,6 @@ import {
 import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer';
 import { addMocksToSchema } from '@graphql-tools/mock';
 import cors from 'cors';
-import { MySql2Database } from 'drizzle-orm/mysql2';
 import express from 'express';
 import graphqlUploadExpress from 'graphql-upload/graphqlUploadExpress.js';
 import * as http from 'http';
@@ -18,6 +17,7 @@ import { buildSchema } from 'type-graphql';
 
 import { MOCKS, PORT } from '@backend/config';
 import { getConnection } from '@backend/db/db';
+import { ScheduleResolver } from '@backend/graphql/modules/educator/ScheduleResolver';
 import { EmptyResolver } from '@backend/graphql/modules/empty/emptyResolver';
 import { UserResolver } from '@backend/graphql/modules/user/userResolver';
 import { parseAndVerifyJWT } from '@backend/libs/jwt';
@@ -30,7 +30,7 @@ const init = async () => {
   const httpServer = http.createServer(app);
 
   const schema = await buildSchema({
-    resolvers: [EmptyResolver, UserResolver],
+    resolvers: [EmptyResolver, UserResolver, ScheduleResolver],
     emitSchemaFile: true,
   });
 
@@ -50,7 +50,7 @@ const init = async () => {
     req,
     res,
   }: ExpressContextFunctionArgument): Promise<CustomContext> => {
-    const drizzle = MOCKS ? null : await getConnection();
+    const drizzle = await getConnection();
     const authToken = req.headers.authorization ?? '';
     const authUser = parseAndVerifyJWT(authToken);
 
@@ -59,7 +59,7 @@ const init = async () => {
     });
 
     return {
-      db: drizzle?.db as unknown as MySql2Database,
+      db: drizzle.db,
       authUser,
     };
   };

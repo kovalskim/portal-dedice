@@ -20,10 +20,16 @@ export const SummaryStepper = ({
 
   return (
     <Box position="relative">
-      <Stepper size="sm" index={activeStep} gap="0" colorScheme="goldenYellow">
+      <Stepper
+        size="xs"
+        index={activeStep}
+        gap="0"
+        colorScheme="goldenYellow"
+        zIndex={'modal'}
+      >
         {Array.from({ length: stepsCount }).map((_, index) => (
           <Step key={index}>
-            <StepIndicator bg="white">
+            <StepIndicator bg="white" zIndex={2}>
               <StepStatus />
             </StepIndicator>
           </Step>
@@ -35,8 +41,8 @@ export const SummaryStepper = ({
         height="3px"
         width="full"
         colorScheme="goldenYellow"
-        top="10px"
-        zIndex={-1}
+        top="6px"
+        zIndex={1}
       />
     </Box>
   );

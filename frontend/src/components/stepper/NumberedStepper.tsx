@@ -17,11 +17,13 @@ export type Step = {
 export type NumberedStepperProps = {
   steps: Step[];
   activeStep: number;
+  hideLabels?: boolean;
 };
 
 export const NumberedStepper = ({
   steps,
   activeStep,
+  hideLabels,
 }: NumberedStepperProps) => {
   return (
     <Stepper size="lg" index={activeStep} colorScheme="goldenYellow">
@@ -35,9 +37,11 @@ export const NumberedStepper = ({
             />
           </StepIndicator>
 
-          <Box flexShrink="0">
-            <StepTitle>{step.title}</StepTitle>
-          </Box>
+          {!hideLabels && (
+            <Box flexShrink="0">
+              <StepTitle>{step.title}</StepTitle>
+            </Box>
+          )}
 
           <StepSeparator />
         </ChakraStep>
