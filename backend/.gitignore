@@ -6,3 +6,5 @@ npm-debug.log
 !/tmp/restart.txt
 
 /.env.local
+
+/drizzle/*
