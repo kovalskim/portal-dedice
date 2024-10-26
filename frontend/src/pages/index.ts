@@ -6,3 +6,4 @@ export * from './errorPages/NotFoundPage';
 export * from './home/HomePage';
 export * from './proceedings/overview/ProceedingsOverview';
 export * from './proceedings/ProceedingsLayout';
+export * from './userDashboard/UserDashboard';

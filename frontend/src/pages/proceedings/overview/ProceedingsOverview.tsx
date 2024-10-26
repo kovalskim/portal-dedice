@@ -1,9 +1,9 @@
-import { Card, Text } from '@chakra-ui/react';
+import { Box, Text } from '@chakra-ui/react';
 
 export const ProceedingsOverview = () => {
   return (
-    <Card width="full" height="full" flex="1">
+    <Box>
       <Text>Hello Proceedings Overview</Text>
-    </Card>
+    </Box>
   );
 };

@@ -1,5 +1,11 @@
 import { Field, ID, ObjectType } from 'type-graphql';
 
+export enum Role {
+  ADMIN = 'admin',
+  USER = 'user',
+  NOTARY = 'notary',
+}
+
 @ObjectType()
 export class User {
   @Field(() => ID)

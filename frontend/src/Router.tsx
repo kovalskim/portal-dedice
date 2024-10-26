@@ -20,6 +20,7 @@ import {
   ProceedingsLayout,
   ProceedingsOverview,
   SignUpPage,
+  UserDashboard,
 } from './pages';
 import { Routes } from './routes';
 
@@ -45,6 +46,7 @@ export const getRouter = () => {
               path={Routes.emailVerification}
               element={<EmailVerificationPage />}
             />
+            <Route path={Routes.proceedings} element={<UserDashboard />} />
             <Route element={<ProceedingsLayout />}>
               <Route
                 path={Routes.proceedingsOverview}

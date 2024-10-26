@@ -1,4 +1,4 @@
-import { Flex } from '@chakra-ui/react';
+import { Card, Flex } from '@chakra-ui/react';
 import { Outlet } from 'react-router-dom';
 
 import { Sidebar } from './components/sidebar/Sidebar';
@@ -13,7 +13,9 @@ export const ProceedingsLayout = () => {
       gap={{ base: 3, md: 6 }}
     >
       <Sidebar />
-      <Outlet />
+      <Card width="full" height="full" flex="1">
+        <Outlet />
+      </Card>
     </Flex>
   );
 };

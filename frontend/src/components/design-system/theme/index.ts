@@ -28,5 +28,11 @@ export const theme = extendTheme({
       },
     },
   },
-  components: {},
+  components: {
+    Input: {
+      defaultProps: {
+        focusBorderColor: 'goldenYellow.500',
+      },
+    },
+  },
 });
