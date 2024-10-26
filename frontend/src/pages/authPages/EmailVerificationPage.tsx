@@ -1,9 +1,10 @@
 import { useEffect } from 'react';
 import { useMutation } from '@apollo/client';
-import { Box, Center, Heading, Text } from '@chakra-ui/react';
+import { CheckCircleIcon, WarningIcon } from '@chakra-ui/icons';
+import { Box, Center, Flex, Heading, Spinner, Text } from '@chakra-ui/react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-import { PrimaryButton, SecondaryButton } from '@frontend/components';
+import { SecondaryButton } from '@frontend/components';
 import { VERIFY_EMAIL_MUTATION } from '@frontend/gql/user/mutations';
 import { Routes } from '@frontend/routes';
 
@@ -32,45 +33,77 @@ export const EmailVerificationPage = () => {
     }
   }, [token, verifyEmail]);
 
-  const handleGoHome = () => {
-    navigate(Routes.home);
-  };
-
   return (
-    <Box p="8" alignItems="center">
-      <Center mb="10">
-        <Heading>Ověření emailové adresy</Heading>
-      </Center>
+    <Flex
+      height="100%"
+      width="100%"
+      justifyContent="center"
+      alignItems="center"
+    >
+      <Flex
+        w={{
+          base: '90%',
+          md: '70%',
+          lg: '60%',
+        }}
+        bg="goldenYellow.500"
+        boxShadow="lg"
+        borderRadius="lg"
+        direction="column"
+        alignItems="center"
+        textAlign="center"
+        px={{
+          base: 4,
+          lg: 24,
+        }}
+        py={8}
+      >
+        <Box p="8" alignItems="center">
+          <Center>
+            <Heading size="lg" mb={10} color="white">
+              Ověření emailové adresy
+            </Heading>
+          </Center>
 
-      {loading && (
-        <Center>
-          <Text>Ověřuji emailovou adresu...</Text>
-        </Center>
-      )}
+          {loading && (
+            <Flex direction="column" alignItems="center">
+              <Spinner color="white" size="xl" mb="10" />
+              <Text color="white">Ověřuji emailovou adresu...</Text>
+            </Flex>
+          )}
 
-      {/* Handle error state */}
-      {error && (
-        <Center flexDirection="column">
-          <Text color="red.500" mb="4">
-            {error.message.includes('expired')
-              ? 'Vypadá to, že verifikační odkaz expiroval. Přihlaste se a požádejte o nový.'
-              : 'Odkaz není validní. Zadejte prosím validní odkaz.'}
-          </Text>
-          <SecondaryButton onClick={handleGoHome} colorScheme="gray">
-            Domů
-          </SecondaryButton>
-        </Center>
-      )}
+          {/* Handle error state */}
+          {error && (
+            <Center flexDirection="column">
+              <WarningIcon color="red.600" boxSize={16} mb={4} />
+              <Text color="white" mb={10} fontSize="lg" fontWeight="medium">
+                {error.message.includes('expired')
+                  ? 'Vypadá to, že verifikační odkaz expiroval. Přihlaste se a požádejte o nový.'
+                  : 'Odkaz není validní. Zadejte prosím validní odkaz.'}
+              </Text>
+              <SecondaryButton
+                onClick={() => navigate(Routes.home)}
+                colorScheme="gray"
+              >
+                Domů
+              </SecondaryButton>
+            </Center>
+          )}
 
-      {/* Handle success state */}
-      {data && (
-        <Center flexDirection="column">
-          <Text>Úspěšně jste ověřili emailovou adresu!</Text>
-          <PrimaryButton onClick={handleGoHome} mt="4">
-            Domů
-          </PrimaryButton>
-        </Center>
-      )}
-    </Box>
+          {/* Handle success state */}
+          {data && (
+            <Center flexDirection="column">
+              <CheckCircleIcon color="green" boxSize={16} mb={4} />
+              <Text color="white" mb={10} fontSize="lg" fontWeight="medium">
+                Úspěšně jste ověřili emailovou adresu!
+              </Text>
+              <SecondaryButton onClick={() => navigate(Routes.logIn)}>
+                Přihlásit se
+              </SecondaryButton>
+            </Center>
+          )}
+        </Box>
+      </Flex>
+    </Flex>
   );
 };

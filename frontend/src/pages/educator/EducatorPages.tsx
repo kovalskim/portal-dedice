@@ -26,7 +26,6 @@ export const EducatorPage = () => {
       justifyContent="center"
       alignItems="center"
       height="100%"
-      py={{ sm: 2, lg: 10 }}
     >
       <CurrentStep />
     </Box>

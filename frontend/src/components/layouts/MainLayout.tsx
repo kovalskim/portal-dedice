@@ -10,7 +10,7 @@ export const MainLayout = () => {
     <Flex direction="column" flex="1">
       <TopNavigation />
       <Box flex="1" bgColor="gray.50">
-        <Container maxW="container.xl">
+        <Container maxW="container.xl" py={{ base: 6, md: 12 }}>
           <Outlet />
         </Container>
       </Box>

@@ -1,4 +1,5 @@
-import { Center, Container, Stack, Text } from '@chakra-ui/react';
+import { Box } from '@chakra-ui/layout';
+import { Center, Flex, Heading, Stack, Text } from '@chakra-ui/react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { SubmitHandler } from 'react-hook-form';
 import * as z from 'zod';
@@ -34,13 +35,10 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
   error,
 }) => {
   return (
-    <Container
-      p="8"
-      bg="white"
-      borderRadius="md"
-      boxShadow="base"
-      maxW={{ base: '100%', md: '70%', xl: '60%', '2xl': '45%' }}
-    >
+    <Box>
+      <Heading size="md" mb={8} textAlign="center">
+        Vyplňte registrační formulář
+      </Heading>
       <Form
         defaultValues={{
           firstname: '',
@@ -53,23 +51,40 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
         onSubmit={onSubmit}
       >
         <Stack spacing={5}>
-          <Stack direction="row" gap="5">
+          <Flex
+            direction={{
+              base: 'column',
+              md: 'row',
+            }}
+            gap="5"
+          >
             <InputField name="firstname" type="text" label="Jméno" />
             <InputField name="lastname" type="text" label="Příjmení" />
-          </Stack>
+          </Flex>
 
-          <InputField name="email" type="text" label="Emailová adresa" />
-          <Stack direction="row" gap="5">
+          <InputField
+            name="email"
+            type="text"
+            label="Emailová adresa"
+            placeholder="@"
+          />
+          <Flex
+            direction={{
+              base: 'column',
+              md: 'row',
+            }}
+            gap="5"
+          >
             <InputField name="password" type="password" label="Heslo" />
             <InputField
               name="confirmPassword"
               type="password"
               label="Znovu heslo"
             />
-          </Stack>
+          </Flex>
         </Stack>
 
-        <Center mt={12}>
+        <Center mt={8}>
           <PrimaryButton type="submit" isLoading={loading}>
             Registrovat se
           </PrimaryButton>
@@ -81,13 +96,13 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
             </Text>
           </Center>
         )}
-        <Center mt="4">
+        <Center mt="8">
           <Text>
             Již máte založený účet?{' '}
             <RouterLink to={Routes.logIn}>Přihlaste se</RouterLink>
           </Text>
         </Center>
       </Form>
-    </Container>
+    </Box>
   );
 };
