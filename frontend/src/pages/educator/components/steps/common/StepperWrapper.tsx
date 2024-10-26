@@ -44,13 +44,12 @@ export const StepperWrapper: FC<PropsWithChildren<StepperWrapperProps>> = ({
       minHeight="500px"
       maxW={{
         base: '90%',
-        md: '80%',
-        lg: '70%',
+        lg: '80%',
       }}
       p="8"
     >
       <Stack alignItems="center" display="flex" flex={1}>
-        <Box width={{ sm: '100%', md: '600px' }} pb={6}>
+        <Box width={{ base: '100%', md: '600px' }} pb={6}>
           <SummaryStepper
             stepsCount={stepsCountShowenInEducation}
             activeStep={showStep}

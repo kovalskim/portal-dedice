@@ -1,5 +1,5 @@
 import { useMutation } from '@apollo/client';
-import { Flex, Spacer } from '@chakra-ui/react';
+import { Box } from '@chakra-ui/layout';
 import { SubmitHandler } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 
@@ -35,10 +35,8 @@ export const LogInPage = () => {
   };
 
   return (
-    <Flex p="8">
-      <Spacer />
+    <Box display="flex" justifyContent="center" height="100%" mt="8">
       <LogInForm onSubmit={onSubmit} loading={loading} error={error} />
-      <Spacer />
-    </Flex>
+    </Box>
   );
 };

@@ -1,4 +1,5 @@
 import { Box, Flex } from '@chakra-ui/layout';
+import { Container } from '@chakra-ui/react';
 import { Outlet } from 'react-router-dom';
 
 import { Footer } from '../footer/Footer';
@@ -9,7 +10,9 @@ export const MainLayout = () => {
     <Flex direction="column" flex="1">
       <TopNavigation />
       <Box flex="1" bgColor="gray.50">
-        <Outlet />
+        <Container maxW="container.xl">
+          <Outlet />
+        </Container>
       </Box>
       <Footer />
     </Flex>

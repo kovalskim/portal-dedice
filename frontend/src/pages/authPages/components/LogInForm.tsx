@@ -23,16 +23,31 @@ type LogInFormProps = {
 
 export const LogInForm: FC<LogInFormProps> = ({ onSubmit, loading, error }) => {
   return (
-    <Box>
-      <Heading as={'h1'} mb={8} textAlign={'center'}>
+    <Box
+      width={{
+        base: '90%',
+        md: '50%',
+        lg: '40%',
+      }}
+    >
+      <Heading as="h1" mb={8} textAlign="center">
         Přihlášení do{' '}
         <span style={{ color: theme.colors.goldenYellow[500] }}>
           Portálu dědice
         </span>
       </Heading>
-      <Box bg="white" p={16} borderRadius="md" boxShadow="md" width={'xl'}>
+      <Box
+        bg="white"
+        py="8"
+        px={{
+          base: 6,
+          md: 12,
+        }}
+        borderRadius="md"
+        boxShadow="md"
+      >
         {error && (
-          <Alert status={'error'} mb={8}>
+          <Alert status="error" mb="8">
             <AlertIcon />
             Zadali jste neplatné přihlašovací údaje. Zkuste to prosím znovu.
           </Alert>
@@ -46,11 +61,7 @@ export const LogInForm: FC<LogInFormProps> = ({ onSubmit, loading, error }) => {
               placeholder={'@'}
             />
             <InputField name="password" type="password" label="Heslo" />
-            <RouterLink
-              to={Routes.forgottenPassword}
-              mt={-4}
-              textAlign={'right'}
-            >
+            <RouterLink to={Routes.forgottenPassword} mt={-4} textAlign="right">
               Zapomenuté heslo
             </RouterLink>
           </Stack>
@@ -62,7 +73,7 @@ export const LogInForm: FC<LogInFormProps> = ({ onSubmit, loading, error }) => {
           </Center>
         </Form>
 
-        <Text mt={8} textAlign={'center'}>
+        <Text mt={8} textAlign="center">
           Ještě nemáte vytvořený účet?{' '}
           <RouterLink to={Routes.signUp}>Zaregistrujte se</RouterLink>
         </Text>

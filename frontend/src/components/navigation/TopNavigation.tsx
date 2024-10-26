@@ -1,77 +1,77 @@
-import { Box, Flex, Stack, Text } from '@chakra-ui/layout';
-import { Image, useBreakpointValue } from '@chakra-ui/react';
+import { HamburgerIcon } from '@chakra-ui/icons';
+import {
+  Container,
+  Drawer,
+  DrawerBody,
+  DrawerCloseButton,
+  DrawerContent,
+  DrawerOverlay,
+  Flex,
+  IconButton,
+  Stack,
+  useBreakpointValue,
+  useDisclosure,
+} from '@chakra-ui/react';
 
-import { SecondaryButton } from '@frontend/components/buttons/SecondaryButton';
-import { RouterNavButton } from '@frontend/components/navigation/atoms/RouterNavButton.tsx';
-import { useAuth } from '@frontend/context/auth';
-import { Routes } from '@frontend/routes';
-
-import { RouterLink, RouterNavLink } from './atoms';
+import { AuthButton } from '@frontend/components/navigation/atoms/AuthButton.tsx';
+import { Logo } from '@frontend/components/navigation/atoms/Logo.tsx';
+import { NavigationLinks } from '@frontend/components/navigation/atoms/NavigationLinks.tsx';
 
 export const TopNavigation = () => {
-  const { user, signOut } = useAuth();
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const navButtonlabel = useBreakpointValue({
-    base: 'Přihlásit', // On mobile (base and sm), show just "Přihlásit"
-    md: 'Přihlásit se do Portálu dědice', // On medium and larger, show full text
-  });
+  const isMobile = useBreakpointValue({ base: true, md: false });
 
   return (
-    <Stack
-      bg="white"
-      py="4"
-      mx="10"
-      direction="row"
-      spacing="0"
-      alignItems="center"
-      display="flex"
-      justifyContent="space-between"
-    >
-      <RouterLink
-        noUnderline
-        color="black"
-        fontSize="lg"
-        fontWeight="bold"
-        display="flex"
+    <Container maxW="container.xl">
+      <Stack
+        bg="white"
+        py="4"
+        direction="row"
+        spacing="0"
         alignItems="center"
-        to={Routes.home}
+        display="flex"
+        justifyContent="space-between"
       >
-        <Image src={'/logo.png'} width="50px" me="4"></Image>
-        <Box lineHeight="shorter" textAlign="left">
-          Portál <br />
-          dědice
-        </Box>
-      </RouterLink>
-      <Flex
-        direction={{
-          base: 'column',
-          md: 'row',
-        }}
-        alignItems={{
-          base: 'center',
-        }}
-        gap={{
-          base: 0,
-          md: 6,
-        }}
-      >
-        <RouterNavLink to={Routes.home}>O portálu</RouterNavLink>
-        <RouterNavLink to={Routes.educator}>Nachytřovadlo</RouterNavLink>
-      </Flex>
-      {user === null ? (
-        <RouterNavButton to={Routes.logIn}>
-          {navButtonlabel || ''}
-        </RouterNavButton>
-      ) : (
-        <Stack>
-          <Text>
-            {`${user.beforeTitle ? `${user.beforeTitle} ` : ''}${user.firstname} ${user.lastname}${user.afterTitle ? ` ${user.afterTitle}` : ''}`}
-          </Text>
-          <SecondaryButton onClick={() => signOut()}>
-            Odhlásit se
-          </SecondaryButton>
-        </Stack>
-      )}
-    </Stack>
+        <>
+          {/* Hamburger Menu for Mobile */}
+          {isMobile ? (
+            <>
+              <Drawer isOpen={isOpen} placement="left" onClose={onClose}>
+                <DrawerOverlay />
+                <DrawerContent>
+                  <DrawerCloseButton />
+                  <DrawerBody>
+                    <Flex direction="column" align="center" mt="10" gap="5">
+                      <NavigationLinks onClose={onClose} />
+                    </Flex>
+                  </DrawerBody>
+                </DrawerContent>
+              </Drawer>
+              <Flex direction="row" alignItems="center">
+                <IconButton
+                  icon={<HamburgerIcon />}
+                  aria-label="Open menu"
+                  onClick={onOpen}
+                  bg="none"
+                  me="1"
+                />
+                <Logo />
+              </Flex>
+              <AuthButton onClose={onClose}></AuthButton>
+            </>
+          ) : (
+            // Desktop View
+            <>
+              <Logo />
+              <Stack direction="row" gap="6">
+                <NavigationLinks />
+              </Stack>
+              <AuthButton onClose={onClose}></AuthButton>
+            </>
+          )}
+        </>
+      </Stack>
+    </Container>
   );
 };

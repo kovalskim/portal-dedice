@@ -12,8 +12,7 @@ export const Step00 = () => {
       minHeight="500px"
       maxW={{
         base: '90%',
-        md: '80%',
-        lg: '70%',
+        lg: '80%',
       }}
       p={0}
     >

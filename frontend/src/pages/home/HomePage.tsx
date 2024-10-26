@@ -20,9 +20,7 @@ export const HomePage = () => {
         {`Hello: ${user ? `${user.firstname} ${user.lastname}` : '(not logged in)'}`}
       </Box>
       <Box pt="4">GraphQL query result:</Box>
-      <Box as="pre" fontFamily="mono">
-        {JSON.stringify(queryState.data)}
-      </Box>
+      <Box>{JSON.stringify(queryState.data)}</Box>
     </Box>
   );
 };
