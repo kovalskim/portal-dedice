@@ -1,5 +1,12 @@
 import { getConnection } from '../src/db/db';
-import { courts, districts, roles, schedules, users } from '../src/db/schema';
+import {
+  courts,
+  districts,
+  phases,
+  roles,
+  schedules,
+  users,
+} from '../src/db/schema';
 
 import { courtsData } from './data/courts';
 import { districtsData } from './data/districts';
@@ -22,6 +29,15 @@ async function seed() {
       console.log('Sample roles inserted');
     } else {
       console.log('Roles already exist, skipping role seed');
+    }
+
+    if ((await db.select().from(phases)).length === 0) {
+      console.log('No phases found, inserting sample phases');
+      await db.insert(phases).values([
+        { id: 1, title: 'phase1', description: 'Phase 1 description' },
+        { id: 2, title: 'phase2', description: 'Phase 2 description' },
+      ]);
+      console.log('Sample phases inserted');
     }
 
     if ((await db.select().from(users)).length === 0) {

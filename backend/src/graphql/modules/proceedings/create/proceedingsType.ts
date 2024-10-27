@@ -9,13 +9,13 @@ export class Proceedings {
   proceedingsNumber!: string;
 
   @Field(() => String)
-  deceisedFirstName!: string;
+  deceasedFirstName!: string;
 
   @Field(() => String)
-  deceisedLastName!: string;
+  deceasedLastName!: string;
 
   @Field(() => String)
-  deceisedDateOfDeath!: string;
+  deceasedDateOfDeath!: string;
 }
 
 @ObjectType()
@@ -24,11 +24,11 @@ export class CreateProceedingsInput {
   proceedingsNumber!: string;
 
   @Field(() => String)
-  deceisedFirstName!: string;
+  deceasedFirstName!: string;
 
   @Field(() => String)
-  deceisedLastName!: string;
+  deceasedLastName!: string;
 
   @Field(() => String)
-  deceisedDateOfDeath!: string;
+  deceasedDateOfDeath!: string;
 }

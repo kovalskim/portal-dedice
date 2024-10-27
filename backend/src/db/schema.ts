@@ -80,6 +80,10 @@ export const phases = mysqlTable('phases', {
 
 export const proceedings = mysqlTable('proceedings', {
   id: int('id').primaryKey().autoincrement(),
+  proceedingsNumber: varchar('proceedings_number', { length: 255 }).notNull(),
+  deceasedDateOfDeath: date('deceased_date_of_death').notNull(),
+  deceasedFirstName: varchar('deceased_first_name', { length: 255 }).notNull(),
+  deceasedLastName: varchar('deceased_last_name', { length: 255 }).notNull(),
   phaseId: int('phase_id')
     .notNull()
     .references(() => phases.id),

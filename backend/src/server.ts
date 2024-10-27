@@ -24,13 +24,22 @@ import { parseAndVerifyJWT } from '@backend/libs/jwt';
 import { mockResolvers } from '@backend/mocks/mocks';
 import { CustomContext } from '@backend/types/types';
 
+import { CreateProceedingsResolver } from './graphql/modules/proceedings/create/CreateProceedingsResolver';
+import { ProceedingsRepository } from './repository/ProceedingsRepository';
+import { UserRepository } from './repository/UserRepository';
+
 const init = async () => {
   const app = express();
 
   const httpServer = http.createServer(app);
 
   const schema = await buildSchema({
-    resolvers: [EmptyResolver, UserResolver, ScheduleResolver],
+    resolvers: [
+      EmptyResolver,
+      UserResolver,
+      ScheduleResolver,
+      CreateProceedingsResolver,
+    ],
     emitSchemaFile: true,
   });
 
@@ -61,6 +70,8 @@ const init = async () => {
     return {
       db: drizzle.db,
       authUser,
+      userRepository: new UserRepository(drizzle.db),
+      proceedingsRepository: new ProceedingsRepository(drizzle.db),
     };
   };
 

@@ -1,13 +1,22 @@
 import * as argon2 from 'argon2';
 import { and, eq } from 'drizzle-orm';
 import { GraphQLError } from 'graphql/error';
-import { Arg, Ctx, Mutation, Query, Resolver } from 'type-graphql';
+import {
+  Arg,
+  Ctx,
+  FieldResolver,
+  Mutation,
+  Query,
+  Resolver,
+  Root,
+} from 'type-graphql';
 
 import { roles, users, verificationTokens } from '@backend/db/schema';
 import { createToken, parseAndVerifyJWT } from '@backend/libs/jwt';
 import { sendVerificationEmail } from '@backend/services/userService/emailService';
 import { type CustomContext } from '@backend/types/types';
 
+import { Role } from './roleType';
 import { signUpSchema } from './userSchema';
 import { AuthInfo, User } from './userType';
 
@@ -26,6 +35,14 @@ export class UserResolver {
     }
 
     return userRecord[0];
+  }
+
+  @FieldResolver(() => Role)
+  role(
+    @Root() user: User,
+    @Ctx() { userRepository }: CustomContext,
+  ): Promise<Role | null> {
+    return userRepository.getUserRole(user.id);
   }
 
   @Query(() => [User])

@@ -27,16 +27,30 @@ input DeceasedPersonInput {
 }
 
 type Mutation {
+  createProceedings(deceasedDateOfDeath: String!, deceasedFirstName: String!, deceasedLastName: String!, proceedingsNumber: String!): Proceedings!
   identifyNotary(data: DeceasedPersonInput!): Schedule!
   signIn(email: String!, password: String!): AuthInfo!
   signUp(email: String!, firstname: String!, lastname: String!, password: String!): AuthInfo!
   verifyEmail(token: String!): String!
 }
 
+type Proceedings {
+  deceasedDateOfDeath: String!
+  deceasedFirstName: String!
+  deceasedLastName: String!
+  id: ID!
+  proceedingsNumber: String!
+}
+
 type Query {
   _empty: String!
   user(id: String!): User
   users: [User!]!
+}
+
+type Role {
+  id: ID!
+  name: String!
 }
 
 type Schedule {
@@ -58,4 +72,5 @@ type User {
   id: ID!
   isVerified: Boolean!
   lastname: String!
+  role: Role!
 }
