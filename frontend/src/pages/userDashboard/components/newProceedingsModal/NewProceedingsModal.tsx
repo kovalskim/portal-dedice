@@ -1,5 +1,9 @@
 import { FC } from 'react';
+import { useMutation } from '@apollo/client';
 import {
+  Alert,
+  AlertIcon,
+  Flex,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -10,6 +14,10 @@ import {
 } from '@chakra-ui/react';
 
 import { PrimaryButton, SecondaryButton } from '@frontend/components';
+import {
+  CREATE_PROCEEDING,
+  CreateProceedingsResponse,
+} from '@frontend/gql/proceedings/mutations';
 
 import { GeneralInfoForm, GeneralInfoFormFields } from './GeneralInfoForm';
 
@@ -24,8 +32,20 @@ export const NewProceedingsModal: FC<NewProceedingsModalProps> = ({
 }) => {
   const formId = 'create-proceedings-form';
 
+  const [createProceedings, { loading, error }] =
+    useMutation<CreateProceedingsResponse>(CREATE_PROCEEDING);
+
   const onSubmit = (data: GeneralInfoFormFields) => {
-    console.log(data);
+    createProceedings({
+      variables: {
+        deceasedDateOfDeath: data.deathdate,
+        deceasedLastName: data.lastname,
+        deceasedFirstName: data.firstname,
+        proceedingsNumber: data.proceedingsNumber,
+      },
+    }).then(() => {
+      onClose();
+    });
   };
 
   return (
@@ -36,10 +56,20 @@ export const NewProceedingsModal: FC<NewProceedingsModalProps> = ({
         <ModalCloseButton />
         <ModalBody>
           <GeneralInfoForm id={formId} onSubmit={(data) => onSubmit(data)} />
+          {error && (
+            <Flex justifyContent="center">
+              <Alert status="error" mb="8">
+                <AlertIcon />
+                Ups, něco se pokazilo. Zkuste to prosím znovu.
+              </Alert>
+            </Flex>
+          )}
         </ModalBody>
         <ModalFooter justifyContent="space-between">
-          <SecondaryButton onClick={onClose}>Zrušit</SecondaryButton>
-          <PrimaryButton type="submit" form={formId}>
+          <SecondaryButton onClick={onClose} disabled={loading}>
+            Zrušit
+          </SecondaryButton>
+          <PrimaryButton type="submit" form={formId} isLoading={loading}>
             Založit řízení
           </PrimaryButton>
         </ModalFooter>

@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { Flex, Grid, GridItem, Heading } from '@chakra-ui/react';
+import { Flex, Heading } from '@chakra-ui/react';
 import { zodResolver } from '@hookform/resolvers/zod/src/zod.js';
 import { SubmitHandler } from 'react-hook-form';
 import { z } from 'zod';

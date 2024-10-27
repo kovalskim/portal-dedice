@@ -37,13 +37,12 @@ export class CreateProceedingsResolver {
     if (!authUser) {
       throw new GraphQLError('Unauthorized', {
         extensions: {
-          code: 'UNAUTHORIZED',
+          code: 'UNAUTHENTICATED',
         },
       });
     }
 
     const userRole = await userRepository.getUserRole(authUser.id);
-
     if (userRole?.name !== UserRole.NOTARY) {
       throw new GraphQLError('Unauthorized', {
         extensions: {

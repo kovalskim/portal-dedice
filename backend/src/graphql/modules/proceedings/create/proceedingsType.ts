@@ -17,18 +17,3 @@ export class Proceedings {
   @Field(() => String)
   deceasedDateOfDeath!: string;
 }
-
-@ObjectType()
-export class CreateProceedingsInput {
-  @Field(() => String)
-  proceedingsNumber!: string;
-
-  @Field(() => String)
-  deceasedFirstName!: string;
-
-  @Field(() => String)
-  deceasedLastName!: string;
-
-  @Field(() => String)
-  deceasedDateOfDeath!: string;
-}
