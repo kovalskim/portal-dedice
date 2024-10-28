@@ -25,6 +25,7 @@ export const NotaryIdentificationInput = ({
             Pověření konkrétního notáře vedením dědického řízení probíhá na
             základě tzv.&nbsp;
             <Link
+              isInsideInfoHintBox={true}
               href="https://www.nkcr.cz/seznam-notaru/rozvrhy-rizeni-o-pozustalosti"
               isExternal
             >

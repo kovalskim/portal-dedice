@@ -3,12 +3,15 @@ import { Box } from '@chakra-ui/layout';
 import {
   Alert,
   AlertDescription,
-  AlertIcon,
   AlertTitle,
   CloseButton,
+  Icon,
   useBreakpointValue,
   useDisclosure,
 } from '@chakra-ui/react';
+import { FaQuestionCircle } from 'react-icons/fa';
+
+import { theme } from '@frontend/components';
 
 export type InfoHintBoxProps = {
   title: string;
@@ -45,7 +48,12 @@ export const InfoHintBox: FC<PropsWithChildren<InfoHintBoxProps>> = ({
       colorScheme="goldenYellow"
       cursor="pointer"
     >
-      <AlertIcon />
+      <Icon
+        as={FaQuestionCircle}
+        boxSize={5}
+        color={theme.colors.goldenYellow[700]}
+        mr={3}
+      />
       <Box>
         <AlertTitle>
           {title} {!isVisible && <>...</>}

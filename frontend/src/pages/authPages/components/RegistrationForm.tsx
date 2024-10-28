@@ -75,12 +75,17 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
             }}
             gap="5"
           >
-            <InputField name="password" type="password" label="Heslo" />
-            <InputField
-              name="confirmPassword"
-              type="password"
-              label="Znovu heslo"
-            />
+            <Box>
+              <InputField name="password" type="password" label="Heslo" />
+              <Text fontSize={'sm'}>Heslo musí mít alespoň 8&nbsp;znaků</Text>
+            </Box>
+            <Box>
+              <InputField
+                name="confirmPassword"
+                type="password"
+                label="Znovu heslo"
+              />
+            </Box>
           </Flex>
         </Stack>
 

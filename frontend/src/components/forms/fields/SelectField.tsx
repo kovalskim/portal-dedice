@@ -19,7 +19,7 @@ export const SelectField = ({
       isRequired={selectProps.isRequired}
     >
       {(field) => (
-        <Select {...selectProps} {...field}>
+        <Select {...selectProps} {...field} colorScheme="goldenYellow">
           {children}
         </Select>
       )}

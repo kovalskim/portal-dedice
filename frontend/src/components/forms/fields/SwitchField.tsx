@@ -18,7 +18,12 @@ export const SwitchField = ({
       isRequired={inputProps.isRequired}
     >
       {({ value, ...field }) => (
-        <Switch isChecked={!!value} {...inputProps} {...field} />
+        <Switch
+          isChecked={!!value}
+          {...inputProps}
+          {...field}
+          colorScheme="goldenYellow"
+        />
       )}
     </FormField>
   );

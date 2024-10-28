@@ -37,6 +37,7 @@ export const SingleFileUploadField = ({
             type="file"
             display="none" // hides the native file input
             onChange={handleFileChange}
+            colorScheme="goldenYellow"
           />
 
           <Flex

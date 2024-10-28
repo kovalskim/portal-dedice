@@ -19,7 +19,7 @@ export const RadioGroupField = ({
       isRequired={radioProps.isRequired}
     >
       {(field) => (
-        <RadioGroup {...radioProps} {...field}>
+        <RadioGroup {...radioProps} {...field} colorScheme="goldenYellow">
           {children}
         </RadioGroup>
       )}

@@ -1,6 +1,8 @@
 import { forwardRef } from 'react';
 import { Input, InputProps } from '@chakra-ui/react';
 
+import { theme } from '@frontend/components';
+
 import { FormField, type FormFieldBaseProps } from './FormField';
 
 export type InputFieldProps = FormFieldBaseProps<InputProps>;
@@ -14,7 +16,14 @@ export const InputField = forwardRef(
         label={label}
         isRequired={inputProps.isRequired}
       >
-        {(field) => <Input {...inputProps} {...field} ref={ref} />}
+        {(field) => (
+          <Input
+            focusBorderColor={theme.colors.goldenYellow[500]}
+            {...inputProps}
+            {...field}
+            ref={ref}
+          />
+        )}
       </FormField>
     );
   },
