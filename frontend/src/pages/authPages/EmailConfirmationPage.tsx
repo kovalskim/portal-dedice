@@ -38,10 +38,10 @@ export const EmailConfirmationPage = () => {
         </Heading>
         <Text mb="8" color="white">
           Klikněte, prosím, na odkaz, který jsme zaslali na vaši emailovou
-          schránku. Díky tomu budeme moci ověřit vaši emailovou adresu
+          schránku. Díky tomu budeme moci ověřit vaši emailovou adresu.
         </Text>
         <SecondaryButton variant="solid" onClick={() => navigate(Routes.home)}>
-          Domů
+          Návrat na hlavní stránku
         </SecondaryButton>
       </Flex>
     </Flex>

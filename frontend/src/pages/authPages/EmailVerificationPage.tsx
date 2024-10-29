@@ -1,11 +1,12 @@
 import { useEffect } from 'react';
 import { useMutation } from '@apollo/client';
-import { CheckCircleIcon, WarningIcon } from '@chakra-ui/icons';
+import { WarningIcon } from '@chakra-ui/icons';
 import { Box, Center, Flex, Heading, Spinner, Text } from '@chakra-ui/react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import { SecondaryButton } from '@frontend/components';
 import { VERIFY_EMAIL_MUTATION } from '@frontend/gql/user/mutations';
+import { useCustomToast } from '@frontend/hooks/useCustomToast.ts';
 import { Routes } from '@frontend/routes';
 
 export const EmailVerificationPage = () => {
@@ -14,6 +15,7 @@ export const EmailVerificationPage = () => {
   const [verifyEmail, { data, loading, error }] = useMutation(
     VERIFY_EMAIL_MUTATION,
   );
+  const showToast = useCustomToast();
 
   // Extract token from the URL query parameters
   const searchParams = new URLSearchParams(location.search);
@@ -32,6 +34,17 @@ export const EmailVerificationPage = () => {
       verify();
     }
   }, [token, verifyEmail]);
+
+  useEffect(() => {
+    if (data) {
+      showToast({
+        title: 'E-mailová adresa ověřena',
+        description: 'Pro pokračování se, prosím, přihlaste.',
+        status: 'success',
+      });
+      navigate(Routes.logIn);
+    }
+  }, [data, showToast, navigate]);
 
   return (
     <Flex
@@ -85,20 +98,7 @@ export const EmailVerificationPage = () => {
                 onClick={() => navigate(Routes.home)}
                 colorScheme="gray"
               >
-                Domů
-              </SecondaryButton>
-            </Center>
-          )}
-
-          {/* Handle success state */}
-          {data && (
-            <Center flexDirection="column">
-              <CheckCircleIcon color="green" boxSize={16} mb={4} />
-              <Text color="white" mb={10} fontSize="lg" fontWeight="medium">
-                Úspěšně jste ověřili emailovou adresu!
-              </Text>
-              <SecondaryButton onClick={() => navigate(Routes.logIn)}>
-                Přihlásit se
+                Návrat na hlavní stránku
               </SecondaryButton>
             </Center>
           )}

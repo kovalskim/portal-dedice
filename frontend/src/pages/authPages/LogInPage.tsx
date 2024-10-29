@@ -11,6 +11,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { useAuth } from '@frontend/context/auth';
 import { SIGN_IN_MUTATION } from '@frontend/gql/user/mutations.ts';
+import { useCustomToast } from '@frontend/hooks/useCustomToast.ts';
 import { LogInForm } from '@frontend/pages/authPages/components/LogInForm.tsx';
 import { FormFields } from '@frontend/pages/authPages/components/RegistrationForm.tsx';
 import { Routes } from '@frontend/routes.ts';
@@ -23,6 +24,8 @@ export const LogInPage = () => {
 
   const isMobile = useBreakpointValue({ base: true, md: false });
 
+  const showToast = useCustomToast();
+
   const onSubmit: SubmitHandler<FormFields> = async (data) => {
     try {
       const userData = await signIn({
@@ -34,6 +37,12 @@ export const LogInPage = () => {
       const token = userData.data.signIn.token;
       const user = userData.data.signIn.user;
       auth.signIn({ token, user });
+
+      showToast({
+        title: 'Přihlášení proběhlo úspěšně',
+        description: `Vítejte zpět, ${user.firstname}!`,
+        status: 'success',
+      });
 
       navigate(Routes.home);
     } catch (err) {
