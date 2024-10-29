@@ -1,0 +1,5 @@
+<mj-text>
+  <a href="<%= href %>" style="color: #7D5F37">
+    <%= title %>
+  </a>
+</mj-text>

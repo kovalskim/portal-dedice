@@ -13,7 +13,7 @@ import {
 
 import { roles, users, verificationTokens } from '@backend/db/schema';
 import { createToken, parseAndVerifyJWT } from '@backend/libs/jwt';
-import { sendVerificationEmail } from '@backend/services/userService/emailService';
+import { sendVerificationEmail } from '@backend/services/emailService/emailService';
 import { type CustomContext } from '@backend/types/types';
 
 import { Role } from './roleType';
@@ -228,6 +228,7 @@ export class UserResolver {
 
     return 'Email successfully verified!';
   }
+
   catch(error: unknown) {
     console.error('Email verification error:', error);
     throw new GraphQLError('Invalid or expired token');

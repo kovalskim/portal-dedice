@@ -1,0 +1,3 @@
+<mj-text>
+  <%= content %>
+</mj-text>

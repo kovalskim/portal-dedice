@@ -1,0 +1,80 @@
+<mjml>
+  <mj-head>
+    <mj-attributes>
+      <mj-all font-family="system-ui, sans-serif"/>
+      <mj-text font-weight="400" font-size="16px" color="#37383F" line-height="24px"
+               font-family="system-ui, sans-serif"/>
+    </mj-attributes>
+    <mj-style>
+      .segment {
+        width: 93%;
+        border: 1px solid hsl(240, 4%, 85%);
+        border-radius: 1rem;
+        box-shadow: 0 0.3px 0.4px hsla(230, 13%, 9%, 0.02), 0 0.9px 1.5px hsla(230, 13%, 9%, 0.045), 0 3.5px 6px hsla(230, 13%, 9%, 0.09);
+        padding: 8px;
+        background: hsl(0, 0%, 100%);
+      }
+    </mj-style>
+    <mj-style inline="inline">
+      .link {
+        font-weight: 500;
+        color: #73757d;
+      }
+
+      .link--quiet {
+        font-weight: 400;
+        color: #73757d;
+        text-decoration: none;
+      }
+    </mj-style>
+    <mj-style>
+      .btn table td {
+        -webkit-box-shadow: 0 0.3px 0.4px hsla(230, 13%, 9%, 0.2), 0 0.9px 1.5px hsla(230, 13%, 9%, 0.45), 0 3.5px 6px hsla(230, 13%, 9%, 0.09);
+        box-shadow: 0 0.3px 0.4px hsla(230, 13%, 9%, 0.2), 0 0.9px 1.5px hsla(230, 13%, 9%, 0.45), 0 3.5px 6px hsla(230, 13%, 9%, 0.09)
+      }
+    </mj-style>
+
+    <mj-attributes>
+      <mj-class name="h1" color="#14151a" font-size="2.0625rem" font-weight="700" line-height="1"/>
+      <mj-class name="h2" color="#14151a" font-size="1.5rem" font-weight="700" line-height="1.2"/>
+      <mj-class name="btn" font-weight="600" border-radius="8px" line-height="1.2" font-size="1rem"/>
+    </mj-attributes>
+
+  </mj-head>
+
+  <mj-body background-color="#F3F3F2">
+
+    <!-- Logo section -->
+    <mj-section padding-top="32px">
+      <mj-column>
+        <mj-image src="https://dev-frontend-team05-vse.handson.pro/logo.png" alt="Logo Portál dědice" align="center"
+                  width="120px"/>
+        <mj-text mj-class="h1" align="center">Portál dědice</mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- Body section -->
+    <mj-section padding-bottom="0px" css-class="segment">
+      <mj-column>
+
+        <%= body %>
+
+      </mj-column>
+    </mj-section>
+
+    <!-- Footer section -->
+    <mj-section padding-top="16px">
+      <mj-column>
+        <mj-text align="center" color="#73757d" font-size="12px" padding="0px">
+          Tento e-mail Vám odeslal Portál dědice od
+          <a href="https://dev-frontend-team05-vse.handson.pro" class="link" target="_blank">Team 5</a>
+        </mj-text>
+        <mj-text align="center" color="#73757d" font-size="12px" padding="0px">
+          Nepatří Vám tento e-mail?
+          <a href="mailto:portaldedice@gmail.com" class="link" target="_blank">Napište nám!</a>
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+  </mj-body>
+</mjml>

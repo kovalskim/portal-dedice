@@ -1,0 +1,3 @@
+<mj-button href="<%= href %>" mj-class="btn" css-class="btn" background-color="#DCAB6B" inner-padding="15px">
+  <%= title %>
+</mj-button>
