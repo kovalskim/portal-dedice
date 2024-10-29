@@ -27,7 +27,7 @@ input DeceasedPersonInput {
 }
 
 type Mutation {
-  createProceedings(deceasedDateOfDeath: String!, deceasedFirstName: String!, deceasedLastName: String!, proceedingsNumber: String!): Proceedings!
+  createProceedings(data: DeceasedPersonInput!): Proceedings!
   identifyNotary(data: DeceasedPersonInput!): Schedule!
   signIn(email: String!, password: String!): AuthInfo!
   signUp(email: String!, firstname: String!, lastname: String!, password: String!): AuthInfo!
@@ -35,11 +35,17 @@ type Mutation {
 }
 
 type Proceedings {
+  deceasedCity: String!
+  deceasedDateOfBirth: String!
   deceasedDateOfDeath: String!
+  deceasedDistrict: String!
   deceasedFirstName: String!
   deceasedLastName: String!
+  deceasedPostalCode: String!
+  deceasedStreetWithNumber: String!
   id: ID!
   proceedingsNumber: String!
+  startDate: String!
 }
 
 type Query {

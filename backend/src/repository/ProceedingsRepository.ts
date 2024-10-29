@@ -12,6 +12,11 @@ export interface ProceedingsDTO {
   deceasedFirstName: string;
   deceasedLastName: string;
   deceasedDateOfDeath: Date;
+  deceasedDateOfBirth: Date;
+  deceasedStreetWithNumber: string;
+  deceasedCity: string;
+  deceasedDistrict: string;
+  deceasedPostalCode: string;
 }
 
 export interface CreateProceedingsDTO {
@@ -19,6 +24,11 @@ export interface CreateProceedingsDTO {
   deceasedFirstName: string;
   deceasedLastName: string;
   deceasedDateOfDeath: Date;
+  deceasedDateOfBirth: Date;
+  deceasedStreetWithNumber: string;
+  deceasedCity: string;
+  deceasedDistrict: string;
+  deceasedPostalCode: string;
   notaryId: number;
 }
 
@@ -43,7 +53,7 @@ export class ProceedingsRepository {
     const phase = await this.db
       .select()
       .from(phases)
-      .where(eq(phases.title, 'phase1'));
+      .where(eq(phases.title, 'probíhající')); // TODO - toto sa mi nepáči xD pridať do db key k tým fázam?
 
     if (!phase) {
       throw new Error('phase not found');
@@ -53,12 +63,8 @@ export class ProceedingsRepository {
       .insert(proceedings)
       .values({
         phaseId: phase[0].id,
-        notaryId: proceedingsData.notaryId,
         startDate: new Date(),
-        proceedingsNumber: proceedingsData.proceedingsNumber,
-        deceasedFirstName: proceedingsData.deceasedFirstName,
-        deceasedLastName: proceedingsData.deceasedLastName,
-        deceasedDateOfDeath: proceedingsData.deceasedDateOfDeath,
+        ...proceedingsData,
       })
       .$returningId();
 

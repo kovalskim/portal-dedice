@@ -35,7 +35,7 @@ export const EnhancedApolloProvider = ({ children }: Props) => {
   const authLink = new ApolloLink((operation, forward) => {
     operation.setContext({
       headers: {
-        Authorization: token ? `Bearer ${token}` : '',
+        Authorization: token ? token : '',
       },
     });
 

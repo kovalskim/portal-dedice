@@ -83,9 +83,18 @@ export const phases = mysqlTable('phases', {
 export const proceedings = mysqlTable('proceedings', {
   id: int('id').primaryKey().autoincrement(),
   proceedingsNumber: varchar('proceedings_number', { length: 255 }).notNull(),
+  deceasedDateOfBirth: date('deceased_date_of_birth').notNull(),
   deceasedDateOfDeath: date('deceased_date_of_death').notNull(),
   deceasedFirstName: varchar('deceased_first_name', { length: 255 }).notNull(),
   deceasedLastName: varchar('deceased_last_name', { length: 255 }).notNull(),
+  deceasedStreetWithNumber: varchar('deceased_address', {
+    length: 255,
+  }).notNull(),
+  deceasedCity: varchar('deceased_city', { length: 255 }).notNull(),
+  deceasedDistrict: varchar('deceased_district', { length: 255 }).notNull(),
+  deceasedPostalCode: varchar('deceased_postal_code', {
+    length: 255,
+  }).notNull(),
   phaseId: int('phase_id')
     .notNull()
     .references(() => phases.id),

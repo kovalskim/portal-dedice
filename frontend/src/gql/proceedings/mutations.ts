@@ -8,18 +8,8 @@ export type CreateProceedingsResponse = {
 };
 
 export const CREATE_PROCEEDING = gql`
-  mutation CreateProceedings(
-    $deceasedDateOfDeath: String!
-    $deceasedLastName: String!
-    $deceasedFirstName: String!
-    $proceedingsNumber: String!
-  ) {
-    createProceedings(
-      deceasedDateOfDeath: $deceasedDateOfDeath
-      deceasedLastName: $deceasedLastName
-      deceasedFirstName: $deceasedFirstName
-      proceedingsNumber: $proceedingsNumber
-    ) {
+  mutation CreateProceedings($data: DeceasedPersonInput!) {
+    createProceedings(data: $data) {
       id
       proceedingsNumber
     }

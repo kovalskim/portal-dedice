@@ -3,28 +3,21 @@ import { Arg, Ctx, Mutation, Resolver } from 'type-graphql';
 
 import { CustomContext } from '@backend/types/types';
 
+import { DeceasedPersonInput } from '../../educator/DeceasedPersonInput';
+import { deceasedPersonInputSchema } from '../../educator/DeceasedPersonInputSchema';
 import { UserRole } from '../../user/roleType';
 
-import { createProceedingsSchema } from './createProceedingsSchema';
 import { Proceedings } from './proceedingsType';
 
 @Resolver(() => Proceedings)
 export class CreateProceedingsResolver {
   @Mutation(() => Proceedings)
   async createProceedings(
-    @Arg('proceedingsNumber') proceedingsNumber: string,
-    @Arg('deceasedFirstName') deceasedFirstName: string,
-    @Arg('deceasedLastName') deceasedLastName: string,
-    @Arg('deceasedDateOfDeath') deceasedDateOfDeath: string,
+    @Arg('data') input: DeceasedPersonInput,
     @Ctx() { authUser, usersRepository, proceedingsRepository }: CustomContext,
   ): Promise<Proceedings> {
     try {
-      createProceedingsSchema.parse({
-        proceedingsNumber,
-        deceasedFirstName,
-        deceasedLastName,
-        deceasedDateOfDeath,
-      });
+      deceasedPersonInputSchema.parse(input);
     } catch (error) {
       throw new GraphQLError('Validation error', {
         extensions: {
@@ -51,13 +44,20 @@ export class CreateProceedingsResolver {
       });
     }
 
+    const proceedingsNumber = `${new Date().getFullYear()}_${new Date().getMonth()}_${new Date().getDate()}_${input.firstname[0]}${input.lastname.slice(0, 2)}`;
+
     // Create the proceedings in the database
     const newProceedingsId = await proceedingsRepository.createProceedings({
       proceedingsNumber: proceedingsNumber,
-      deceasedFirstName: deceasedFirstName,
-      deceasedLastName: deceasedLastName,
-      deceasedDateOfDeath: new Date(deceasedDateOfDeath),
       notaryId: authUser!.userId,
+      deceasedFirstName: input.firstname,
+      deceasedLastName: input.lastname,
+      deceasedDateOfDeath: new Date(input.deathdate),
+      deceasedDateOfBirth: new Date(input.birthdate),
+      deceasedStreetWithNumber: input.streetWithNumber,
+      deceasedCity: input.city,
+      deceasedDistrict: input.district,
+      deceasedPostalCode: input.postalCode,
     });
 
     const newProceedings =
@@ -67,6 +67,8 @@ export class CreateProceedingsResolver {
     return {
       ...newProceedings,
       deceasedDateOfDeath: newProceedings.deceasedDateOfDeath.toISOString(),
+      deceasedDateOfBirth: newProceedings.deceasedDateOfBirth.toISOString(),
+      startDate: newProceedings.startDate.toISOString(),
     };
   }
 }

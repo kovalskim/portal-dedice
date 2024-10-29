@@ -3,6 +3,7 @@ import {
   courts,
   districts,
   phases,
+  proceedings,
   roles,
   schedules,
   users,
@@ -32,12 +33,18 @@ async function seed() {
       console.log('Roles already exist, skipping role seed');
     }
 
+    // delete proceedings
+    await db.delete(proceedings);
+
+    // remove values from phases table
+    await db.delete(phases);
+
     if ((await db.select().from(phases)).length === 0) {
       console.log('No phases found, inserting sample phases');
       // @ts-ignore
       await db.insert(phases).values([
-        { id: 1, title: 'phase1', description: 'Phase 1 description' },
-        { id: 2, title: 'phase2', description: 'Phase 2 description' },
+        { id: 1, title: 'probíhající', description: 'Řízení probíhá...' },
+        { id: 2, title: 'ukončeno', description: 'Řízení bilo ukončeno' },
       ]);
       console.log('Sample phases inserted');
     }

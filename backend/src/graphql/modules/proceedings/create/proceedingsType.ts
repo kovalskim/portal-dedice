@@ -16,4 +16,22 @@ export class Proceedings {
 
   @Field(() => String)
   deceasedDateOfDeath!: string;
+
+  @Field(() => String)
+  deceasedDateOfBirth!: string;
+
+  @Field(() => String)
+  startDate!: string;
+
+  @Field(() => String)
+  deceasedStreetWithNumber!: string;
+
+  @Field(() => String)
+  deceasedCity!: string;
+
+  @Field(() => String)
+  deceasedDistrict!: string;
+
+  @Field(() => String)
+  deceasedPostalCode!: string;
 }

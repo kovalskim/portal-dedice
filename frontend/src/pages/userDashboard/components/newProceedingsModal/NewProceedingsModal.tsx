@@ -18,8 +18,10 @@ import {
   CREATE_PROCEEDING,
   CreateProceedingsResponse,
 } from '@frontend/gql/proceedings/mutations';
-
-import { GeneralInfoForm, GeneralInfoFormFields } from './GeneralInfoForm';
+import {
+  DeceasedPersonForm,
+  DeceasedPersonFormFields,
+} from '@frontend/pages/educator/components/notary-identification/DeceasedPersonForm';
 
 interface NewProceedingsModalProps {
   isOpen: boolean;
@@ -35,13 +37,10 @@ export const NewProceedingsModal: FC<NewProceedingsModalProps> = ({
   const [createProceedings, { loading, error }] =
     useMutation<CreateProceedingsResponse>(CREATE_PROCEEDING);
 
-  const onSubmit = (data: GeneralInfoFormFields) => {
+  const onSubmit = (data: DeceasedPersonFormFields) => {
     createProceedings({
       variables: {
-        deceasedDateOfDeath: data.deathdate,
-        deceasedLastName: data.lastname,
-        deceasedFirstName: data.firstname,
-        proceedingsNumber: data.proceedingsNumber,
+        data: data,
       },
     }).then(() => {
       onClose();
@@ -55,7 +54,7 @@ export const NewProceedingsModal: FC<NewProceedingsModalProps> = ({
         <ModalHeader>Nové dědické řízení</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
-          <GeneralInfoForm id={formId} onSubmit={(data) => onSubmit(data)} />
+          <DeceasedPersonForm id={formId} onSubmit={(data) => onSubmit(data)} />
           {error && (
             <Flex justifyContent="center">
               <Alert status="error" mb="8">
