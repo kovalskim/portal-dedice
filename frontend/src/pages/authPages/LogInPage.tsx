@@ -12,8 +12,10 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@frontend/context/auth';
 import { SIGN_IN_MUTATION } from '@frontend/gql/user/mutations.ts';
 import { useCustomToast } from '@frontend/hooks/useCustomToast.ts';
-import { LogInForm } from '@frontend/pages/authPages/components/LogInForm.tsx';
-import { FormFields } from '@frontend/pages/authPages/components/RegistrationForm.tsx';
+import {
+  FormFields,
+  LogInForm,
+} from '@frontend/pages/authPages/components/LogInForm.tsx';
 import { Routes } from '@frontend/routes.ts';
 
 export const LogInPage = () => {

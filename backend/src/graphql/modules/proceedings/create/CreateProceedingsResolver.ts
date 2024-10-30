@@ -16,7 +16,7 @@ export class CreateProceedingsResolver {
     @Arg('deceasedFirstName') deceasedFirstName: string,
     @Arg('deceasedLastName') deceasedLastName: string,
     @Arg('deceasedDateOfDeath') deceasedDateOfDeath: string,
-    @Ctx() { authUser, userRepository, proceedingsRepository }: CustomContext,
+    @Ctx() { authUser, usersRepository, proceedingsRepository }: CustomContext,
   ): Promise<Proceedings> {
     try {
       createProceedingsSchema.parse({
@@ -42,7 +42,7 @@ export class CreateProceedingsResolver {
       });
     }
 
-    const userRole = await userRepository.getUserRole(authUser.id);
+    const userRole = await usersRepository.getUserRole(authUser.id);
     if (userRole?.name !== UserRole.NOTARY) {
       throw new GraphQLError('Unauthorized', {
         extensions: {

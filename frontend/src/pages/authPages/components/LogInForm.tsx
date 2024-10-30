@@ -1,4 +1,5 @@
 import React, { FC } from 'react';
+import { ApolloError } from '@apollo/client';
 import {
   Alert,
   AlertIcon,
@@ -8,18 +9,26 @@ import {
   Stack,
   Text,
 } from '@chakra-ui/react';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { SubmitHandler } from 'react-hook-form';
+import * as z from 'zod';
 
 import { Form, InputField, PrimaryButton } from '@frontend/components';
 import { RouterLink } from '@frontend/components/navigation/atoms';
-import { FormFields } from '@frontend/pages/authPages/components/RegistrationForm.tsx';
 import { Routes } from '@frontend/routes.ts';
+
+export type FormFields = z.infer<typeof schema>;
 
 type LogInFormProps = {
   onSubmit: SubmitHandler<FormFields>;
   loading: boolean;
-  error: Error | undefined;
+  error: ApolloError | undefined;
 };
+
+const schema = z.object({
+  email: z.string().email({ message: 'Zadejte platnou emailovou adresu' }),
+  password: z.string().min(1, { message: 'Heslo nesmí být prázdné' }),
+});
 
 export const LogInForm: FC<LogInFormProps> = ({ onSubmit, loading, error }) => {
   return (
@@ -27,13 +36,29 @@ export const LogInForm: FC<LogInFormProps> = ({ onSubmit, loading, error }) => {
       <Heading size="md" mb={12} textAlign="center">
         Vyplňte přihlašovací formulář
       </Heading>
-      {error && (
+
+      {error?.graphQLErrors[0]?.extensions?.code === 'NOT_VERIFIED' && (
         <Alert status="error" mb="8">
           <AlertIcon />
-          Zadali jste neplatné přihlašovací údaje. Zkuste to prosím znovu.
+          Účet nebyl ověřen. Zkontrolujte si email a dokončete registraci.
         </Alert>
       )}
-      <Form onSubmit={onSubmit}>
+
+      {error &&
+        error?.graphQLErrors[0]?.extensions?.code !== 'NOT_VERIFIED' && (
+          <Alert status="error" mb="8">
+            <AlertIcon />
+            Zadali jste neplatné přihlašovací údaje. Zkuste to prosím znovu.
+          </Alert>
+        )}
+      <Form
+        defaultValues={{
+          email: '',
+          password: '',
+        }}
+        resolver={zodResolver(schema)}
+        onSubmit={onSubmit}
+      >
         <Stack spacing={5} mb={8}>
           <InputField
             name="email"

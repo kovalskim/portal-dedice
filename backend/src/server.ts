@@ -22,11 +22,11 @@ import { EmptyResolver } from '@backend/graphql/modules/empty/emptyResolver';
 import { UserResolver } from '@backend/graphql/modules/user/userResolver';
 import { parseAndVerifyJWT } from '@backend/libs/jwt';
 import { mockResolvers } from '@backend/mocks/mocks';
+import { ProceedingsRepository } from '@backend/repository/ProceedingsRepository';
+import { UsersRepository } from '@backend/repository/UsersRepository';
 import { CustomContext } from '@backend/types/types';
 
 import { CreateProceedingsResolver } from './graphql/modules/proceedings/create/CreateProceedingsResolver';
-import { ProceedingsRepository } from './repository/ProceedingsRepository';
-import { UserRepository } from './repository/UserRepository';
 
 const init = async () => {
   const app = express();
@@ -70,7 +70,7 @@ const init = async () => {
     return {
       db: drizzle.db,
       authUser,
-      userRepository: new UserRepository(drizzle.db),
+      usersRepository: new UsersRepository(drizzle.db),
       proceedingsRepository: new ProceedingsRepository(drizzle.db),
     };
   };

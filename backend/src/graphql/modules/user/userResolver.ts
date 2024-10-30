@@ -1,6 +1,4 @@
 import * as argon2 from 'argon2';
-import { and, eq } from 'drizzle-orm';
-import { GraphQLError } from 'graphql/error';
 import {
   Arg,
   Ctx,
@@ -11,7 +9,13 @@ import {
   Root,
 } from 'type-graphql';
 
-import { roles, users, verificationTokens } from '@backend/db/schema';
+import {
+  existingError,
+  notFoundError,
+  unauthorizedError,
+  validationError,
+  verificationError,
+} from '@backend/graphql/errors';
 import { createToken, parseAndVerifyJWT } from '@backend/libs/jwt';
 import { sendVerificationEmail } from '@backend/services/emailService/emailService';
 import { type CustomContext } from '@backend/types/types';
@@ -25,56 +29,51 @@ export class UserResolver {
   @Query(() => User, { nullable: true })
   async user(
     @Arg('id') stringId: string,
-    @Ctx() { db }: CustomContext,
+    @Ctx() { usersRepository }: CustomContext,
   ): Promise<User | null> {
     const id = parseInt(stringId, 10);
-    const userRecord = await db.select().from(users).where(eq(users.id, id));
-
-    if (userRecord.length === 0) {
-      return null;
-    }
-
-    return userRecord[0];
+    const user = await usersRepository.getUserById(id);
+    return user ?? null;
   }
 
   @FieldResolver(() => Role)
   role(
     @Root() user: User,
-    @Ctx() { userRepository }: CustomContext,
+    @Ctx() { usersRepository }: CustomContext,
   ): Promise<Role | null> {
-    return userRepository.getUserRole(user.id);
+    return usersRepository.getUserRole(user.id);
   }
 
   @Query(() => [User])
-  async users(@Ctx() { db }: CustomContext): Promise<User[]> {
-    return await db.select().from(users);
+  async users(@Ctx() { usersRepository }: CustomContext): Promise<User[]> {
+    return usersRepository.findUsers();
   }
 
   @Mutation(() => AuthInfo)
   async signIn(
     @Arg('email') email: string,
     @Arg('password') password: string,
-    @Ctx() { db }: CustomContext,
+    @Ctx() { usersRepository }: CustomContext,
   ): Promise<AuthInfo> {
-    const userRecord = await db
-      .select()
-      .from(users)
-      .where(eq(users.email, email));
+    const user = await usersRepository.getUserByEmail(email);
 
-    if (userRecord.length === 0) {
-      throw new GraphQLError('Unauthorized.');
+    if (!user) {
+      throw unauthorizedError('Unauthorized');
     }
 
-    const foundUser = userRecord[0];
-    if (await argon2.verify(foundUser.password, password)) {
-      const token = createToken({ id: foundUser.id });
+    if (!user.isVerified) {
+      throw verificationError('Email not verified');
+    }
+
+    if (await argon2.verify(user.password, password)) {
+      const token = createToken({ id: user.id });
 
       return {
-        user: { ...foundUser },
+        user: { ...user },
         token,
       };
     } else {
-      throw new GraphQLError('Unauthorized.');
+      throw unauthorizedError('Unauthorized');
     }
   }
 
@@ -84,60 +83,41 @@ export class UserResolver {
     @Arg('password') password: string,
     @Arg('firstname') firstname: string,
     @Arg('lastname') lastname: string,
-    @Ctx() { db }: CustomContext,
+    @Ctx() { usersRepository }: CustomContext,
   ): Promise<AuthInfo> {
     /* VALIDATION */
-
     try {
       signUpSchema.parse({ email, password, firstname, lastname });
-    } catch (e) {
-      throw new GraphQLError('Validation error', {
-        extensions: {
-          code: 'BAD_USER_INPUT',
-        },
-      });
+    } catch {
+      throw validationError('Invalid input');
     }
 
-    const userByEmail = await db
-      .select()
-      .from(users)
-      .where(eq(users.email, email));
+    const existingUser = await usersRepository.getUserByEmail(email);
 
-    if (userByEmail.length > 0) {
-      throw new GraphQLError('Email already registered');
+    if (existingUser) {
+      throw existingError('Email already registered');
     }
 
-    /** PASSWORD HASHING */
-
+    /* PASSWORD HASHING */
     const passwordHash = await argon2.hash(password);
 
     //TODO - import role name from enum
-    const role = (
-      await db.select().from(roles).where(eq(roles.name, 'user'))
-    )[0];
+    const role = await usersRepository.getRoleByName('user');
 
     if (!role) {
-      throw new Error('Role not found');
+      throw notFoundError('Role not found');
     }
 
     /* INSERT USER */
-
-    console.log('inserting new user to database');
-    const insertResult = await db
-      .insert(users)
-      .values({
-        email,
-        password: passwordHash,
-        firstname,
-        lastname,
-        isVerified: false,
-        roleId: role.id,
-      })
-      .$returningId();
+    const userId = await usersRepository.createUser({
+      email,
+      password: passwordHash,
+      firstname,
+      lastname,
+      roleId: role.id,
+    });
 
     /* GENERATE TOKEN */
-
-    const userId = insertResult[0].id;
     const verificationToken = createToken({
       email,
       userId,
@@ -148,28 +128,21 @@ export class UserResolver {
     tokenExpiration.setHours(tokenExpiration.getHours() + 3); // Token expires in 3 hours
 
     /* INSERT VERIFICATION TOKEN */
-
-    console.log('inserting verification token');
-    await db.insert(verificationTokens).values({
-      userId,
+    await usersRepository.createVerificationToken({
+      userId: userId,
       token: verificationToken,
-      expiresAt: tokenExpiration.toISOString(),
-      reason: 'register', // TODO - import from enum
+      expiresAt: tokenExpiration,
+      reason: 'register',
     });
 
     /* SEND EMAIL */
-
-    console.log('sending email');
     sendVerificationEmail(email, verificationToken);
 
     /* ASSEMBLE MUTATION RESPONSE */
-
-    const id = insertResult[0].id;
-
-    const token = createToken({ id });
+    const token = createToken({ id: userId });
 
     const userObject = {
-      id,
+      id: userId,
       email,
       beforeTitle: null,
       firstname,
@@ -184,53 +157,36 @@ export class UserResolver {
   @Mutation(() => String)
   async verifyEmail(
     @Arg('token') token: string,
-    @Ctx() { db }: CustomContext,
+    @Ctx() { usersRepository }: CustomContext,
   ): Promise<string> {
     const decoded = parseAndVerifyJWT(token);
 
     if (!decoded || !decoded.email || !decoded.userId) {
-      throw new GraphQLError('Invalid or expired verification token');
+      throw validationError('Invalid or expired verification token');
     }
 
-    const tokenRecord = (
-      await db
-        .select()
-        .from(verificationTokens)
-        .where(
-          and(
-            eq(verificationTokens.userId, decoded.userId),
-            eq(verificationTokens.reason, 'register'),
-          ),
-        )
-    )[0];
+    const tokenRecord =
+      await usersRepository.getVerificationTokenByUserIdAndReason(
+        decoded.userId,
+        'register',
+      );
 
     if (!tokenRecord || !tokenRecord.expiresAt) {
-      throw new GraphQLError('Invalid or expired verification token');
+      throw validationError('Invalid or expired verification token');
     }
 
     if (new Date() > new Date(tokenRecord.expiresAt)) {
-      throw new GraphQLError('Verification token has expired');
+      throw validationError('Verification token has expired');
     }
 
-    const userRecord = (
-      await db.select().from(users).where(eq(users.id, tokenRecord.userId))
-    )[0];
+    const userRecord = await usersRepository.getUserById(decoded.userId);
 
     if (!userRecord) {
-      throw new GraphQLError('User not found');
+      throw notFoundError('User not found');
     }
 
-    console.log('updating user');
-    await db
-      .update(users)
-      .set({ isVerified: true })
-      .where(eq(users.id, userRecord.id));
+    await usersRepository.updateUser({ ...userRecord, isVerified: true });
 
     return 'Email successfully verified!';
-  }
-
-  catch(error: unknown) {
-    console.error('Email verification error:', error);
-    throw new GraphQLError('Invalid or expired token');
   }
 }

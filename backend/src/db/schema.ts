@@ -28,11 +28,13 @@ export const users = mysqlTable('users', {
   isVerified: boolean('isVerified').default(false).notNull(),
 });
 
-const VerificationReason: [string, ...string[]] = [
+export const VerificationReason: [string, ...string[]] = [
   'register',
   'password_reset',
   'email_change',
-];
+] as const;
+
+export type VerificationReasonType = (typeof VerificationReason)[number];
 
 export const verificationTokens = mysqlTable('verification_tokens', {
   id: int('id').primaryKey().autoincrement(),

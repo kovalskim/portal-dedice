@@ -21,6 +21,7 @@ async function seed() {
   try {
     if ((await db.select().from(roles)).length === 0) {
       console.log('No roles found, inserting sample roles');
+      // @ts-ignore
       await db.insert(roles).values([
         { id: 1, name: 'admin' },
         { id: 2, name: 'user' },
@@ -33,6 +34,7 @@ async function seed() {
 
     if ((await db.select().from(phases)).length === 0) {
       console.log('No phases found, inserting sample phases');
+      // @ts-ignore
       await db.insert(phases).values([
         { id: 1, title: 'phase1', description: 'Phase 1 description' },
         { id: 2, title: 'phase2', description: 'Phase 2 description' },
@@ -42,6 +44,7 @@ async function seed() {
 
     if ((await db.select().from(users)).length === 0) {
       console.log('No users found, inserting sample users');
+      // @ts-ignore
       await db.insert(users).values([
         {
           id: 1,
@@ -51,7 +54,8 @@ async function seed() {
           lastname: 'Gatchell',
           afterTitle: null,
           email: 'yg123@quacker.cz',
-          password: 'notHashedPassword1',
+          password:
+            '$argon2id$v=19$m=65536,t=3,p=4$2WbGklNQBpoqvGGU++ZbVw$QqmS8jPchj+f3n8BvxSrrsuaIEaVs75Ohx2FzkEl+Y8',
           isVerified: true,
         },
         {
@@ -62,7 +66,8 @@ async function seed() {
           lastname: 'Young',
           afterTitle: null,
           email: 'gyoung@quacker.cz',
-          password: 'notHashedPassword2',
+          password:
+            '$argon2id$v=19$m=65536,t=3,p=4$2WbGklNQBpoqvGGU++ZbVw$QqmS8jPchj+f3n8BvxSrrsuaIEaVs75Ohx2FzkEl+Y8',
           isVerified: false,
         },
         {
@@ -73,7 +78,8 @@ async function seed() {
           lastname: 'Old',
           afterTitle: 'PhD',
           email: 'oldmit@quacker.cz',
-          password: 'notHashedPassword3',
+          password:
+            '$argon2id$v=19$m=65536,t=3,p=4$2WbGklNQBpoqvGGU++ZbVw$QqmS8jPchj+f3n8BvxSrrsuaIEaVs75Ohx2FzkEl+Y8',
           isVerified: false,
         },
       ]);
