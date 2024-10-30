@@ -23,9 +23,8 @@ export const Step10 = () => {
     <StepperWrapper
       title={'Jak probíhá dědické řízení?'}
       showStep={1}
-      onNext={incrementState}
-      onPrev={setPrevState}
-      nextLabel="Co se děje dále?"
+      nextBtnProps={{ onClick: incrementState, label: 'Co se děje dále?' }}
+      prevBtnProps={{ onClick: setPrevState }}
     >
       <Container px={0}>
         <SecondPhaseStepper activeStep={0} />

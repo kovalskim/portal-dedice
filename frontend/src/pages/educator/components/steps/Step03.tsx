@@ -6,19 +6,17 @@ import { useEducatorState } from '@frontend/hooks/useEducatorState';
 import { StepperWrapper } from './common/StepperWrapper';
 
 export const Step03 = () => {
-  const { resetState, incrementState } = useEducatorState();
+  const { resetState, setState } = useEducatorState();
 
   return (
     <StepperWrapper
       title={'Chcete se dozvědět více o průběhu dědického řízení?'}
       showStep={1}
-      hideNext
-      hidePrev
     >
       <Stack textAlign="center" spacing={6} width={200}>
         <PrimaryButton
           onClick={() => {
-            incrementState();
+            setState(10);
           }}
         >
           Ano

@@ -10,8 +10,8 @@ export const Step02 = () => {
     <StepperWrapper
       title={'Který notář bude pověřen vedením dědického řízení?'}
       showStep={0}
-      onNext={incrementState}
-      onPrev={setPrevState}
+      nextBtnProps={{ onClick: incrementState }}
+      prevBtnProps={{ onClick: setPrevState }}
     >
       <NotaryIdentificationOutput />
     </StepperWrapper>

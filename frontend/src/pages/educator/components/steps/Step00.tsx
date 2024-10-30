@@ -1,10 +1,12 @@
-import { Box, Card, Heading, Text } from '@chakra-ui/react';
+import { Box, Card, Flex, Heading, Text } from '@chakra-ui/react';
 
-import { PrimaryButton } from '@frontend/components';
+import { PrimaryButton, SecondaryButton } from '@frontend/components';
 import { useEducatorState } from '@frontend/hooks/useEducatorState';
+import { useEducatorStorage } from '@frontend/hooks/useEducatorStorage';
 
 export const Step00 = () => {
   const { incrementState } = useEducatorState();
+  const { resetStorage, storage } = useEducatorStorage();
 
   return (
     <Card
@@ -26,9 +28,35 @@ export const Step00 = () => {
           týkající se dědického řízení a poskytne vám dodatečné informace
           potřebné pro nadcházející komunikaci s notářem.
         </Text>
-        <PrimaryButton onClick={incrementState}>
-          Spustit nachytřovadlo
-        </PrimaryButton>
+        {!storage.deceasedPersonFormData && !storage.identifiedNotary ? (
+          <PrimaryButton
+            onClick={() => {
+              incrementState();
+            }}
+          >
+            Spustit nachytřovadlo
+          </PrimaryButton>
+        ) : (
+          <Flex flexDirection="column" gap={4} alignItems="center">
+            <PrimaryButton
+              onClick={() => {
+                incrementState();
+              }}
+              minW="250px"
+            >
+              Pokračovat kde jsem skončil
+            </PrimaryButton>
+            <SecondaryButton
+              onClick={() => {
+                resetStorage();
+                incrementState();
+              }}
+              minW="250px"
+            >
+              Začít znovu
+            </SecondaryButton>
+          </Flex>
+        )}
       </Box>
     </Card>
   );

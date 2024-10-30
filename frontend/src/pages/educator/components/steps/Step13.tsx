@@ -14,8 +14,6 @@ export const Step13 = () => {
         'Chcete vědět jak funguje rozdělení pozůstalosti v rámci pozůstalostního řízení?'
       }
       showStep={2}
-      hideNext
-      hidePrev
     >
       <Stack textAlign="center" spacing={6} width={200}>
         <PrimaryButton

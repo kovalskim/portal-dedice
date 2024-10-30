@@ -6,7 +6,7 @@ import { NotaryIdentificationInput } from '@frontend/pages/educator/components/n
 import { StepperWrapper } from './common/StepperWrapper';
 
 export const Step01 = () => {
-  const { incrementState, setPrevState } = useEducatorState();
+  const { incrementState, setPrevState, setState } = useEducatorState();
   const { updateStorage } = useEducatorStorage();
 
   const handleSubmitNext = (formData: DeceasedPersonFormFields) => {
@@ -16,13 +16,24 @@ export const Step01 = () => {
     incrementState();
   };
 
+  const skipIdentification = () => {
+    setState(10);
+  };
+
   return (
     <StepperWrapper
       title={'Který notář bude pověřen vedením dědického řízení?'}
       showStep={0}
-      onPrev={setPrevState}
-      submitFormNext={true}
-      idFormSubmit="deceasedPersonForm"
+      midBtnProps={{
+        label: 'Přeskočit idetifikaci',
+        onClick: skipIdentification,
+      }}
+      nextBtnProps={{
+        label: 'Odeslat formulář',
+        idFormSubmit: 'deceasedPersonForm',
+        type: 'submit',
+      }}
+      prevBtnProps={{ onClick: setPrevState }}
     >
       <NotaryIdentificationInput onSubmit={handleSubmitNext} />
     </StepperWrapper>

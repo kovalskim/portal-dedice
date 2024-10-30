@@ -1,14 +1,26 @@
 import { FC, PropsWithChildren } from 'react';
-import { Box, Card, Heading, Stack } from '@chakra-ui/react';
+import { Box, Card, Flex, Heading } from '@chakra-ui/react';
 
 import { PrimaryButton, SecondaryButton } from '@frontend/components';
 import { SummaryStepper } from '@frontend/components/stepper/SummaryStepper';
 import { stepsCountShowenInEducation } from '@frontend/constants';
 import { useEducatorState } from '@frontend/hooks/useEducatorState';
 
+type NavigationButtonProps = {
+  onClick?: () => void;
+  disable?: boolean;
+  idFormSubmit?: string;
+  label?: string;
+  type?: 'submit' | 'button';
+};
+
 type StepperWrapperProps = {
   title: string;
   showStep: number;
+  nextBtnProps?: NavigationButtonProps;
+  prevBtnProps?: NavigationButtonProps;
+  midBtnProps?: NavigationButtonProps;
+
   onNext?: () => void;
   onPrev?: () => void;
   hideNext?: boolean;
@@ -25,16 +37,9 @@ export const StepperWrapper: FC<PropsWithChildren<StepperWrapperProps>> = ({
   title,
   children,
   showStep,
-  onNext,
-  onPrev,
-  hideNext,
-  hidePrev,
-  disableNext,
-  disablePrev,
-  submitFormNext,
-  idFormSubmit,
-  nextLabel = 'Další',
-  prevLabel = 'Zpět',
+  midBtnProps,
+  prevBtnProps,
+  nextBtnProps,
 }) => {
   const { state } = useEducatorState();
 
@@ -48,7 +53,7 @@ export const StepperWrapper: FC<PropsWithChildren<StepperWrapperProps>> = ({
       }}
       p="8"
     >
-      <Stack alignItems="center" display="flex" flex={1}>
+      <Flex alignItems="center" flexDirection="column" flex={1}>
         <Box width={{ base: '100%', md: '600px' }} pb={6}>
           <SummaryStepper
             stepsCount={stepsCountShowenInEducation}
@@ -58,7 +63,7 @@ export const StepperWrapper: FC<PropsWithChildren<StepperWrapperProps>> = ({
         <Heading as="h1" size="md" textAlign="center">
           {title}
         </Heading>
-        <Box display="flex" flex="1" alignItems="center" py={8}>
+        <Flex flex="1" alignItems="center" py={8}>
           <Box
             width="100%"
             height="100%"
@@ -70,35 +75,52 @@ export const StepperWrapper: FC<PropsWithChildren<StepperWrapperProps>> = ({
           >
             {children}
           </Box>
-        </Box>
-        <Box
+        </Flex>
+        <Flex
           width="100%"
-          display="flex"
           flexDirection={{ base: 'column-reverse', md: 'row' }}
           justifyContent="space-between"
           gap={4}
         >
-          {!hidePrev && (
+          {prevBtnProps && (
             <SecondaryButton
-              isDisabled={disablePrev || state.prevSteps.length < 1}
-              // TODO: better prev -> when setPrevState is passed here error occurs
-              onClick={onPrev}
+              isDisabled={prevBtnProps.disable || state.prevSteps.length < 1}
+              type={prevBtnProps?.type}
+              form={prevBtnProps?.idFormSubmit}
+              onClick={prevBtnProps?.onClick}
             >
-              {prevLabel}
+              {prevBtnProps.label || 'Zpět'}
             </SecondaryButton>
           )}
-          {!hideNext && (
-            <PrimaryButton
-              type={submitFormNext ? 'submit' : 'button'}
-              form={idFormSubmit ? idFormSubmit : undefined}
-              isDisabled={disableNext}
-              onClick={onNext}
-            >
-              {nextLabel}
-            </PrimaryButton>
-          )}
-        </Box>
-      </Stack>
+          <Flex
+            flex={1}
+            justifyContent="flex-end"
+            gap={4}
+            flexDirection={{ base: 'column-reverse', md: 'row' }}
+          >
+            {midBtnProps && (
+              <SecondaryButton
+                type={midBtnProps?.type}
+                form={midBtnProps?.idFormSubmit}
+                isDisabled={midBtnProps?.disable}
+                onClick={midBtnProps?.onClick}
+              >
+                {midBtnProps?.label}
+              </SecondaryButton>
+            )}
+            {nextBtnProps && (
+              <PrimaryButton
+                type={nextBtnProps?.type}
+                form={nextBtnProps?.idFormSubmit}
+                isDisabled={nextBtnProps?.disable}
+                onClick={nextBtnProps?.onClick}
+              >
+                {nextBtnProps.label || 'Další'}
+              </PrimaryButton>
+            )}
+          </Flex>
+        </Flex>
+      </Flex>
     </Card>
   );
 };
