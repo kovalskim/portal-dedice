@@ -1,19 +1,21 @@
 import { Stack } from '@chakra-ui/react';
 
 import { PrimaryButton, SecondaryButton } from '@frontend/components';
-import { useEducatorState } from '@frontend/hooks/useEducatorState';
+import { useEducatorState } from '@frontend/hooks/useEducatorState.ts';
 
-import { StepperWrapper } from './common/StepperWrapper';
+import { StepperWrapper } from '../common/StepperWrapper.tsx';
 
-export const Step13 = () => {
+export const Step20 = () => {
   const { resetState, incrementState } = useEducatorState();
 
   return (
     <StepperWrapper
       title={
-        'Chcete vědět jak funguje rozdělení pozůstalosti v rámci pozůstalostního řízení?'
+        'Chcete vědět, jak funguje rozdělení pozůstalosti v rámci pozůstalostního řízení?'
       }
       showStep={2}
+      hideNext
+      hidePrev
     >
       <Stack textAlign="center" spacing={6} width={200}>
         <PrimaryButton

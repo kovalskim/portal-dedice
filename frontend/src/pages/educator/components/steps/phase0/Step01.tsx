@@ -1,9 +1,9 @@
-import { useEducatorState } from '@frontend/hooks/useEducatorState';
+import { useEducatorState } from '@frontend/hooks/useEducatorState.ts';
 import { useEducatorStorage } from '@frontend/hooks/useEducatorStorage.ts';
 import { DeceasedPersonFormFields } from '@frontend/pages/educator/components/notary-identification/DeceasedPersonForm.tsx';
 import { NotaryIdentificationInput } from '@frontend/pages/educator/components/notary-identification/NotaryIdentificationInput.tsx';
 
-import { StepperWrapper } from './common/StepperWrapper';
+import { StepperWrapper } from '../common/StepperWrapper.tsx';
 
 export const Step01 = () => {
   const { incrementState, setPrevState, setState } = useEducatorState();
@@ -29,7 +29,7 @@ export const Step01 = () => {
         onClick: skipIdentification,
       }}
       nextBtnProps={{
-        label: 'Odeslat formulář',
+        label: 'Jaký notář bude pověřen?',
         idFormSubmit: 'deceasedPersonForm',
         type: 'submit',
       }}

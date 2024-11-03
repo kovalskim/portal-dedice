@@ -1,12 +1,12 @@
 import { Stack } from '@chakra-ui/react';
 
 import { PrimaryButton, SecondaryButton } from '@frontend/components';
-import { useEducatorState } from '@frontend/hooks/useEducatorState';
+import { useEducatorState } from '@frontend/hooks/useEducatorState.ts';
 
-import { StepperWrapper } from './common/StepperWrapper';
+import { StepperWrapper } from '../common/StepperWrapper.tsx';
 
-export const Step03 = () => {
-  const { resetState, setState } = useEducatorState();
+export const Step10 = () => {
+  const { setState, incrementState } = useEducatorState();
 
   return (
     <StepperWrapper
@@ -16,12 +16,18 @@ export const Step03 = () => {
       <Stack textAlign="center" spacing={6} width={200}>
         <PrimaryButton
           onClick={() => {
-            setState(10);
+            incrementState();
           }}
         >
           Ano
         </PrimaryButton>
-        <SecondaryButton onClick={resetState}>Ne</SecondaryButton>
+        <SecondaryButton
+          onClick={() => {
+            setState(20);
+          }}
+        >
+          Ne
+        </SecondaryButton>
       </Stack>
     </StepperWrapper>
   );

@@ -29,3 +29,11 @@ export function verificationError(message: string) {
     extensions: { code: 'NOT_VERIFIED' },
   });
 }
+
+export function courtNotFoundError(message: string) {
+  return new GraphQLError(message, {
+    extensions: {
+      code: 'COURT_NOT_FOUND',
+    },
+  });
+}

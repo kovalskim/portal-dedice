@@ -1,17 +1,18 @@
 import { Box } from '@chakra-ui/react';
 
 import { useEducatorState } from '@frontend/hooks/useEducatorState';
-import {
-  Step00,
-  Step01,
-  Step02,
-  Step03,
-  Step10,
-  Step11,
-  Step12,
-  Step13,
-  StepNotFound,
-} from '@frontend/pages/educator/components/steps';
+import { Step00 } from '@frontend/pages/educator/components/steps/phase0/Step00.tsx';
+import { Step01 } from '@frontend/pages/educator/components/steps/phase0/Step01.tsx';
+import { Step02 } from '@frontend/pages/educator/components/steps/phase0/Step02.tsx';
+import { Step10 } from '@frontend/pages/educator/components/steps/phase1/Step10.tsx';
+import { Step11 } from '@frontend/pages/educator/components/steps/phase1/Step11.tsx';
+import { Step12 } from '@frontend/pages/educator/components/steps/phase1/Step12.tsx';
+import { Step13 } from '@frontend/pages/educator/components/steps/phase1/Step13.tsx';
+import { Step14 } from '@frontend/pages/educator/components/steps/phase1/Step14.tsx';
+import { Step15 } from '@frontend/pages/educator/components/steps/phase1/Step15.tsx';
+import { Step16 } from '@frontend/pages/educator/components/steps/phase1/Step16.tsx';
+import { Step20 } from '@frontend/pages/educator/components/steps/phase2/Step20.tsx';
+import { StepNotFound } from '@frontend/pages/educator/components/steps/StepNotFound.tsx';
 
 type Step = {
   index: number;
@@ -23,11 +24,14 @@ const steps: Step[] = [
   { index: 0, stepEl: Step00 },
   { index: 1, stepEl: Step01 },
   { index: 2, stepEl: Step02 },
-  { index: 3, stepEl: Step03 },
   { index: 10, stepEl: Step10 },
   { index: 11, stepEl: Step11 },
   { index: 12, stepEl: Step12 },
   { index: 13, stepEl: Step13 },
+  { index: 14, stepEl: Step14 },
+  { index: 15, stepEl: Step15 },
+  { index: 16, stepEl: Step16 },
+  { index: 20, stepEl: Step20 },
 ];
 
 const findStepEl = (stepIndex: number) => {

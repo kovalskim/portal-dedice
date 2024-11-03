@@ -33,7 +33,6 @@ const extractAddressComponents = (components: AddressComponent[]) => {
     district: '',
     postalCode: '',
   };
-
   components.forEach((component) => {
     const types = component.types;
     if (types.includes('route')) {
@@ -62,6 +61,12 @@ const extractAddressComponents = (components: AddressComponent[]) => {
       addressObj.postalCode = component.long_name;
     }
   });
+
+  // Pro Prahu jako výjimku vrací PlacesAPI město a městskou část/okres obráceně než je potřeba
+  if (addressObj.district === 'Hlavní město Praha') {
+    addressObj.district = addressObj.city;
+    addressObj.city = 'Praha';
+  }
 
   return addressObj;
 };
@@ -103,14 +108,10 @@ export const AutocompleteAddress = () => {
         <InputField
           name="streetWithNumber"
           label="Ulice a číslo popisné"
-          placeholder="Zadejete ulici a číslo popisné"
+          placeholder="Zadejte ulici a číslo popisné"
           ref={ref}
         />
-        <InputField
-          name="city"
-          label="Obec (městská část)"
-          placeholder="Zadejete obec (městkskou část)"
-        />
+        <InputField name="city" label="Obec" placeholder="Zadejte obec" />
       </Flex>
       <Flex
         direction={{
@@ -122,10 +123,10 @@ export const AutocompleteAddress = () => {
       >
         <InputField
           name="district"
-          label="Okres"
-          placeholder="Zadejete okres"
+          label="Okres (městská část pro Prahu)"
+          placeholder="Zadejte okres (městská část pro Prahu)"
         />
-        <InputField name="postalCode" label="PSČ" placeholder="Zadejete PSČ" />
+        <InputField name="postalCode" label="PSČ" placeholder="Zadejte PSČ" />
       </Flex>
     </>
   );

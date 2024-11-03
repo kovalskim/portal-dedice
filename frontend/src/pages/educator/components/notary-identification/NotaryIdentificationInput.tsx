@@ -1,6 +1,5 @@
-import { ExternalLinkIcon } from '@chakra-ui/icons';
 import { Box } from '@chakra-ui/layout';
-import { Heading, Text } from '@chakra-ui/react';
+import { Container, Heading, Text } from '@chakra-ui/react';
 import { SubmitHandler } from 'react-hook-form';
 
 import { InfoHintBox } from '@frontend/components';
@@ -18,7 +17,7 @@ export const NotaryIdentificationInput = ({
   onSubmit,
 }: NotaryIdentificationInputProps) => {
   return (
-    <Box>
+    <Container maxW="container.md">
       <Box mb="6">
         <InfoHintBox title="Jak probíhá výběr notáře pověřeného vedením dědického řízení?">
           <Text>
@@ -30,7 +29,6 @@ export const NotaryIdentificationInput = ({
               isExternal
             >
               rozvrhu práce
-              <ExternalLinkIcon mx="2px" mb="4px" />
             </Link>
             . Přiřazení závisí na vybraných údajích o zůstaviteli.
           </Text>
@@ -43,6 +41,6 @@ export const NotaryIdentificationInput = ({
         id="deceasedPersonForm"
         onSubmit={(data) => onSubmit(data)}
       />
-    </Box>
+    </Container>
   );
 };

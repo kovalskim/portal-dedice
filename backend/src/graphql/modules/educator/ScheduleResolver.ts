@@ -10,6 +10,7 @@ import {
 } from 'type-graphql';
 
 import { courts, districts, schedules } from '@backend/db/schema';
+import { courtNotFoundError } from '@backend/graphql/errors';
 import { Court } from '@backend/graphql/modules/educator/CourtType';
 import { DeceasedPersonInput } from '@backend/graphql/modules/educator/DeceasedPersonInput';
 import { deceasedPersonInputSchema } from '@backend/graphql/modules/educator/DeceasedPersonInputSchema';
@@ -45,24 +46,17 @@ export class ScheduleResolver {
       });
     }
 
-    if (input.district !== 'Hlavní město Praha') {
-      throw new GraphQLError('Not supported', {
-        extensions: {
-          code: 'NOT_SUPPORTED_DISTRICT',
-        },
-      });
-    }
-
-    const districtValue =
-      input.district === 'Hlavní město Praha' ? input.city : input.district; // kvůli Google API, které pro Prahu nevrací MČ jako okresy
-
     const competentCourt = await db
       .select()
       .from(districts)
       .innerJoin(courts, eq(districts.courtId, courts.id))
-      .where(eq(districts.name, districtValue))
+      .where(eq(districts.name, input.district))
       .then(([result]) => result)
       .then(({ courts }) => courts);
+
+    if (!competentCourt) {
+      throw courtNotFoundError('Not supported');
+    }
 
     let attribute;
     switch (competentCourt.attribute) {

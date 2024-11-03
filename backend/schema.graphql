@@ -26,6 +26,12 @@ input DeceasedPersonInput {
   streetWithNumber: String!
 }
 
+type District {
+  courtId: Float!
+  id: ID!
+  name: String!
+}
+
 type Mutation {
   createProceedings(data: DeceasedPersonInput!): Proceedings!
   identifyNotary(data: DeceasedPersonInput!): Schedule!
@@ -50,6 +56,7 @@ type Proceedings {
 
 type Query {
   _empty: String!
+  districts: [District!]!
   user(id: String!): User
   users: [User!]!
 }

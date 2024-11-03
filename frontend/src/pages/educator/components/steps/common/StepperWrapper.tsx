@@ -54,7 +54,7 @@ export const StepperWrapper: FC<PropsWithChildren<StepperWrapperProps>> = ({
       p="8"
     >
       <Flex alignItems="center" flexDirection="column" flex={1}>
-        <Box width={{ base: '100%', md: '600px' }} pb={6}>
+        <Box width={{ base: '100%', md: '600px' }} pb={10}>
           <SummaryStepper
             stepsCount={stepsCountShowenInEducation}
             activeStep={showStep}

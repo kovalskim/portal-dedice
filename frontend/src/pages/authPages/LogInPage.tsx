@@ -94,7 +94,7 @@ export const LogInPage = () => {
               borderLeftRadius="lg"
             >
               <Heading size="lg" mb={12} lineHeight="3rem">
-                Přihlašte se do <br /> Portálu dědice
+                Přihlaste se do <br /> Portálu dědice
               </Heading>
               <Image src="/login.png" width="300px" />
             </Flex>

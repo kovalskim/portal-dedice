@@ -10,13 +10,12 @@ import {
   UnorderedList,
 } from '@chakra-ui/react';
 
-import { useEducatorState } from '@frontend/hooks/useEducatorState';
+import { useEducatorState } from '@frontend/hooks/useEducatorState.ts';
 
-import { SecondPhaseStepper } from '../secondPhaseStepper/SecondPhaseStepper';
+import { SecondPhaseStepper } from '../../secondPhaseStepper/SecondPhaseStepper.tsx';
+import { StepperWrapper } from '../common/StepperWrapper.tsx';
 
-import { StepperWrapper } from './common/StepperWrapper';
-
-export const Step10 = () => {
+export const Step11 = () => {
   const { incrementState, setPrevState } = useEducatorState();
 
   return (
@@ -26,7 +25,7 @@ export const Step10 = () => {
       nextBtnProps={{ onClick: incrementState, label: 'Co se děje dále?' }}
       prevBtnProps={{ onClick: setPrevState }}
     >
-      <Container px={0}>
+      <Container maxW="container.md">
         <SecondPhaseStepper activeStep={0} />
         <Heading as="h3" size="md" textAlign="center" my={8}>
           Úvodní fáze
@@ -43,25 +42,25 @@ export const Step10 = () => {
             řízení pracovat.
           </ListItem>
         </UnorderedList>
-        <Accordion my={10} allowMultiple>
-          <AccordionItem>
+        <Accordion my={10} allowToggle>
+          <AccordionItem py={1}>
             <AccordionButton>
-              <Heading as="h4" size="xs" textAlign="left" flex="1">
-                Předběžné šetření
+              <Heading as="h4" size="sm" textAlign="left" flex="1">
+                Jak dlouho trvá, než se spis dostane k notáři?
               </Heading>
               <AccordionIcon />
             </AccordionButton>
             <AccordionPanel>Může to trvat až jeden měsíc.</AccordionPanel>
           </AccordionItem>
-          <AccordionItem>
+          <AccordionItem py={1}>
             <AccordionButton>
-              <Heading as="h4" size="xs" textAlign="left" flex="1">
+              <Heading as="h4" size="sm" textAlign="left" flex="1">
                 Mám jako pozůstalý sám v této fázi podnikat nějaké kroky?
               </Heading>
               <AccordionIcon />
             </AccordionButton>
             <AccordionPanel>
-              Ne, v této fázi je vše na notáři. Vyčkejte pridelený notář vás
+              Ne, v této fázi je vše na notáři. Vyčkejte, přidělený notář vás
               bude kontaktovat.
             </AccordionPanel>
           </AccordionItem>

@@ -17,6 +17,7 @@ import { buildSchema } from 'type-graphql';
 
 import { MOCKS, PORT } from '@backend/config';
 import { getConnection } from '@backend/db/db';
+import { DistrictResolver } from '@backend/graphql/modules/educator/DistrictResolver';
 import { ScheduleResolver } from '@backend/graphql/modules/educator/ScheduleResolver';
 import { EmptyResolver } from '@backend/graphql/modules/empty/emptyResolver';
 import { UserResolver } from '@backend/graphql/modules/user/userResolver';
@@ -39,6 +40,7 @@ const init = async () => {
       UserResolver,
       ScheduleResolver,
       CreateProceedingsResolver,
+      DistrictResolver,
     ],
     emitSchemaFile: true,
   });
