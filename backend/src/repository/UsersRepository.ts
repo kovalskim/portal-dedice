@@ -108,6 +108,13 @@ export class UsersRepository {
     await this.db.update(users).set(user).where(eq(users.id, user.id));
   }
 
+  async updateUserPassword(userId: number, password: string) {
+    await this.db
+      .update(users)
+      .set({ password: password })
+      .where(eq(users.id, userId));
+  }
+
   async getUserRole(userId: number): Promise<RoleDTO | null> {
     return await this.db
       .select()

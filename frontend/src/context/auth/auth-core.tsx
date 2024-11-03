@@ -17,6 +17,7 @@ export type AuthUser = {
   beforeTitle: string | null;
   firstname: string;
   lastname: string;
+  email: string;
   afterTitle: string | null;
 };
 

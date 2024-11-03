@@ -6,6 +6,7 @@ import {
 
 import { ForgottenPasswordPage } from '@frontend/pages/authPages/ForgottenPasswordPage.tsx';
 import { EducatorPage } from '@frontend/pages/educator/EducatorPages.tsx';
+import { ProfilePage } from '@frontend/pages/profile/ProfilePage.tsx';
 
 import { ErrorPage } from './pages/errorPages/ErrorPage';
 import { ProceedingsParticipants } from './pages/proceedings/participants/ProceedingsParticipants';
@@ -38,6 +39,7 @@ export const getRouter = () => {
               element={<ForgottenPasswordPage />}
             />
             <Route path={Routes.signUp} element={<SignUpPage />} />
+            <Route path={Routes.profile} element={<ProfilePage />} />
             <Route
               path={Routes.emailConfirmation}
               element={<EmailConfirmationPage />}

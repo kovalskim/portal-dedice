@@ -33,10 +33,12 @@ type District {
 }
 
 type Mutation {
+  changePassword(newPassword: String!, oldPassword: String!, userId: String!): AuthInfo!
   createProceedings(data: DeceasedPersonInput!): Proceedings!
   identifyNotary(data: DeceasedPersonInput!): Schedule!
   signIn(email: String!, password: String!): AuthInfo!
   signUp(email: String!, firstname: String!, lastname: String!, password: String!): AuthInfo!
+  updateUser(afterTitle: String, beforeTitle: String, firstname: String!, lastname: String!, userId: String!): User!
   verifyEmail(token: String!): String!
 }
 

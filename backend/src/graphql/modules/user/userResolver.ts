@@ -12,6 +12,7 @@ import {
 import {
   existingError,
   notFoundError,
+  unauthenticatedError,
   unauthorizedError,
   validationError,
   verificationError,
@@ -47,6 +48,68 @@ export class UserResolver {
   @Query(() => [User])
   async users(@Ctx() { usersRepository }: CustomContext): Promise<User[]> {
     return usersRepository.findUsers();
+  }
+
+  @Mutation(() => User)
+  async updateUser(
+    @Arg('userId') stringId: string,
+    @Arg('beforeTitle', { nullable: true }) beforeTitle: string,
+    @Arg('firstname') firstname: string,
+    @Arg('lastname') lastname: string,
+    @Arg('afterTitle', { nullable: true }) afterTitle: string,
+    @Ctx() { authUser, usersRepository }: CustomContext,
+  ): Promise<User> {
+    if (!authUser) {
+      throw unauthenticatedError('Unauthenticated');
+    }
+
+    const userId = parseInt(stringId, 10);
+    const user = await usersRepository.getUserById(userId);
+
+    if (!user) {
+      throw notFoundError('User not found');
+    }
+
+    await usersRepository.updateUser({
+      ...user,
+      beforeTitle,
+      firstname,
+      lastname,
+      afterTitle,
+    });
+    const newUser = await usersRepository.getUserById(userId);
+
+    return {
+      ...newUser,
+    };
+  }
+
+  @Mutation(() => AuthInfo)
+  async changePassword(
+    @Arg('userId') stringId: string,
+    @Arg('oldPassword') oldPassword: string,
+    @Arg('newPassword') newPassword: string,
+    @Ctx() { usersRepository }: CustomContext,
+  ): Promise<AuthInfo> {
+    const userId = parseInt(stringId, 10);
+    const user = await usersRepository.getUserById(userId);
+
+    if (!user) {
+      throw unauthorizedError('Unauthorized');
+    }
+
+    if (await argon2.verify(user.password, oldPassword)) {
+      const password = await argon2.hash(newPassword);
+
+      await usersRepository.updateUserPassword(user.id, password);
+
+      return {
+        user: { ...user },
+        token: createToken({ id: user.id }),
+      };
+    } else {
+      throw unauthorizedError('Unauthorized.');
+    }
   }
 
   @Mutation(() => AuthInfo)

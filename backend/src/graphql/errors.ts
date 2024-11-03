@@ -37,3 +37,9 @@ export function courtNotFoundError(message: string) {
     },
   });
 }
+
+export function unauthenticatedError(message: string) {
+  return new GraphQLError(message, {
+    extensions: { code: 'UNAUTHENTICATED' },
+  });
+}

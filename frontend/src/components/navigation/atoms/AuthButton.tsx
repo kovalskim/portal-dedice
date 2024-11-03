@@ -14,10 +14,12 @@ import {
   MenuList,
   useBreakpointValue,
 } from '@chakra-ui/react';
+import { useNavigate } from 'react-router-dom';
 
 import { RouterLink } from '@frontend/components/navigation/atoms/RouterLink.tsx';
 import { RouterNavButton } from '@frontend/components/navigation/atoms/RouterNavButton.tsx';
 import { useAuth } from '@frontend/context/auth';
+import { useCustomToast } from '@frontend/hooks/useCustomToast.ts';
 import { Routes } from '@frontend/routes.ts';
 
 type AuthButtonProps = {
@@ -30,6 +32,9 @@ export const AuthButton = ({ onClose }: AuthButtonProps) => {
     base: 'Přihlásit se',
     md: 'Přihlásit se do Portálu dědice',
   });
+
+  const navigate = useNavigate();
+  const showToast = useCustomToast();
 
   return user === null ? (
     <RouterNavButton to={Routes.logIn} onClick={onClose}>
@@ -45,14 +50,25 @@ export const AuthButton = ({ onClose }: AuthButtonProps) => {
         {user.firstname} {user.lastname}
       </MenuButton>
       <MenuList>
-        <RouterLink to={Routes.home} textColor="black" noUnderline>
+        <RouterLink to={Routes.profile} textColor="black" noUnderline>
           <MenuItem icon={<AtSignIcon />}>Můj profil</MenuItem>
         </RouterLink>
         <RouterLink to={Routes.home} textColor="black" noUnderline>
           <MenuItem icon={<SettingsIcon />}>Nastavení</MenuItem>
         </RouterLink>
         <Divider></Divider>
-        <MenuItem icon={<MinusIcon />} onClick={signOut}>
+        <MenuItem
+          icon={<MinusIcon />}
+          onClick={() => {
+            signOut();
+            showToast({
+              title: 'Odhlášení',
+              description: 'Byli jste úspěšně odhlášeni.',
+              status: 'success',
+            });
+            navigate(Routes.logIn);
+          }}
+        >
           Odhlásit se
         </MenuItem>
       </MenuList>
