@@ -1,61 +1,20 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useMemo } from 'react';
+import { useQuery } from '@apollo/client';
 
-import { config } from '@frontend/config.ts';
-
-type District = {
-  name: string;
-};
-
-type DistrictsResponse = {
-  data: {
-    districts: District[];
-  };
-};
-
-const fetchValidDistricts = async () => {
-  const query = `
-    query Districts {
-      districts {
-        name
-      }
-    }
-  `;
-
-  const response = await fetch(config.GRAPHQL_API, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ query }),
-  });
-
-  if (!response) throw new Error('Failed to fetch districts');
-
-  const responseData: DistrictsResponse = await response.json();
-  return responseData.data.districts;
-};
+import {
+  District,
+  DistrictsResponse,
+  GET_DISTRICTS,
+} from '@frontend/gql/educator/queries.ts';
 
 export const useValidDistricts = () => {
-  const [validDistricts, setValidDistricts] = useState<District[]>([]);
-  const [error, setError] = useState<string | null>(null);
+  const { data, error, loading } = useQuery<DistrictsResponse>(GET_DISTRICTS);
 
-  const loadDistricts = useCallback(async () => {
-    try {
-      const districts = await fetchValidDistricts();
-      setValidDistricts(districts);
-    } catch (err) {
-      setError('Valid districts could not be fetched.');
-    }
-  }, []);
-
-  useEffect(() => {
-    loadDistricts();
-  }, [loadDistricts]);
-
+  // Extract the district names if data is available
   const validDistrictNames = useMemo(
-    () => validDistricts.map((d) => d.name),
-    [validDistricts],
+    () => data?.districts.map((district: District) => district.name) || [],
+    [data],
   );
 
-  return { validDistrictNames, error };
+  return { validDistrictNames, error, loading };
 };
