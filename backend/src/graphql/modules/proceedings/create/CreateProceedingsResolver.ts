@@ -1,9 +1,9 @@
 import { GraphQLError } from 'graphql';
 import { Arg, Ctx, Mutation, Resolver } from 'type-graphql';
 
+import { DeceasedPersonInput } from '@backend/graphql/modules/educator/DeceasedPersonInput';
 import { CustomContext } from '@backend/types/types';
 
-import { DeceasedPersonInput } from '../../educator/DeceasedPersonInput';
 import { deceasedPersonInputSchema } from '../../educator/DeceasedPersonInputSchema';
 import { UserRole } from '../../user/roleType';
 
