@@ -88,3 +88,21 @@ export const CHANGE_PASSWORD_MUTATION = gql`
     }
   }
 `;
+
+export const RESTORE_PASSWORD_MUTATION = gql`
+  mutation restorePassword($email: String!) {
+    restorePassword(email: $email)
+  }
+`;
+
+export const NEW_PASSWORD_MUTATION = gql`
+  mutation newPassword($newPassword: String!, $token: String!) {
+    newPassword(newPassword: $newPassword, token: $token)
+  }
+`;
+
+export const VERIFY_TOKEN_MUTATION = gql`
+  mutation verifyToken($token: String!) {
+    verifyToken(token: $token)
+  }
+`;

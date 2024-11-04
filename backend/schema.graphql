@@ -36,10 +36,13 @@ type Mutation {
   changePassword(newPassword: String!, oldPassword: String!, userId: String!): AuthInfo!
   createProceedings(data: DeceasedPersonInput!): Proceedings!
   identifyNotary(data: DeceasedPersonInput!): Schedule!
+  newPassword(newPassword: String!, token: String!): String!
+  restorePassword(email: String!): String!
   signIn(email: String!, password: String!): AuthInfo!
   signUp(email: String!, firstname: String!, lastname: String!, password: String!): AuthInfo!
   updateUser(afterTitle: String, beforeTitle: String, firstname: String!, lastname: String!, userId: String!): User!
   verifyEmail(token: String!): String!
+  verifyToken(token: String!): String!
 }
 
 type Proceedings {

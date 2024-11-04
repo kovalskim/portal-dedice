@@ -55,3 +55,31 @@ export const sendVerificationEmail = async (email: string, token: string) => {
 
   await sendEmail(email, subject, htmlContent);
 };
+
+export const sendPasswordResetEmail = async (email: string, token: string) => {
+  const subject: string = 'Zapomenuté heslo';
+
+  const resetLink = `${process.env.APP_URL}/auth/new-password?token=${token}`;
+
+  const bodies = await Promise.all([
+    buildHeading('Zapomenuté heslo'),
+    buildText(
+      `Na základě Vašeho požadavku Vám zasíláme odkaz pro změnu hesla k účtu: ${email}`,
+    ),
+    buildText('Nové heslo si můžete nastavit kliknutím na tlačítko níže:'),
+    buildButton('Nastavit nové heslo', encodeURI(resetLink)),
+    buildText('Nebo zkopírujte a vložte tuto URL do svého prohlížeče:'),
+    buildLink(resetLink, encodeURI(resetLink)),
+    buildText(
+      'Tento odkaz je z důvodu zabezpečení Vašeho účtu platný pouze 1 hodinu od odeslání požadavku o změnu hesla.',
+    ),
+    buildText(
+      'Tento e-mail byl automaticky vygenerován na základě vyplnění žádosti o změnu hesla. Pokud jste o změnu hesla nezažádali, pravděpodobně se jedná o omyl. V takovém případě tento e-mail ignorujte.',
+    ),
+  ]);
+
+  const layout = await buildLayout(...bodies);
+  const htmlContent = getEmailBody(layout);
+
+  await sendEmail(email, subject, htmlContent);
+};

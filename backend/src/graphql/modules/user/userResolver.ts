@@ -18,7 +18,10 @@ import {
   verificationError,
 } from '@backend/graphql/errors';
 import { createToken, parseAndVerifyJWT } from '@backend/libs/jwt';
-import { sendVerificationEmail } from '@backend/services/emailService/emailService';
+import {
+  sendPasswordResetEmail,
+  sendVerificationEmail,
+} from '@backend/services/emailService/emailService';
 import { type CustomContext } from '@backend/types/types';
 
 import { Role } from './roleType';
@@ -251,5 +254,99 @@ export class UserResolver {
     await usersRepository.updateUser({ ...userRecord, isVerified: true });
 
     return 'Email successfully verified!';
+  }
+
+  @Mutation(() => String)
+  async restorePassword(
+    @Arg('email') email: string,
+    @Ctx() { usersRepository }: CustomContext,
+  ): Promise<string> {
+    const user = await usersRepository.getUserByEmail(email);
+
+    //everytime return success
+    if (user) {
+      const userId = user.id;
+
+      const verificationToken = createToken({ email, userId });
+      const tokenExpiration = new Date();
+      tokenExpiration.setHours(tokenExpiration.getHours() + 1); // Token expires in 1 hour
+
+      await usersRepository.createVerificationToken({
+        userId: userId,
+        token: verificationToken,
+        expiresAt: tokenExpiration,
+        reason: 'password_reset',
+      });
+
+      sendPasswordResetEmail(email, verificationToken);
+    }
+
+    return 'E-mail successfully sent';
+  }
+
+  @Mutation(() => String)
+  async newPassword(
+    @Arg('newPassword') newPassword: string,
+    @Arg('token') token: string,
+    @Ctx() { usersRepository }: CustomContext,
+  ): Promise<string> {
+    //check token exits and validity
+    const tokenRecord =
+      await usersRepository.getVerificationTokenByTokenAndReason(
+        token,
+        'password_reset',
+      );
+
+    if (!tokenRecord || !tokenRecord.expiresAt) {
+      throw validationError('Invalid or expired verification token');
+    }
+
+    if (new Date() > new Date(tokenRecord.expiresAt)) {
+      throw validationError('Verification token has expired');
+    }
+
+    //find user id
+    const user = await usersRepository.getUserById(tokenRecord.userId);
+
+    if (!user) {
+      throw unauthorizedError('Unauthorized');
+    }
+
+    //set new password
+    const password = await argon2.hash(newPassword);
+
+    await usersRepository.updateUserPassword(user.id, password);
+
+    await usersRepository.deleteVerificationToken(tokenRecord.id);
+
+    return 'Password successfully changed';
+  }
+
+  @Mutation(() => String)
+  async verifyToken(
+    @Arg('token') token: string,
+    @Ctx() { usersRepository }: CustomContext,
+  ): Promise<string> {
+    const decoded = parseAndVerifyJWT(token);
+
+    if (!decoded || !decoded.email || !decoded.userId) {
+      throw validationError('Invalid or expired verification token');
+    }
+
+    const tokenRecord =
+      await usersRepository.getVerificationTokenByUserIdAndReason(
+        decoded.userId,
+        'password_reset',
+      );
+
+    if (!tokenRecord || !tokenRecord.expiresAt) {
+      throw validationError('Invalid or expired verification token');
+    }
+
+    if (new Date() > new Date(tokenRecord.expiresAt)) {
+      throw validationError('Verification token has expired');
+    }
+
+    return 'Token successfully verified';
   }
 }

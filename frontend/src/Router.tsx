@@ -5,6 +5,7 @@ import {
 } from 'react-router-dom';
 
 import { ForgottenPasswordPage } from '@frontend/pages/authPages/ForgottenPasswordPage.tsx';
+import { NewPasswordPage } from '@frontend/pages/authPages/NewPasswordPage.tsx';
 import { EducatorPage } from '@frontend/pages/educator/EducatorPages.tsx';
 import { ProfilePage } from '@frontend/pages/profile/ProfilePage.tsx';
 
@@ -38,6 +39,7 @@ export const getRouter = () => {
               path={Routes.forgottenPassword}
               element={<ForgottenPasswordPage />}
             />
+            <Route path={Routes.newPassword} element={<NewPasswordPage />} />
             <Route path={Routes.signUp} element={<SignUpPage />} />
             <Route path={Routes.profile} element={<ProfilePage />} />
             <Route

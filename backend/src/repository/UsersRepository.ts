@@ -104,15 +104,24 @@ export class UsersRepository {
     return token;
   }
 
-  async updateUser(user: User) {
-    await this.db.update(users).set(user).where(eq(users.id, user.id));
+  async getVerificationTokenByTokenAndReason(
+    token: string,
+    reason: VerificationReasonType,
+  ) {
+    const [tokenRecord] = await this.db
+      .select()
+      .from(verificationTokens)
+      .where(
+        and(
+          eq(verificationTokens.token, token),
+          eq(verificationTokens.reason, reason),
+        ),
+      );
+    return tokenRecord;
   }
 
-  async updateUserPassword(userId: number, password: string) {
-    await this.db
-      .update(users)
-      .set({ password: password })
-      .where(eq(users.id, userId));
+  async updateUser(user: User) {
+    await this.db.update(users).set(user).where(eq(users.id, user.id));
   }
 
   async getUserRole(userId: number): Promise<RoleDTO | null> {
@@ -131,5 +140,18 @@ export class UsersRepository {
           name: user.roles?.name as UserRole,
         };
       });
+  }
+
+  async updateUserPassword(userId: number, password: string) {
+    await this.db
+      .update(users)
+      .set({ password: password })
+      .where(eq(users.id, userId));
+  }
+
+  async deleteVerificationToken(tokenId: number) {
+    await this.db
+      .delete(verificationTokens)
+      .where(eq(verificationTokens.id, tokenId));
   }
 }

@@ -63,7 +63,7 @@ export const LogInForm: FC<LogInFormProps> = ({ onSubmit, loading, error }) => {
           <InputField
             name="email"
             type="text"
-            label="Emailová adresa"
+            label="E-mailová adresa"
             placeholder={'@'}
           />
           <InputField name="password" type="password" label="Heslo" />
