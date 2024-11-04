@@ -11,6 +11,7 @@ import {
 
 import { courtsData } from './data/courts';
 import { districtsData } from './data/districts';
+import { proceedingsData } from './data/proceedings';
 import { schedulesData } from './data/schedules';
 
 async function seed() {
@@ -32,9 +33,6 @@ async function seed() {
     } else {
       console.log('Roles already exist, skipping role seed');
     }
-
-    // delete proceedings
-    await db.delete(proceedings);
 
     // remove values from phases table
     await db.delete(phases);
@@ -108,6 +106,13 @@ async function seed() {
 
     console.log('Inserting schedules');
     await db.insert(schedules).values(schedulesData);
+
+    // delete proceedings
+    await db.delete(proceedings);
+
+    console.log('Inserting proceedings');
+    await db.insert(proceedings).values(proceedingsData);
+
     console.log('Seed function completed');
     console.log('Seed function completed');
   } finally {

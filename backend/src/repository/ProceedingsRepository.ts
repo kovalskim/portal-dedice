@@ -17,6 +17,7 @@ export interface ProceedingsDTO {
   deceasedCity: string;
   deceasedDistrict: string;
   deceasedPostalCode: string;
+  phaseTitle?: string;
 }
 
 export interface CreateProceedingsDTO {
@@ -69,5 +70,28 @@ export class ProceedingsRepository {
       .$returningId();
 
     return newProceedingsId[0].id;
+  }
+
+  async getAllProceedings(): Promise<ProceedingsDTO[]> {
+    const proceedingsWithTitle = await this.db
+      .select({
+        id: proceedings.id,
+        phaseId: proceedings.phaseId,
+        startDate: proceedings.startDate,
+        notaryId: proceedings.notaryId,
+        proceedingsNumber: proceedings.proceedingsNumber,
+        deceasedFirstName: proceedings.deceasedFirstName,
+        deceasedLastName: proceedings.deceasedLastName,
+        deceasedDateOfDeath: proceedings.deceasedDateOfDeath,
+        deceasedDateOfBirth: proceedings.deceasedDateOfBirth,
+        deceasedStreetWithNumber: proceedings.deceasedStreetWithNumber,
+        deceasedCity: proceedings.deceasedCity,
+        deceasedDistrict: proceedings.deceasedDistrict,
+        deceasedPostalCode: proceedings.deceasedPostalCode,
+        phaseTitle: phases.title,
+      })
+      .from(proceedings)
+      .leftJoin(phases, eq(proceedings.phaseId, phases.id));
+    return proceedingsWithTitle as ProceedingsDTO[];
   }
 }

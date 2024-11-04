@@ -34,4 +34,7 @@ export class Proceedings {
 
   @Field(() => String)
   deceasedPostalCode!: string;
+
+  @Field(() => String, { nullable: true })
+  phaseTitle?: string;
 }

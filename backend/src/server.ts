@@ -28,6 +28,7 @@ import { UsersRepository } from '@backend/repository/UsersRepository';
 import { CustomContext } from '@backend/types/types';
 
 import { CreateProceedingsResolver } from './graphql/modules/proceedings/create/CreateProceedingsResolver';
+import { GetProceedingsResolver } from './graphql/modules/proceedings/get/GetProceedingsResolver';
 
 const init = async () => {
   const app = express();
@@ -40,6 +41,7 @@ const init = async () => {
       UserResolver,
       ScheduleResolver,
       CreateProceedingsResolver,
+      GetProceedingsResolver,
       DistrictResolver,
     ],
     emitSchemaFile: true,

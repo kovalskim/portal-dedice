@@ -3,6 +3,7 @@ import { extendTheme } from '@chakra-ui/react';
 export const theme = extendTheme({
   colors: {
     goldenYellow: {
+      10: '#DCAB6B1A',
       50: '#FAF0DD',
       100: '#F5E3C2',
       200: '#EDD29A',

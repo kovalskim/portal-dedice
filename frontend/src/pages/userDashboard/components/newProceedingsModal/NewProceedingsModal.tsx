@@ -18,6 +18,7 @@ import {
   CREATE_PROCEEDING,
   CreateProceedingsResponse,
 } from '@frontend/gql/proceedings/mutations';
+import { GET_ALL_PROCEEDINGS } from '@frontend/gql/proceedings/queries';
 import {
   DeceasedPersonForm,
   DeceasedPersonFormFields,
@@ -35,7 +36,9 @@ export const NewProceedingsModal: FC<NewProceedingsModalProps> = ({
   const formId = 'create-proceedings-form';
 
   const [createProceedings, { loading, error }] =
-    useMutation<CreateProceedingsResponse>(CREATE_PROCEEDING);
+    useMutation<CreateProceedingsResponse>(CREATE_PROCEEDING, {
+      refetchQueries: [{ query: GET_ALL_PROCEEDINGS }],
+    });
 
   const onSubmit = (data: DeceasedPersonFormFields) => {
     createProceedings({
