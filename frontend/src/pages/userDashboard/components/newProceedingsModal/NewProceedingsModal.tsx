@@ -19,6 +19,7 @@ import {
   CreateProceedingsResponse,
 } from '@frontend/gql/proceedings/mutations';
 import { GET_ALL_PROCEEDINGS } from '@frontend/gql/proceedings/queries';
+import { useCustomToast } from '@frontend/hooks/useCustomToast.ts';
 import {
   DeceasedPersonForm,
   DeceasedPersonFormFields,
@@ -34,6 +35,7 @@ export const NewProceedingsModal: FC<NewProceedingsModalProps> = ({
   onClose,
 }) => {
   const formId = 'create-proceedings-form';
+  const showToast = useCustomToast();
 
   const [createProceedings, { loading, error }] =
     useMutation<CreateProceedingsResponse>(CREATE_PROCEEDING, {
@@ -47,6 +49,11 @@ export const NewProceedingsModal: FC<NewProceedingsModalProps> = ({
       },
     }).then(() => {
       onClose();
+      showToast({
+        title: 'Založení nového dědického řízení proběhlo úspěšně.',
+        description: `Bylo vytvořeno nové dědické řízení!`,
+        status: 'success',
+      });
     });
   };
 
