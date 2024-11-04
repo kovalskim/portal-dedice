@@ -6,16 +6,15 @@ import { useEducatorState } from '@frontend/hooks/useEducatorState.ts';
 import { StepperWrapper } from '../common/StepperWrapper.tsx';
 
 export const Step20 = () => {
-  const { resetState, incrementState } = useEducatorState();
+  const { setState, incrementState, setPrevState } = useEducatorState();
 
   return (
     <StepperWrapper
       title={
         'Chcete vědět, jak funguje rozdělení pozůstalosti v rámci pozůstalostního řízení?'
       }
+      prevBtnProps={{ onClick: setPrevState }}
       showStep={2}
-      hideNext
-      hidePrev
     >
       <Stack textAlign="center" spacing={6} width={200}>
         <PrimaryButton
@@ -25,7 +24,13 @@ export const Step20 = () => {
         >
           Ano
         </PrimaryButton>
-        <SecondaryButton onClick={resetState}>Ne</SecondaryButton>
+        <SecondaryButton
+          onClick={() => {
+            setState(30);
+          }}
+        >
+          Ne
+        </SecondaryButton>
       </Stack>
     </StepperWrapper>
   );

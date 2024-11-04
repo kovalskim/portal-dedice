@@ -4,9 +4,16 @@ import { createJSONStorage, persist } from 'zustand/middleware';
 import { IdentifiedNotary } from '@frontend/gql/educator/mutations.ts';
 import { DeceasedPersonFormFields } from '@frontend/pages/educator/components/notary-identification/DeceasedPersonForm.tsx';
 
-type EducatorStorage = {
+export type EducatorStorage = {
   deceasedPersonFormData?: DeceasedPersonFormFields;
   identifiedNotary?: IdentifiedNotary;
+  married?: boolean;
+  hadSMJ?: boolean;
+  hadWill?: boolean;
+  hadKids?: boolean;
+  hadParents?: boolean;
+  livedWithSomeone?: boolean;
+  numberOfKids?: 'one' | 'many';
 };
 
 const defaultEducatorStorage: EducatorStorage = {

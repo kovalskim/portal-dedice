@@ -1,5 +1,5 @@
 import { Box } from '@chakra-ui/layout';
-import { Container, Heading, Text } from '@chakra-ui/react';
+import { Heading } from '@chakra-ui/react';
 import { SubmitHandler } from 'react-hook-form';
 
 import { InfoHintBox } from '@frontend/components';
@@ -17,21 +17,19 @@ export const NotaryIdentificationInput = ({
   onSubmit,
 }: NotaryIdentificationInputProps) => {
   return (
-    <Container maxW="container.md">
+    <>
       <Box mb="6">
         <InfoHintBox title="Jak probíhá výběr notáře pověřeného vedením dědického řízení?">
-          <Text>
-            Pověření konkrétního notáře vedením dědického řízení probíhá na
-            základě tzv.&nbsp;
-            <Link
-              isInsideInfoHintBox={true}
-              href="https://www.nkcr.cz/seznam-notaru/rozvrhy-rizeni-o-pozustalosti"
-              isExternal
-            >
-              rozvrhu práce
-            </Link>
-            . Přiřazení závisí na vybraných údajích o zůstaviteli.
-          </Text>
+          Pověření konkrétního notáře vedením dědického řízení probíhá na
+          základě tzv.&nbsp;
+          <Link
+            isInsideInfoHintBox={true}
+            href="https://www.nkcr.cz/seznam-notaru/rozvrhy-rizeni-o-pozustalosti"
+            isExternal
+          >
+            rozvrhu práce
+          </Link>
+          . Přiřazení závisí na vybraných údajích o zůstaviteli.
         </InfoHintBox>
       </Box>
       <Heading size="sm" mb="6" textAlign="center">
@@ -41,6 +39,6 @@ export const NotaryIdentificationInput = ({
         id="deceasedPersonForm"
         onSubmit={(data) => onSubmit(data)}
       />
-    </Container>
+    </>
   );
 };

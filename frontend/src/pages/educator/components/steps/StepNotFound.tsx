@@ -9,7 +9,7 @@ export const StepNotFound = () => {
   const { resetState } = useEducatorState();
 
   return (
-    <StepperWrapper title={'Krok nenalezen !'} showStep={5} hideNext hidePrev>
+    <StepperWrapper title={'Krok nenalezen !'} showStep={5}>
       <Box textAlign="center">
         <Text>A jeje tohle se nám nepovedlo. Zkuste to prosím od začátku.</Text>
         <Box pt={10}>

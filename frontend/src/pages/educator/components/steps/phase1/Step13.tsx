@@ -1,4 +1,4 @@
-import { Container, Heading, ListItem, UnorderedList } from '@chakra-ui/react';
+import { Heading, ListItem, UnorderedList } from '@chakra-ui/react';
 
 import { useEducatorState } from '@frontend/hooks/useEducatorState';
 
@@ -17,24 +17,21 @@ export const Step13 = () => {
         label: 'Co si mám přinést s sebou?',
       }}
       prevBtnProps={{ onClick: setPrevState }}
-      nextLabel="Co si mám přinést s sebou?"
     >
-      <Container px={0}>
-        <SecondPhaseStepper activeStep={1} />
-        <Heading as="h3" size="md" textAlign="center" my={8}>
-          Co obnáší předběžné šetření?
-        </Heading>
-        <UnorderedList spacing={4}>
-          <ListItem>
-            Notář se Vás bude ptát na majetek, který zůstavitel vlastnil ke dni
-            úmrtí (především na to, kde měl bankovní účty atd).
-          </ListItem>
-          <ListItem>
-            Pokud měl zůstavitel v době úmrtí manželku, bude se ptát na stejné
-            dotazy i vzhledem k její osobě.
-          </ListItem>
-        </UnorderedList>
-      </Container>
+      <SecondPhaseStepper activeStep={1} />
+      <Heading as="h3" size="md" textAlign="center" my={8}>
+        Co obnáší předběžné šetření?
+      </Heading>
+      <UnorderedList spacing={4}>
+        <ListItem>
+          Notář se Vás bude ptát na majetek, který zůstavitel vlastnil ke dni
+          úmrtí (především na to, kde měl bankovní účty atd).
+        </ListItem>
+        <ListItem>
+          Pokud měl zůstavitel v době úmrtí manželku, bude se ptát na stejné
+          dotazy i vzhledem k její osobě.
+        </ListItem>
+      </UnorderedList>
     </StepperWrapper>
   );
 };

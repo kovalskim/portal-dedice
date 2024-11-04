@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useMutation } from '@apollo/client';
 import { Box } from '@chakra-ui/layout';
-import { Alert, AlertIcon, Container, Spinner, Text } from '@chakra-ui/react';
+import { Alert, AlertIcon, Spinner, Text } from '@chakra-ui/react';
 
 import { InfoHintBox } from '@frontend/components';
 import {
@@ -40,7 +40,7 @@ export const NotaryIdentificationOutput = () => {
   }, [storage.deceasedPersonFormData, updateStorage, identifyNotary]);
 
   return (
-    <Container maxW="container.md">
+    <>
       <Box textAlign="center">
         <Box textAlign="left" mb="6">
           <InfoHintBox title="Mohu si vybrat notáře sám?">
@@ -77,6 +77,6 @@ export const NotaryIdentificationOutput = () => {
           </>
         )}
       </Box>
-    </Container>
+    </>
   );
 };

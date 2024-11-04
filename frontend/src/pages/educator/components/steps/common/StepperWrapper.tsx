@@ -1,5 +1,5 @@
 import { FC, PropsWithChildren } from 'react';
-import { Box, Card, Flex, Heading } from '@chakra-ui/react';
+import { Box, Card, Container, Flex, Heading } from '@chakra-ui/react';
 
 import { PrimaryButton, SecondaryButton } from '@frontend/components';
 import { SummaryStepper } from '@frontend/components/stepper/SummaryStepper';
@@ -20,17 +20,6 @@ type StepperWrapperProps = {
   nextBtnProps?: NavigationButtonProps;
   prevBtnProps?: NavigationButtonProps;
   midBtnProps?: NavigationButtonProps;
-
-  onNext?: () => void;
-  onPrev?: () => void;
-  hideNext?: boolean;
-  hidePrev?: boolean;
-  disableNext?: boolean;
-  disablePrev?: boolean;
-  submitFormNext?: boolean;
-  idFormSubmit?: string;
-  nextLabel?: string;
-  prevLabel?: string;
 };
 
 export const StepperWrapper: FC<PropsWithChildren<StepperWrapperProps>> = ({
@@ -73,7 +62,7 @@ export const StepperWrapper: FC<PropsWithChildren<StepperWrapperProps>> = ({
               lg: 12,
             }}
           >
-            {children}
+            <Container px={0}>{children}</Container>
           </Box>
         </Flex>
         <Flex
