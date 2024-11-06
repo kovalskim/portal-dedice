@@ -27,6 +27,10 @@ export const theme = extendTheme({
         display: 'flex',
         minHeight: '100vh',
       },
+      '.pac-container': {
+        // google autocomplete dropdown class
+        zIndex: '10000',
+      },
     },
   },
   components: {
