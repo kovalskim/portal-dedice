@@ -19,10 +19,10 @@ type ChangePersonalDataFormProps = {
 };
 
 const schema = z.object({
-  beforeTitle: z.string(),
+  beforeTitle: z.string().nullable(),
   firstname: z.string().min(1, { message: 'Jméno nesmí být prázdné' }),
   lastname: z.string().min(1, { message: 'Příjmení nesmí být prázdné' }),
-  afterTitle: z.string(),
+  afterTitle: z.string().nullable(),
 });
 
 export const ChangePersonalDataForm: FC<ChangePersonalDataFormProps> = ({
@@ -49,10 +49,10 @@ export const ChangePersonalDataForm: FC<ChangePersonalDataFormProps> = ({
     <Box mt={4}>
       <Form
         defaultValues={{
-          beforeTitle: user?.beforeTitle ?? undefined,
+          beforeTitle: user?.beforeTitle ?? null,
           firstname: user?.firstname,
           lastname: user?.lastname,
-          afterTitle: user?.afterTitle ?? undefined,
+          afterTitle: user?.afterTitle ?? null,
         }}
         resolver={zodResolver(schema)}
         onSubmit={onSubmit}

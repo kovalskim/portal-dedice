@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useMutation } from '@apollo/client';
 import { defineStyle, HStack } from '@chakra-ui/icons';
 import { Box } from '@chakra-ui/layout';
@@ -37,8 +37,6 @@ import { Routes } from '@frontend/routes.ts';
 export const ProfilePage = () => {
   const { signIn, user, token } = useAuth();
   const navigate = useNavigate();
-
-  const [accordionIndex, setAccordionIndex] = useState<number | number[]>(-1);
 
   const showToast = useCustomToast();
 
@@ -90,8 +88,6 @@ export const ProfilePage = () => {
         description: 'Vaše osobní údaje byly úspěšně změněny.',
         status: 'success',
       });
-
-      setAccordionIndex(-1);
     } catch (err) {
       console.error(err);
     }
@@ -114,8 +110,6 @@ export const ProfilePage = () => {
         description: 'Vaše heslo bylo úspěšně změněno.',
         status: 'success',
       });
-
-      setAccordionIndex(-1);
     } catch (err) {
       console.error(err);
     }
@@ -158,11 +152,7 @@ export const ProfilePage = () => {
           </Stack>
         </Flex>
 
-        <Accordion
-          allowToggle
-          index={accordionIndex}
-          onChange={(index) => setAccordionIndex(index)}
-        >
+        <Accordion defaultIndex={[0]}>
           <AccordionItem>
             <AccordionButton>
               <Heading as="h3" size="md" textAlign="left" flex="1">
