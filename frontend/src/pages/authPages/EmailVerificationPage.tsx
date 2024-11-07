@@ -1,10 +1,8 @@
 import { useEffect } from 'react';
 import { useMutation } from '@apollo/client';
-import { WarningIcon } from '@chakra-ui/icons';
 import { Box, Center, Flex, Heading, Spinner, Text } from '@chakra-ui/react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-import { SecondaryButton } from '@frontend/components';
 import { VERIFY_EMAIL_MUTATION } from '@frontend/gql/user/mutations';
 import { useCustomToast } from '@frontend/hooks/useCustomToast.ts';
 import { Routes } from '@frontend/routes';
@@ -20,6 +18,24 @@ export const EmailVerificationPage = () => {
   // Extract token from the URL query parameters
   const searchParams = new URLSearchParams(location.search);
   const token = searchParams.get('token');
+
+  useEffect(() => {
+    if (error && error.message.includes('expired')) {
+      showToast({
+        title: 'Vypadá to, že verifikační odkaz expiroval.',
+        description: 'Přihlaste se a požádejte o nový.',
+        status: 'error',
+      });
+      navigate(Routes.home);
+    } else if (error) {
+      showToast({
+        title: 'Odkaz není validní',
+        description: 'Zadejte prosím validní odkaz.',
+        status: 'error',
+      });
+      navigate(Routes.home);
+    }
+  }, [error, navigate, showToast]);
 
   useEffect(() => {
     if (token) {
@@ -83,24 +99,6 @@ export const EmailVerificationPage = () => {
               <Spinner color="white" size="xl" mb="10" />
               <Text color="white">Ověřuji emailovou adresu...</Text>
             </Flex>
-          )}
-
-          {/* Handle error state */}
-          {error && (
-            <Center flexDirection="column">
-              <WarningIcon color="red.600" boxSize={16} mb={4} />
-              <Text color="white" mb={10} fontSize="lg" fontWeight="medium">
-                {error.message.includes('expired')
-                  ? 'Vypadá to, že verifikační odkaz expiroval. Přihlaste se a požádejte o nový.'
-                  : 'Odkaz není validní. Zadejte prosím validní odkaz.'}
-              </Text>
-              <SecondaryButton
-                onClick={() => navigate(Routes.home)}
-                colorScheme="gray"
-              >
-                Návrat na hlavní stránku
-              </SecondaryButton>
-            </Center>
           )}
         </Box>
       </Flex>

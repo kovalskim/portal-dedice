@@ -16,7 +16,7 @@ export const useCustomToast = () => {
     title,
     description,
     status = 'info',
-    duration = 6000,
+    duration = 4000,
     isClosable = true,
     position = 'bottom-right',
   }: ToastParams) => {

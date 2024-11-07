@@ -1,9 +1,6 @@
-import { FC } from 'react';
+import { FC, useEffect } from 'react';
 import { useMutation } from '@apollo/client';
 import {
-  Alert,
-  AlertIcon,
-  Flex,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -42,6 +39,16 @@ export const NewProceedingsModal: FC<NewProceedingsModalProps> = ({
       refetchQueries: [{ query: GET_ALL_PROCEEDINGS }],
     });
 
+  useEffect(() => {
+    if (error && isOpen) {
+      showToast({
+        title: 'Založení nového dědického řízení se nezdařilo',
+        description: 'Při vytváření dědického řízení došlo k problémům.',
+        status: 'error',
+      });
+    }
+  }, [error, showToast, isOpen]);
+
   const onSubmit = (data: DeceasedPersonFormFields) => {
     createProceedings({
       variables: {
@@ -65,14 +72,6 @@ export const NewProceedingsModal: FC<NewProceedingsModalProps> = ({
         <ModalCloseButton />
         <ModalBody>
           <DeceasedPersonForm id={formId} onSubmit={(data) => onSubmit(data)} />
-          {error && (
-            <Flex justifyContent="center">
-              <Alert status="error" mb="8">
-                <AlertIcon />
-                Ups, něco se pokazilo. Zkuste to prosím znovu.
-              </Alert>
-            </Flex>
-          )}
         </ModalBody>
         <ModalFooter justifyContent="space-between">
           <SecondaryButton onClick={onClose} disabled={loading}>

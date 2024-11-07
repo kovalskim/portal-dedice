@@ -1,10 +1,11 @@
-import React, { FC } from 'react';
+import React, { FC, useEffect } from 'react';
 import { Box, Center, Heading, Stack, Text } from '@chakra-ui/react';
 import { SubmitHandler } from 'react-hook-form';
 import * as z from 'zod';
 
 import { Form, InputField, PrimaryButton } from '@frontend/components';
 import { RouterLink } from '@frontend/components/navigation/atoms';
+import { useCustomToast } from '@frontend/hooks/useCustomToast.ts';
 import { Routes } from '@frontend/routes.ts';
 
 export type FormFields = z.infer<typeof schema>;
@@ -24,6 +25,17 @@ export const ForgottenPasswordForm: FC<ForgottenPasswordFormProps> = ({
   loading,
   error,
 }) => {
+  const showToast = useCustomToast();
+
+  useEffect(() => {
+    if (error) {
+      showToast({
+        title: 'Něco se pokazilo.',
+        status: 'error',
+      });
+    }
+  }, [error, showToast]);
+
   return (
     <Box>
       <Heading size="md" mb={12} textAlign="center">

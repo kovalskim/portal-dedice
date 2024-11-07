@@ -21,12 +21,10 @@ import { Routes } from '@frontend/routes.ts';
 export const LogInPage = () => {
   const navigate = useNavigate();
   const auth = useAuth();
-
-  const [signIn, { loading, error }] = useMutation(SIGN_IN_MUTATION);
-
+  const showToast = useCustomToast();
   const isMobile = useBreakpointValue({ base: true, md: false });
 
-  const showToast = useCustomToast();
+  const [signIn, { loading, error }] = useMutation(SIGN_IN_MUTATION);
 
   const onSubmit: SubmitHandler<FormFields> = async (data) => {
     try {
@@ -48,7 +46,6 @@ export const LogInPage = () => {
 
       navigate(Routes.home);
     } catch (err) {
-      console.error(error);
       console.error(err);
     }
   };

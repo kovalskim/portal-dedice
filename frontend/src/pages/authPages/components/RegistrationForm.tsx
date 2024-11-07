@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { Box } from '@chakra-ui/layout';
 import { Center, Flex, Heading, Stack, Text } from '@chakra-ui/react';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -6,6 +7,7 @@ import * as z from 'zod';
 
 import { Form, InputField, PrimaryButton } from '@frontend/components';
 import { RouterLink } from '@frontend/components/navigation/atoms';
+import { useCustomToast } from '@frontend/hooks/useCustomToast.ts';
 import { Routes } from '@frontend/routes';
 
 export type FormFields = z.infer<typeof schema>;
@@ -34,6 +36,18 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
   loading,
   error,
 }) => {
+  const showToast = useCustomToast();
+
+  useEffect(() => {
+    if (error) {
+      showToast({
+        title: 'Registrace se nezdařila.',
+        description: 'Uživatel se zadanou emailovou adresou již existuje.',
+        status: 'error',
+      });
+    }
+  }, [error, showToast]);
+
   return (
     <Box>
       <Heading size="md" mb={8} textAlign="center">
@@ -94,13 +108,6 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
             Registrovat se
           </PrimaryButton>
         </Center>
-        {error && (
-          <Center mt={4}>
-            <Text color="red.500">
-              Uživatel se zadanou emailovou adresou již existuje
-            </Text>
-          </Center>
-        )}
         <Center mt="8">
           <Text>
             Již máte založený účet?{' '}

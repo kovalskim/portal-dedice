@@ -16,8 +16,9 @@ import { FormFields, RegistrationForm } from './components/RegistrationForm';
 
 export const SignUpPage = () => {
   const navigate = useNavigate();
-  const [signUp, { loading, error }] = useMutation(SIGN_UP_MUTATION);
   const isMobile = useBreakpointValue({ base: true, md: false });
+
+  const [signUp, { loading, error }] = useMutation(SIGN_UP_MUTATION);
 
   const onSubmit: SubmitHandler<FormFields> = async (data) => {
     try {
