@@ -1,7 +1,13 @@
 import { eq } from 'drizzle-orm';
 import { MySql2Database } from 'drizzle-orm/mysql2';
 
-import { phases, proceedings } from '@backend/db/schema';
+import {
+  participants,
+  participantStates,
+  phases,
+  proceedings,
+  users,
+} from '@backend/db/schema';
 
 export interface ProceedingsDTO {
   id: number;
@@ -31,6 +37,43 @@ export interface CreateProceedingsDTO {
   deceasedDistrict: string;
   deceasedPostalCode: string;
   notaryId: number;
+  startDate: Date;
+}
+
+interface ParticipantRow {
+  participants: {
+    proceedingId: number;
+  };
+  participant_states: {
+    id: number;
+    title: string;
+  };
+  users: {
+    id: number;
+    beforeTitle: string | null;
+    firstname: string;
+    lastname: string;
+    afterTitle: string | null;
+    email: string;
+    isVerified: boolean;
+  };
+}
+
+interface ParticipantDTO {
+  proceedingId: number;
+  participantState: {
+    id: number;
+    title: string;
+  };
+  user: {
+    id: number;
+    firstname: string;
+    afterTitle: string | null;
+    beforeTitle: string | null;
+    isVerified: boolean;
+    email: string;
+    lastname: string;
+  };
 }
 
 export class ProceedingsRepository {
@@ -54,7 +97,7 @@ export class ProceedingsRepository {
     const phase = await this.db
       .select()
       .from(phases)
-      .where(eq(phases.title, 'probíhající')); // TODO - toto sa mi nepáči xD pridať do db key k tým fázam?
+      .where(eq(phases.title, 'Úvodní fáze')); // TODO - pokud bude možnost v modálu při vytváření zvolit výchozí fázi, tak dodělat vyhledání přes id fáze
 
     if (!phase) {
       throw new Error('phase not found');
@@ -64,7 +107,6 @@ export class ProceedingsRepository {
       .insert(proceedings)
       .values({
         phaseId: phase[0].id,
-        startDate: new Date(),
         ...proceedingsData,
       })
       .$returningId();
@@ -93,5 +135,37 @@ export class ProceedingsRepository {
       .from(proceedings)
       .leftJoin(phases, eq(proceedings.phaseId, phases.id));
     return proceedingsWithTitle as ProceedingsDTO[];
+  }
+
+  async getProceedingParticipants(
+    proceedingId: number,
+  ): Promise<ParticipantDTO[]> {
+    return await this.db
+      .select()
+      .from(participants)
+      .innerJoin(users, eq(users.id, participants.userId))
+      .innerJoin(
+        participantStates,
+        eq(participantStates.id, participants.participantStateId),
+      )
+      .where(eq(participants.proceedingId, proceedingId))
+      .then((rows: ParticipantRow[]) =>
+        rows.map((row) => ({
+          proceedingId: row.participants.proceedingId,
+          user: {
+            id: row.users.id,
+            beforeTitle: row.users.beforeTitle,
+            firstname: row.users.firstname,
+            lastname: row.users.lastname,
+            afterTitle: row.users.afterTitle,
+            email: row.users.email,
+            isVerified: row.users.isVerified,
+          },
+          participantState: {
+            id: row.participant_states.id,
+            title: row.participant_states.title,
+          },
+        })),
+      );
   }
 }

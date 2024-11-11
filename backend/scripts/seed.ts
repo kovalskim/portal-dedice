@@ -2,6 +2,8 @@ import { getConnection } from '../src/db/db';
 import {
   courts,
   districts,
+  participants,
+  participantStates,
   phases,
   proceedings,
   roles,
@@ -34,19 +36,6 @@ async function seed() {
       console.log('Roles already exist, skipping role seed');
     }
 
-    // remove values from phases table
-    await db.delete(phases);
-
-    if ((await db.select().from(phases)).length === 0) {
-      console.log('No phases found, inserting sample phases');
-      // @ts-ignore
-      await db.insert(phases).values([
-        { id: 1, title: 'probíhající', description: 'Řízení probíhá...' },
-        { id: 2, title: 'ukončeno', description: 'Řízení bilo ukončeno' },
-      ]);
-      console.log('Sample phases inserted');
-    }
-
     if ((await db.select().from(users)).length === 0) {
       console.log('No users found, inserting sample users');
       // @ts-ignore
@@ -54,11 +43,11 @@ async function seed() {
         {
           id: 1,
           roleId: 1,
-          beforeTitle: 'Mr.',
-          firstname: 'Young',
-          lastname: 'Gatchell',
+          beforeTitle: null,
+          firstname: 'Jan',
+          lastname: 'Nový',
           afterTitle: null,
-          email: 'yg123@quacker.cz',
+          email: 'jnovy@email.cz',
           password:
             '$argon2id$v=19$m=65536,t=3,p=4$2WbGklNQBpoqvGGU++ZbVw$QqmS8jPchj+f3n8BvxSrrsuaIEaVs75Ohx2FzkEl+Y8',
           isVerified: true,
@@ -66,26 +55,26 @@ async function seed() {
         {
           id: 2,
           roleId: 2,
-          beforeTitle: 'Ms.',
-          firstname: 'Gatchell',
-          lastname: 'Young',
+          beforeTitle: 'Bc.',
+          firstname: 'Petra',
+          lastname: 'Stará',
           afterTitle: null,
-          email: 'gyoung@quacker.cz',
+          email: 'pstara@email.cz',
           password:
             '$argon2id$v=19$m=65536,t=3,p=4$2WbGklNQBpoqvGGU++ZbVw$QqmS8jPchj+f3n8BvxSrrsuaIEaVs75Ohx2FzkEl+Y8',
-          isVerified: false,
+          isVerified: true,
         },
         {
           id: 3,
           roleId: 3,
-          beforeTitle: 'Dr.',
-          firstname: 'Mitchel',
-          lastname: 'Old',
-          afterTitle: 'PhD',
-          email: 'oldmit@quacker.cz',
+          beforeTitle: 'JUDr.',
+          firstname: 'Alfons',
+          lastname: 'Notárič',
+          afterTitle: '',
+          email: 'anotaric@email.cz',
           password:
             '$argon2id$v=19$m=65536,t=3,p=4$2WbGklNQBpoqvGGU++ZbVw$QqmS8jPchj+f3n8BvxSrrsuaIEaVs75Ohx2FzkEl+Y8',
-          isVerified: false,
+          isVerified: true,
         },
       ]);
       console.log('Sample users inserted');
@@ -107,13 +96,39 @@ async function seed() {
     console.log('Inserting schedules');
     await db.insert(schedules).values(schedulesData);
 
-    // delete proceedings
+    await db.delete(participants);
     await db.delete(proceedings);
+    await db.delete(phases);
+    await db.delete(participantStates);
+
+    if ((await db.select().from(phases)).length === 0) {
+      console.log('No phases found, inserting sample phases');
+      // @ts-ignore
+      await db.insert(phases).values([
+        { id: 1, title: 'Úvodní fáze', description: '...' },
+        { id: 2, title: 'Předběžné šetření', description: '...' },
+        { id: 3, title: 'Pozůstalostní řízení', description: '...' },
+        { id: 4, title: 'Ukončené', description: '...' },
+      ]);
+      console.log('Sample phases inserted');
+    }
 
     console.log('Inserting proceedings');
     await db.insert(proceedings).values(proceedingsData);
 
-    console.log('Seed function completed');
+    console.log('Inserting participant states');
+    await db.insert(participantStates).values([
+      { id: 1, title: 'Čeká na schválení' },
+      { id: 2, title: 'Schválený' },
+      { id: 3, title: 'Zamítnutý' },
+    ]);
+
+    console.log('Inserting proceeding participants');
+    await db.insert(participants).values([
+      { id: 1, userId: 1, proceedingId: 1, participantStateId: 1 },
+      { id: 2, userId: 2, proceedingId: 1, participantStateId: 2 },
+    ]);
+
     console.log('Seed function completed');
   } finally {
     await connection.connection.end();

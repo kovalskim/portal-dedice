@@ -7,10 +7,10 @@ import {
 import { ForgottenPasswordPage } from '@frontend/pages/authPages/ForgottenPasswordPage.tsx';
 import { NewPasswordPage } from '@frontend/pages/authPages/NewPasswordPage.tsx';
 import { EducatorPage } from '@frontend/pages/educator/EducatorPages.tsx';
+import { ProceedingsParticipants } from '@frontend/pages/proceeding/participants/ProceedingsParticipants';
 import { ProfilePage } from '@frontend/pages/profile/ProfilePage.tsx';
 
 import { ErrorPage } from './pages/errorPages/ErrorPage';
-import { ProceedingsParticipants } from './pages/proceedings/participants/ProceedingsParticipants';
 import { App } from './App';
 import { MainLayout } from './components';
 import {
@@ -19,8 +19,8 @@ import {
   HomePage,
   LogInPage,
   NotFoundPage,
-  ProceedingsLayout,
-  ProceedingsOverview,
+  ProceedingLayout,
+  ProceedingsOverviewPage,
   SignUpPage,
   UserDashboard,
 } from './pages';
@@ -51,22 +51,23 @@ export const getRouter = () => {
               element={<EmailVerificationPage />}
             />
             <Route path={Routes.proceedings} element={<UserDashboard />} />
-            <Route element={<ProceedingsLayout />}>
+            <Route element={<ProceedingLayout />}>
               <Route
-                path={Routes.proceedingsOverview}
-                element={<ProceedingsOverview />}
+                path={Routes.proceedingOverview}
+                element={<ProceedingsOverviewPage />}
               />
               <Route
-                path={Routes.proceedingsParticipants}
+                path={Routes.proceedingParticipants}
                 element={<ProceedingsParticipants />}
               />
+              <Route path={Routes.proceedingFiles} element={<NotFoundPage />} />
+              <Route path={Routes.proceedingChat} element={<NotFoundPage />} />
               <Route
-                path={Routes.proceedingsFiles}
+                path={Routes.proceedingAssets}
                 element={<NotFoundPage />}
               />
-              <Route path={Routes.proceedingsChat} element={<NotFoundPage />} />
               <Route
-                path={Routes.proceedingsAssets}
+                path={Routes.proceedingSettings}
                 element={<NotFoundPage />}
               />
             </Route>

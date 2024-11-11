@@ -97,7 +97,8 @@ export const proceedings = mysqlTable('proceedings', {
   }).notNull(),
   phaseId: int('phase_id')
     .notNull()
-    .references(() => phases.id),
+    .references(() => phases.id)
+    .default(1),
   startDate: date('start_date').notNull(),
   notaryId: int('notary_id').references(() => users.id),
 });
@@ -110,6 +111,14 @@ export const participants = mysqlTable('participants', {
   proceedingId: int('proceeding_id')
     .notNull()
     .references(() => proceedings.id),
+  participantStateId: int('participant_state_id').references(
+    () => participantStates.id,
+  ),
+});
+
+export const participantStates = mysqlTable('participant_states', {
+  id: int('id').primaryKey().autoincrement(),
+  title: varchar('title', { length: 255 }).notNull(),
 });
 
 const MeetingType: [string, ...string[]] = ['online', 'in_person'];

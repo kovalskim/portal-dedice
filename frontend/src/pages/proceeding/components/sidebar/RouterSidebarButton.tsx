@@ -13,12 +13,15 @@ export const RouterSidebarButton = (props: Props) => {
       variant="ghost"
       as={ReactRouterNavLink}
       _hover={{
-        bg: 'lightGray.500',
+        bg: 'goldenYellow.100',
       }}
       _activeLink={{
         bg: 'goldenYellow.500',
         color: 'white',
       }}
+      py={6}
+      pl={5}
+      justifyContent="flex-start"
     />
   );
 };

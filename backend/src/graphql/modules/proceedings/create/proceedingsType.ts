@@ -5,6 +5,15 @@ export class Proceedings {
   @Field(() => ID)
   id!: number;
 
+  @Field(() => Number)
+  phaseId!: number;
+
+  @Field(() => Number)
+  notaryId!: number;
+
+  @Field(() => String)
+  startDate!: string;
+
   @Field(() => String)
   proceedingsNumber!: string;
 
@@ -19,9 +28,6 @@ export class Proceedings {
 
   @Field(() => String)
   deceasedDateOfBirth!: string;
-
-  @Field(() => String)
-  startDate!: string;
 
   @Field(() => String)
   deceasedStreetWithNumber!: string;

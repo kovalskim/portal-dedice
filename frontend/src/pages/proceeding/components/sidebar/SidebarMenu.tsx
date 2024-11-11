@@ -1,4 +1,5 @@
 import { HamburgerIcon } from '@chakra-ui/icons';
+import { Box } from '@chakra-ui/layout';
 import {
   Flex,
   IconButton,
@@ -7,24 +8,30 @@ import {
   MenuItem,
   MenuList,
   Show,
+  Text,
 } from '@chakra-ui/react';
+import {
+  FaChartPie,
+  FaCog,
+  FaComments,
+  FaFolderOpen,
+  FaHome,
+  FaUsers,
+} from 'react-icons/fa';
 
 import { RouterNavLink } from '@frontend/components/navigation/atoms';
 import { Routes } from '@frontend/routes';
+import { insertIdToUrl } from '@frontend/utils/util.tsx';
 
 import { RouterSidebarButton } from './RouterSidebarButton';
 
 type SidebarMenuProps = {
-  id: string;
+  id: number;
 };
 
 export const SidebarMenu = ({ id }: SidebarMenuProps) => {
-  const insertIdToUrl = (url: string) => {
-    return url.replace(':id', id);
-  };
-
   return (
-    <>
+    <Box mt={{ base: 0, md: 8 }}>
       <Show below="md">
         <Menu>
           <MenuButton
@@ -36,7 +43,7 @@ export const SidebarMenu = ({ id }: SidebarMenuProps) => {
           <MenuList>
             <MenuItem>
               <RouterNavLink
-                to={insertIdToUrl(Routes.proceedingsOverview)}
+                to={insertIdToUrl(Routes.proceedingOverview, id)}
                 width="full"
               >
                 Přehled
@@ -44,7 +51,7 @@ export const SidebarMenu = ({ id }: SidebarMenuProps) => {
             </MenuItem>
             <MenuItem>
               <RouterNavLink
-                to={insertIdToUrl(Routes.proceedingsParticipants)}
+                to={insertIdToUrl(Routes.proceedingParticipants, id)}
                 width="full"
               >
                 Účastníci
@@ -52,7 +59,7 @@ export const SidebarMenu = ({ id }: SidebarMenuProps) => {
             </MenuItem>
             <MenuItem>
               <RouterNavLink
-                to={insertIdToUrl(Routes.proceedingsFiles)}
+                to={insertIdToUrl(Routes.proceedingFiles, id)}
                 width="full"
               >
                 Soubory
@@ -60,7 +67,7 @@ export const SidebarMenu = ({ id }: SidebarMenuProps) => {
             </MenuItem>
             <MenuItem>
               <RouterNavLink
-                to={insertIdToUrl(Routes.proceedingsChat)}
+                to={insertIdToUrl(Routes.proceedingChat, id)}
                 width="full"
               >
                 Chat
@@ -68,10 +75,18 @@ export const SidebarMenu = ({ id }: SidebarMenuProps) => {
             </MenuItem>
             <MenuItem>
               <RouterNavLink
-                to={insertIdToUrl(Routes.proceedingsAssets)}
+                to={insertIdToUrl(Routes.proceedingAssets, id)}
                 width="full"
               >
                 Rozvrh majetku
+              </RouterNavLink>
+            </MenuItem>
+            <MenuItem>
+              <RouterNavLink
+                to={insertIdToUrl(Routes.proceedingSettings, id)}
+                width="full"
+              >
+                Nastavení
               </RouterNavLink>
             </MenuItem>
           </MenuList>
@@ -81,38 +96,49 @@ export const SidebarMenu = ({ id }: SidebarMenuProps) => {
       <Show above="md">
         <Flex direction="column" gap={3}>
           <RouterSidebarButton
-            to={insertIdToUrl(Routes.proceedingsOverview)}
+            to={insertIdToUrl(Routes.proceedingOverview, id)}
             width="full"
-            mt="10"
           >
-            Přehled
+            <FaHome />
+            <Text ml={2}>Přehled</Text>
           </RouterSidebarButton>
           <RouterSidebarButton
-            to={insertIdToUrl(Routes.proceedingsParticipants)}
+            to={insertIdToUrl(Routes.proceedingParticipants, id)}
             width="full"
           >
-            Účastníci
+            <FaUsers />
+            <Text ml={2}>Účastníci</Text>
           </RouterSidebarButton>
           <RouterSidebarButton
-            to={insertIdToUrl(Routes.proceedingsFiles)}
+            to={insertIdToUrl(Routes.proceedingFiles, id)}
             width="full"
           >
-            Soubory
+            <FaFolderOpen />
+            <Text ml={2}>Soubory</Text>
           </RouterSidebarButton>
           <RouterSidebarButton
-            to={insertIdToUrl(Routes.proceedingsChat)}
+            to={insertIdToUrl(Routes.proceedingChat, id)}
             width="full"
           >
-            Chat
+            <FaComments />
+            <Text ml={2}>Chat</Text>
           </RouterSidebarButton>
           <RouterSidebarButton
-            to={insertIdToUrl(Routes.proceedingsAssets)}
+            to={insertIdToUrl(Routes.proceedingAssets, id)}
             width="full"
           >
-            Rozvrh majetku
+            <FaChartPie />
+            <Text ml={2}>Rozvrh majetku</Text>
+          </RouterSidebarButton>
+          <RouterSidebarButton
+            to={insertIdToUrl(Routes.proceedingSettings, id)}
+            width="full"
+          >
+            <FaCog />
+            <Text ml={2}>Nastavení</Text>
           </RouterSidebarButton>
         </Flex>
       </Show>
-    </>
+    </Box>
   );
 };

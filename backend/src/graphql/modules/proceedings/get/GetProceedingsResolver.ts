@@ -1,12 +1,23 @@
 import { GraphQLError } from 'graphql';
-import { Arg, Ctx, Query, Resolver } from 'type-graphql';
+import { Arg, Ctx, FieldResolver, Query, Resolver, Root } from 'type-graphql';
 
+import { unauthenticatedError } from '@backend/graphql/errors';
+import { Participant } from '@backend/graphql/modules/proceedings/participantType';
+import { User } from '@backend/graphql/modules/user/userType';
 import { CustomContext } from '@backend/types/types';
 
 import { Proceedings } from '../create/proceedingsType';
 
 @Resolver(() => Proceedings)
 export class GetProceedingsResolver {
+  @FieldResolver(() => User)
+  async notary(
+    @Root() proceeding: Proceedings,
+    @Ctx() { usersRepository }: CustomContext,
+  ): Promise<User> {
+    return usersRepository.getUserById(proceeding.notaryId);
+  }
+
   @Query(() => Proceedings, { nullable: true })
   async getProceeding(
     @Arg('id') id: number,
@@ -58,5 +69,17 @@ export class GetProceedingsResolver {
       deceasedDateOfBirth: proceeding.deceasedDateOfBirth.toISOString(),
       startDate: proceeding.startDate.toISOString(),
     }));
+  }
+
+  @Query(() => [Participant])
+  async proceedingParticipants(
+    @Arg('id') proceedingId: number,
+    @Ctx() { authUser, proceedingsRepository }: CustomContext,
+  ): Promise<Participant[]> {
+    if (!authUser) {
+      unauthenticatedError('Unauthorized');
+    }
+
+    return await proceedingsRepository.getProceedingParticipants(proceedingId);
   }
 }

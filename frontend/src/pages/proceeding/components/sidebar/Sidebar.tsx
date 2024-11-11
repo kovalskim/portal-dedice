@@ -2,22 +2,30 @@ import { Box, Flex } from '@chakra-ui/react';
 import { useParams } from 'react-router-dom';
 
 import { Link } from '@frontend/components/links';
+import { Proceeding } from '@frontend/gql/proceedings/queries.ts';
+import { Routes } from '@frontend/routes.ts';
 
 import { SidebarMenu } from './SidebarMenu';
 import { SidebarProceedingsInfo } from './SidebarProceedingsInfo';
 
-export const Sidebar = () => {
+type SidebarProps = {
+  proceeding: Proceeding;
+};
+
+export const Sidebar = ({ proceeding }: SidebarProps) => {
   const { id } = useParams();
 
   return (
     <Box>
-      <Link fontSize="sm">{'← Zpět na seznam dědických řízení'}</Link>
+      <Link fontSize="md" href={Routes.proceedings}>
+        {'← Zpět na seznam dědických řízení'}
+      </Link>
       <Flex
         direction={{ base: 'row', md: 'column' }}
         justifyContent={{ base: 'space-between', md: 'inherit' }}
       >
-        <SidebarProceedingsInfo id={id ?? ''} />
-        <SidebarMenu id={id ?? ''} />
+        <SidebarProceedingsInfo proceeding={proceeding} />
+        <SidebarMenu id={Number(id) ?? ''} />
       </Flex>
     </Box>
   );

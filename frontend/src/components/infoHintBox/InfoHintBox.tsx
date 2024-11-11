@@ -52,7 +52,7 @@ export const InfoHintBox: FC<PropsWithChildren<InfoHintBoxProps>> = ({
         as={FaQuestionCircle}
         boxSize={5}
         color={theme.colors.goldenYellow[700]}
-        mr={3}
+        mr={5}
       />
       <Box>
         <AlertTitle>

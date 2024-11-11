@@ -45,11 +45,11 @@ export class CreateProceedingsResolver {
     }
 
     const proceedingsNumber = `${new Date().getFullYear()}_${new Date().getMonth()}_${new Date().getDate()}_${input.firstname[0]}${input.lastname.slice(0, 2)}`;
-
     // Create the proceedings in the database
     const newProceedingsId = await proceedingsRepository.createProceedings({
       proceedingsNumber: proceedingsNumber,
-      notaryId: authUser!.userId,
+      notaryId: authUser!.id,
+      startDate: new Date(), //TODO: taky jako input
       deceasedFirstName: input.firstname,
       deceasedLastName: input.lastname,
       deceasedDateOfDeath: new Date(input.deathdate),

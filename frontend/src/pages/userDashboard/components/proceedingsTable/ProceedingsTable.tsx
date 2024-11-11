@@ -32,7 +32,10 @@ import {
   PrimaryButton,
   SelectField,
 } from '@frontend/components';
+import { RouterNavButton } from '@frontend/components/navigation/atoms/RouterNavButton.tsx';
 import { GET_ALL_PROCEEDINGS } from '@frontend/gql/proceedings/queries';
+import { Routes } from '@frontend/routes.ts';
+import { insertIdToUrl } from '@frontend/utils/util.tsx';
 
 type Proceeding = {
   id: number;
@@ -225,7 +228,15 @@ export const ProceedingsTable: React.FC = () => {
                     </Td>
                     <Td>{proceeding.phaseTitle}</Td>
                     <Td>
-                      <PrimaryButton size="sm">Detail</PrimaryButton>
+                      <RouterNavButton
+                        to={insertIdToUrl(
+                          Routes.proceedingOverview,
+                          proceeding.id,
+                        )}
+                        size="sm"
+                      >
+                        Detail
+                      </RouterNavButton>
                     </Td>
                   </Tr>
                 ))

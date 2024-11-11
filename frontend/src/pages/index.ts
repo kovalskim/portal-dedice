@@ -4,6 +4,6 @@ export * from './authPages/LogInPage';
 export * from './authPages/SignUpPage';
 export * from './errorPages/NotFoundPage';
 export * from './home/HomePage';
-export * from './proceedings/overview/ProceedingsOverview';
-export * from './proceedings/ProceedingsLayout';
 export * from './userDashboard/UserDashboard';
+export * from '@frontend/pages/proceeding/overview/ProceedingsOverviewPage.tsx';
+export * from '@frontend/pages/proceeding/ProceedingLayout.tsx';
