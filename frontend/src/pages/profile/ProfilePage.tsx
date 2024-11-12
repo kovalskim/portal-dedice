@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useMutation } from '@apollo/client';
-import { defineStyle, HStack } from '@chakra-ui/icons';
+import { defineStyle } from '@chakra-ui/icons';
 import { Box } from '@chakra-ui/layout';
 import {
   Accordion,
@@ -115,6 +115,10 @@ export const ProfilePage = () => {
     }
   };
 
+  if (!user) {
+    return null;
+  }
+
   return (
     <Box
       display="flex"
@@ -132,27 +136,29 @@ export const ProfilePage = () => {
         p={8}
       >
         <Heading>Můj profil</Heading>
-        <Flex justifyContent="center" alignItems="center" height="100%">
-          <Stack gap="8" my={12}>
-            <HStack key={user?.email} gap="8">
-              <Avatar
-                name={`${user?.firstname} ${user?.lastname}`}
-                size="xl"
-                css={ringCss}
-              />
-              <Stack gap="0">
-                <Text fontWeight="medium" fontSize="2xl">
-                  {`${user?.beforeTitle ? user.beforeTitle + ' ' : ''}${user?.firstname} ${user?.lastname}${user?.afterTitle ? ',' : ''} ${user?.afterTitle || ''}`}
-                </Text>
-                <Text color="fg.muted" fontSize={'lg'}>
-                  {user?.email}
-                </Text>
-              </Stack>
-            </HStack>
+        <Flex
+          gap="8"
+          my={12}
+          mx={6}
+          flexDirection={{ base: 'column', md: 'row' }}
+          alignItems={{ base: 'center', md: 'flex-start' }}
+        >
+          <Avatar
+            name={`${user.firstname} ${user.lastname}`}
+            size="xl"
+            css={ringCss}
+          />
+          <Stack gap="0">
+            <Text fontWeight="medium" fontSize="2xl">
+              {`${user.beforeTitle ? user.beforeTitle + ' ' : ''}${user.firstname} ${user.lastname}${user.afterTitle ? `, ${user.afterTitle}` : ''}`}
+            </Text>
+            <Text color="fg.muted" fontSize={'lg'}>
+              {user.email}
+            </Text>
           </Stack>
         </Flex>
 
-        <Accordion defaultIndex={[0]}>
+        <Accordion defaultIndex={[0]} allowMultiple>
           <AccordionItem>
             <AccordionButton>
               <Heading as="h3" size="md" textAlign="left" flex="1">

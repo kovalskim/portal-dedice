@@ -2,13 +2,19 @@ import { getConnection } from '../src/db/db';
 import {
   courts,
   districts,
+  files,
+  meetings,
+  messages,
   participants,
   participantStates,
   phases,
   proceedings,
   roles,
   schedules,
+  tasks,
+  taskStates,
   users,
+  verificationTokens,
 } from '../src/db/schema';
 
 import { courtsData } from './data/courts';
@@ -139,3 +145,24 @@ seed().catch((err) => {
   console.error('Error in seed function:', err);
   process.exit(1);
 });
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const dropAllTables = async (db) => {
+  console.log('Dropping tables');
+  await db.delete(participantStates);
+  await db.delete(participants);
+  await db.delete(verificationTokens);
+  await db.delete(users);
+  await db.delete(districts);
+  await db.delete(schedules);
+  await db.delete(proceedings);
+  await db.delete(phases);
+  await db.delete(participants);
+  await db.delete(meetings);
+  await db.delete(files);
+  await db.delete(messages);
+  await db.delete(taskStates);
+  await db.delete(tasks);
+  await db.delete(courts);
+  await db.delete(roles);
+};
