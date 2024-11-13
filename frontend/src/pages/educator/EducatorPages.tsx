@@ -27,6 +27,7 @@ import { Step23 } from './components/steps/phase2/Step23';
 import { Step211 } from './components/steps/phase2/Step211';
 import { Step212 } from './components/steps/phase2/Step212';
 import { Step30 } from './components/steps/phase3/Step30';
+import { Step31 } from './components/steps/phase3/Step31';
 
 type Step = {
   index: number;
@@ -59,6 +60,7 @@ const steps: Step[] = [
   { index: 211, stepEl: Step211 },
   { index: 212, stepEl: Step212 },
   { index: 30, stepEl: Step30 },
+  { index: 31, stepEl: Step31 },
 ];
 
 const findStepEl = (stepIndex: number) => {

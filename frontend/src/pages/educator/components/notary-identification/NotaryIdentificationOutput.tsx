@@ -14,7 +14,15 @@ export type IdentifyNotaryResponse = {
   identifyNotary: IdentifiedNotary;
 };
 
-export const NotaryIdentificationOutput = () => {
+type NotaryIdentificationOutputProps = {
+  hideInfoHintBox?: boolean;
+  hideText?: boolean;
+};
+
+export const NotaryIdentificationOutput = ({
+  hideInfoHintBox,
+  hideText,
+}: NotaryIdentificationOutputProps) => {
   const { storage, updateStorage } = useEducatorStorage();
 
   const [identifyNotary, { data, loading, error }] =
@@ -42,17 +50,21 @@ export const NotaryIdentificationOutput = () => {
   return (
     <>
       <Box textAlign="center">
-        <Box textAlign="left" mb="6">
-          <InfoHintBox title="Mohu si vybrat notáře sám?">
-            Vybrat si vlastního notáře pro dědické řízením není možné. Notář je
-            vždy soudně pověřen vedením dědických řízení dle platného rozvru
-            práce.
-          </InfoHintBox>
-        </Box>
-        <Text mb="8">
-          Notářem pověřeným řízením vedením dědického řízení pro daného
-          zůstavitele je:
-        </Text>
+        {!hideInfoHintBox && (
+          <Box textAlign="left" mb="6">
+            <InfoHintBox title="Mohu si vybrat notáře sám?">
+              Vybrat si vlastního notáře pro dědické řízením není možné. Notář
+              je vždy soudně pověřen vedením dědických řízení dle platného
+              rozvru práce.
+            </InfoHintBox>
+          </Box>
+        )}
+        {!hideText && (
+          <Text mb="8">
+            Notářem pověřeným řízením vedením dědického řízení pro daného
+            zůstavitele je:
+          </Text>
+        )}
 
         {loading && <Spinner color="goldenYellow.500" size="xl" mb="10" />}
 

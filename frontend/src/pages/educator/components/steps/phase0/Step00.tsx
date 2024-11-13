@@ -6,7 +6,7 @@ import { useEducatorStorage } from '@frontend/hooks/useEducatorStorage.ts';
 
 export const Step00 = () => {
   const { incrementState } = useEducatorState();
-  const { resetStorage, storage } = useEducatorStorage();
+  const { resetStorage, storage, getResult } = useEducatorStorage();
 
   return (
     <Card
@@ -30,7 +30,9 @@ export const Step00 = () => {
             otázky týkající se dědického řízení a poskytne vám dodatečné
             informace potřebné pro nadcházející komunikaci s notářem.
           </Text>
-          {!storage.deceasedPersonFormData && !storage.identifiedNotary ? (
+          {!storage.deceasedPersonFormData &&
+          !storage.identifiedNotary &&
+          !getResult() ? (
             <PrimaryButton
               onClick={() => {
                 incrementState();
