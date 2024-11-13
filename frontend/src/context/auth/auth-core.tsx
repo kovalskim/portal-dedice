@@ -7,9 +7,17 @@ import {
   useState,
 } from 'react';
 
+// eslint-disable-next-line react-refresh/only-export-components
+export enum Role {
+  ADMIN = 'admin',
+  USER = 'user',
+  NOTARY = 'notary',
+}
+
 type AuthState = {
   token: string | null;
   user: AuthUser | null;
+  role: Role | null;
 };
 
 export type AuthUser = {
@@ -26,12 +34,14 @@ const LOCAL_STORAGE_AUTH_KEY = 'project-auth';
 const initialState: AuthState = {
   token: null,
   user: null,
+  role: null,
 };
 
 const AuthContext = createContext(
   createContextValue({
     token: initialState.token,
     user: initialState.user,
+    role: initialState.role,
     setState: () =>
       console.error('You are using AuthContext without AuthProvider!'),
   }),
@@ -50,8 +60,8 @@ export const AuthProvider = ({ children }: Props) => {
   const [state, setState] = usePersistedAuth(initialState);
 
   const contextValue = useMemo(() => {
-    const { token, user } = state;
-    return createContextValue({ token, user, setState });
+    const { token, user, role } = state;
+    return createContextValue({ token, user, role, setState });
   }, [state, setState]);
 
   return (
@@ -62,6 +72,7 @@ export const AuthProvider = ({ children }: Props) => {
 function createContextValue({
   token,
   user,
+  role,
   setState,
 }: AuthState & {
   setState: (newState: AuthState) => void;
@@ -69,8 +80,10 @@ function createContextValue({
   return {
     token,
     user,
-    signIn: ({ token, user }: AuthState) => setState({ token, user }),
-    signOut: () => setState({ token: null, user: null }),
+    role,
+    signIn: ({ token, user, role }: AuthState) =>
+      setState({ token, user, role }),
+    signOut: () => setState({ token: null, user: null, role: null }),
   };
 }
 
@@ -98,10 +111,10 @@ function getStorageState(defaultState: AuthState): AuthState {
   }
 
   try {
-    const { user, token } = JSON.parse(rawData);
+    const { user, token, role } = JSON.parse(rawData);
 
-    if (token && user && user.id && user.firstname) {
-      return { token, user };
+    if (token && user && user.id && user.firstname && role) {
+      return { token, user, role };
     }
   } catch {}
 

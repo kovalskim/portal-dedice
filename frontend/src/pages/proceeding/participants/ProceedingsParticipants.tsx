@@ -19,6 +19,8 @@ import {
 import { useOutletContext } from 'react-router-dom';
 
 import { PrimaryButton } from '@frontend/components';
+import { useAuth } from '@frontend/context/auth';
+import { Role } from '@frontend/context/auth/auth-core';
 import {
   GET_PROCEEDING_PARTICIPANTS,
   ParticipantsResponse,
@@ -28,6 +30,7 @@ import { OutletContextType } from '@frontend/pages';
 
 export const ProceedingsParticipants = () => {
   const showToast = useCustomToast();
+  const { role } = useAuth();
   const { proceeding } = useOutletContext<OutletContextType>();
 
   const { data, loading, error } = useQuery<ParticipantsResponse>(
@@ -61,8 +64,9 @@ export const ProceedingsParticipants = () => {
         <Heading size="md" mb={{ base: 2, md: 0 }}>
           Seznam účastníků
         </Heading>
-        {/* TODO zobrazit button jen pokud je notář */}
-        <PrimaryButton leftIcon={<AddIcon />}>Přidat účastníka</PrimaryButton>
+        {role === Role.NOTARY && (
+          <PrimaryButton leftIcon={<AddIcon />}>Přidat účastníka</PrimaryButton>
+        )}
       </Flex>
       {loading && (
         <Flex justifyContent="center" mt={6}>

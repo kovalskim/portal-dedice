@@ -38,11 +38,22 @@ type Mutation {
   identifyNotary(data: DeceasedPersonInput!): Schedule!
   newPassword(newPassword: String!, token: String!): String!
   restorePassword(email: String!): String!
-  signIn(email: String!, password: String!): AuthInfo!
+  signIn(email: String!, password: String!): SignInInfo!
   signUp(email: String!, firstname: String!, lastname: String!, password: String!): AuthInfo!
   updateUser(afterTitle: String, beforeTitle: String, firstname: String!, lastname: String!, userId: String!): User!
   verifyEmail(token: String!): String!
   verifyToken(token: String!): String!
+}
+
+type Participant {
+  participantState: ParticipantState!
+  proceedingId: Float!
+  user: User!
+}
+
+type ParticipantState {
+  id: Float!
+  title: String!
 }
 
 type Proceedings {
@@ -55,6 +66,10 @@ type Proceedings {
   deceasedPostalCode: String!
   deceasedStreetWithNumber: String!
   id: ID!
+  notary: User!
+  notaryId: Float!
+  phaseId: Float!
+  phaseTitle: String
   proceedingsNumber: String!
   startDate: String!
 }
@@ -62,6 +77,9 @@ type Proceedings {
 type Query {
   _empty: String!
   districts: [District!]!
+  getAllProceedings: [Proceedings!]!
+  getProceeding(id: Float!): Proceedings
+  proceedingParticipants(id: Float!): [Participant!]!
   user(id: String!): User
   users: [User!]!
 }
@@ -80,6 +98,12 @@ type Schedule {
   pattern: String!
   secondaryNotaryId: Float
   secondaryNotaryName: String!
+}
+
+type SignInInfo {
+  role: Role!
+  token: String!
+  user: User!
 }
 
 type User {

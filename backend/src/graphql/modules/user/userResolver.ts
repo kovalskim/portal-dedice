@@ -24,9 +24,9 @@ import {
 } from '@backend/services/emailService/emailService';
 import { type CustomContext } from '@backend/types/types';
 
-import { Role } from './roleType';
+import { Role, UserRole } from './roleType';
 import { signUpSchema } from './userSchema';
-import { AuthInfo, User } from './userType';
+import { AuthInfo, SignInInfo, User } from './userType';
 
 @Resolver(() => User)
 export class UserResolver {
@@ -80,11 +80,8 @@ export class UserResolver {
       lastname,
       afterTitle,
     });
-    const newUser = await usersRepository.getUserById(userId);
 
-    return {
-      ...newUser,
-    };
+    return await usersRepository.getUserById(userId);
   }
 
   @Mutation(() => AuthInfo)
@@ -107,7 +104,7 @@ export class UserResolver {
       await usersRepository.updateUserPassword(user.id, password);
 
       return {
-        user: { ...user },
+        user,
         token: createToken({ id: user.id }),
       };
     } else {
@@ -115,12 +112,12 @@ export class UserResolver {
     }
   }
 
-  @Mutation(() => AuthInfo)
+  @Mutation(() => SignInInfo)
   async signIn(
     @Arg('email') email: string,
     @Arg('password') password: string,
     @Ctx() { usersRepository }: CustomContext,
-  ): Promise<AuthInfo> {
+  ): Promise<SignInInfo> {
     const user = await usersRepository.getUserByEmail(email);
 
     if (!user) {
@@ -134,8 +131,14 @@ export class UserResolver {
     if (await argon2.verify(user.password, password)) {
       const token = createToken({ id: user.id });
 
+      const role = await usersRepository.getUserRole(user.id);
+      if (!role) {
+        throw unauthorizedError('Unauthorized');
+      }
+
       return {
-        user: { ...user },
+        user,
+        role,
         token,
       };
     } else {
@@ -167,8 +170,7 @@ export class UserResolver {
     /* PASSWORD HASHING */
     const passwordHash = await argon2.hash(password);
 
-    //TODO - import role name from enum
-    const role = await usersRepository.getRoleByName('user');
+    const role = await usersRepository.getRoleByName(UserRole.USER);
 
     if (!role) {
       throw notFoundError('Role not found');

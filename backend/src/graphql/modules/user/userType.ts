@@ -1,5 +1,7 @@
 import { Field, ID, ObjectType } from 'type-graphql';
 
+import { Role } from './roleType';
+
 @ObjectType()
 export class User {
   @Field(() => ID)
@@ -31,4 +33,10 @@ export class AuthInfo {
 
   @Field()
   token!: string;
+}
+
+@ObjectType()
+export class SignInInfo extends AuthInfo {
+  @Field(() => Role)
+  role!: Role;
 }

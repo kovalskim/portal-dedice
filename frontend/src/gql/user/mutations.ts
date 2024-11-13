@@ -35,6 +35,10 @@ export const SIGN_IN_MUTATION = gql`
         afterTitle
         email
       }
+      role {
+        id
+        name
+      }
       token
     }
   }

@@ -35,7 +35,7 @@ import {
 import { Routes } from '@frontend/routes.ts';
 
 export const ProfilePage = () => {
-  const { signIn, user, token } = useAuth();
+  const { signIn, user, token, role } = useAuth();
   const navigate = useNavigate();
 
   const showToast = useCustomToast();
@@ -81,7 +81,7 @@ export const ProfilePage = () => {
       });
 
       const updatedUser = userData.data.updateUser;
-      signIn({ token, user: updatedUser });
+      signIn({ token, user: updatedUser, role });
 
       showToast({
         title: 'Osobní údaje změněny',
@@ -154,6 +154,9 @@ export const ProfilePage = () => {
             </Text>
             <Text color="fg.muted" fontSize={'lg'}>
               {user.email}
+            </Text>
+            <Text color="fg.muted" fontSize={'lg'}>
+              {role}
             </Text>
           </Stack>
         </Flex>

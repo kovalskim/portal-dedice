@@ -34,9 +34,11 @@ export const LogInPage = () => {
           password: data.password,
         },
       });
+
       const token = userData.data.signIn.token;
       const user = userData.data.signIn.user;
-      auth.signIn({ token, user });
+      const role = userData.data.signIn.role.name;
+      auth.signIn({ token, user, role });
 
       showToast({
         title: 'Přihlášení proběhlo úspěšně',
@@ -44,7 +46,7 @@ export const LogInPage = () => {
         status: 'success',
       });
 
-      navigate(Routes.home);
+      navigate(Routes.proceedings);
     } catch (err) {
       console.error(err);
     }
