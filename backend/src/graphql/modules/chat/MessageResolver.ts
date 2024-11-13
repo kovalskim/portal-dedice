@@ -1,0 +1,147 @@
+import { GraphQLError } from 'graphql';
+import {
+  Arg,
+  Ctx,
+  FieldResolver,
+  Mutation,
+  Query,
+  Resolver,
+  Root,
+  Subscription,
+} from 'type-graphql';
+
+import { serverError } from '@backend/graphql/errors';
+import { sendNewMessageNotification } from '@backend/services/emailService/emailService';
+import { CustomContext } from '@backend/types/types';
+
+import { User } from '../user/userType';
+
+import { Message, NewMessageNotification } from './MessageType';
+import { NewMessagePayload, pubSub } from './PubSub';
+
+export const CHAT_TOPIC = 'CHAT_TOPIC';
+
+@Resolver(() => Message)
+export class MessageResolver {
+  @FieldResolver(() => User)
+  async user(
+    @Root() message: Message,
+    @Ctx() { usersRepository }: CustomContext,
+  ): Promise<User> {
+    if (!message.userId || !usersRepository) {
+      throw serverError('Message does not have a user');
+    }
+    return usersRepository.getUserById(message.userId);
+  }
+
+  @Query(() => [Message])
+  async allMessagesByProceedingId(
+    @Arg('proceedingId') proceedingId: number,
+    @Ctx()
+    { authUser, proceedingsRepository, messageRepository }: CustomContext,
+  ): Promise<Message[]> {
+    if (!authUser) {
+      throw new GraphQLError('Unauthorized', {
+        extensions: {
+          code: 'UNAUTHENTICATED',
+        },
+      });
+    }
+
+    // Check if user is participant in proceeding to get messages
+    if (
+      !proceedingsRepository.isUserParticipantInProceeding(
+        authUser.id,
+        proceedingId,
+      )
+    ) {
+      throw new GraphQLError('Unauthorized', {
+        extensions: {
+          code: 'UNAUTHORIZED',
+        },
+      });
+    }
+
+    const messages =
+      await messageRepository.getMessagesWithUsersByProceedingId(proceedingId);
+
+    return messages;
+  }
+
+  @Mutation(() => Message)
+  async createMessage(
+    @Arg('proceedingId') proceedingId: number,
+    @Arg('text') text: string,
+    @Ctx()
+    { authUser, proceedingsRepository, messageRepository }: CustomContext,
+  ): Promise<Message> {
+    if (!authUser) {
+      throw new GraphQLError('Unauthorized', {
+        extensions: {
+          code: 'UNAUTHENTICATED',
+        },
+      });
+    }
+    if (
+      !proceedingsRepository.isUserParticipantInProceeding(
+        authUser.id,
+        proceedingId,
+      )
+    ) {
+      throw new GraphQLError('Unauthorized', {
+        extensions: {
+          code: 'UNAUTHORIZED',
+        },
+      });
+    }
+
+    const newMessageId = await messageRepository.createMessage(
+      authUser.id,
+      proceedingId,
+      text,
+    );
+
+    const newMessage =
+      await messageRepository.getMessageWithUserById(newMessageId);
+    if (!newMessage) {
+      throw serverError('Something went wrong');
+    }
+
+    // Notify all subscribers about new message
+    pubSub.publish(CHAT_TOPIC, {
+      newMessageId: 1,
+      proceedingId: proceedingId,
+    });
+
+    const participants =
+      await proceedingsRepository.getProceedingParticipants(proceedingId);
+    for (const participant of participants) {
+      if (participant.user.id !== authUser.id) {
+        sendNewMessageNotification(
+          participant.user.email,
+          `${newMessage.user.firstname} ${newMessage.user.lastname}`,
+          newMessage.text,
+          proceedingId,
+        );
+        // if (participant.allowEmailNotifications){ // TODO: add option to turn off email notifications
+        // send email
+        // }
+      }
+    }
+    return newMessage;
+  }
+
+  @Subscription(() => NewMessageNotification, {
+    topics: CHAT_TOPIC,
+    filter: ({ payload, args }) => payload.proceedingId === args.proceedingId,
+  })
+  // return id of a new message... this ****er is not working with context so I can't get user data
+  // client will have to fetch new message or all messages after receiving new message id, I don't have time to be fixing this
+  // if you try to fix it, increase this counter of hours spend on this: 4
+  subscribeChat(
+    @Root() newMessagePayload: NewMessagePayload,
+    @Arg('proceedingId') _proceedingId: number,
+  ): NewMessageNotification {
+    return { id: newMessagePayload.newMessageId };
+  }
+}

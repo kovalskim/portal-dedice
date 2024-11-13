@@ -83,3 +83,27 @@ export const sendPasswordResetEmail = async (email: string, token: string) => {
 
   await sendEmail(email, subject, htmlContent);
 };
+
+export const sendNewMessageNotification = async (
+  email: string,
+  sender: string,
+  text: string,
+  proceedingId: number,
+) => {
+  const subject: string = 'Nová zpráva';
+
+  const bodies = await Promise.all([
+    buildHeading('Nová zpráva'),
+    buildText(`Máte novou zprávu od uživatele ${sender}:`),
+    buildText(text),
+    buildButton(
+      'Zobrazit zprávu v aplikaci',
+      encodeURI(`${process.env.APP_URL}/proceedings/${proceedingId}/chat`),
+    ),
+  ]);
+
+  const layout = await buildLayout(...bodies);
+  const htmlContent = getEmailBody(layout);
+
+  await sendEmail(email, subject, htmlContent);
+};

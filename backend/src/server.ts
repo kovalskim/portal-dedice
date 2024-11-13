@@ -12,8 +12,10 @@ import { addMocksToSchema } from '@graphql-tools/mock';
 import cors from 'cors';
 import express from 'express';
 import graphqlUploadExpress from 'graphql-upload/graphqlUploadExpress.js';
-import * as http from 'http';
+import { useServer } from 'graphql-ws/lib/use/ws';
+import { createServer } from 'http';
 import { buildSchema } from 'type-graphql';
+import { WebSocketServer } from 'ws';
 
 import { MOCKS, PORT } from '@backend/config';
 import { getConnection } from '@backend/db/db';
@@ -27,13 +29,16 @@ import { ProceedingsRepository } from '@backend/repository/ProceedingsRepository
 import { UsersRepository } from '@backend/repository/UsersRepository';
 import { CustomContext } from '@backend/types/types';
 
+import { MessageResolver } from './graphql/modules/chat/MessageResolver';
+import { pubSub } from './graphql/modules/chat/PubSub';
 import { CreateProceedingsResolver } from './graphql/modules/proceedings/create/CreateProceedingsResolver';
 import { GetProceedingsResolver } from './graphql/modules/proceedings/get/GetProceedingsResolver';
+import { MessagesRepository } from './repository/MessagesRepository';
 
 const init = async () => {
   const app = express();
 
-  const httpServer = http.createServer(app);
+  const httpServer = createServer(app);
 
   const schema = await buildSchema({
     resolvers: [
@@ -43,9 +48,19 @@ const init = async () => {
       CreateProceedingsResolver,
       GetProceedingsResolver,
       DistrictResolver,
+      MessageResolver,
     ],
     emitSchemaFile: true,
+    pubSub: pubSub,
   });
+
+  const wsServer = new WebSocketServer({
+    server: httpServer,
+    path: '/graphql',
+  });
+
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const serverCleanup = useServer({ schema }, wsServer);
 
   const server = new ApolloServer({
     schema: MOCKS
@@ -54,7 +69,18 @@ const init = async () => {
           resolvers: mockResolvers,
         })
       : schema,
-    plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
+    plugins: [
+      ApolloServerPluginDrainHttpServer({ httpServer }),
+      {
+        async serverWillStart() {
+          return {
+            async drainServer() {
+              await serverCleanup.dispose();
+            },
+          };
+        },
+      },
+    ],
   });
 
   await server.start();
@@ -76,6 +102,7 @@ const init = async () => {
       authUser,
       usersRepository: new UsersRepository(drizzle.db),
       proceedingsRepository: new ProceedingsRepository(drizzle.db),
+      messageRepository: new MessagesRepository(drizzle.db),
     };
   };
 
@@ -94,7 +121,8 @@ const init = async () => {
   });
 
   httpServer.listen({ port: PORT }, () => {
-    console.log('Server listening on port: ' + PORT);
+    console.log('🚀 Server listening on port: ' + PORT);
+    console.log(`🚀 Subscription endpoint ready at ws://{url}:${PORT}/graphql`);
   });
 };
 

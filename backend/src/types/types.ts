@@ -1,5 +1,6 @@
 import { MySql2Database } from 'drizzle-orm/mysql2';
 
+import { MessagesRepository } from '@backend/repository/MessagesRepository';
 import { ProceedingsRepository } from '@backend/repository/ProceedingsRepository';
 import { UsersRepository } from '@backend/repository/UsersRepository';
 
@@ -8,6 +9,7 @@ export type CustomContext = {
   authUser: JWTPayload | null;
   usersRepository: UsersRepository;
   proceedingsRepository: ProceedingsRepository;
+  messageRepository: MessagesRepository;
 };
 
 export type JWTPayload = {

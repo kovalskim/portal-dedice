@@ -1,4 +1,4 @@
-import { eq } from 'drizzle-orm';
+import { and, eq } from 'drizzle-orm';
 import { MySql2Database } from 'drizzle-orm/mysql2';
 
 import {
@@ -167,5 +167,19 @@ export class ProceedingsRepository {
           },
         })),
       );
+  }
+
+  async isUserParticipantInProceeding(userId: number, proceedingId: number) {
+    const participant = await this.db
+      .select()
+      .from(participants)
+      .where(
+        and(
+          eq(participants.userId, userId),
+          eq(participants.proceedingId, proceedingId),
+        ),
+      );
+
+    return participant.length > 0;
   }
 }

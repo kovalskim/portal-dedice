@@ -43,3 +43,9 @@ export function unauthenticatedError(message: string) {
     extensions: { code: 'UNAUTHENTICATED' },
   });
 }
+
+export function serverError(message: string) {
+  return new GraphQLError(message, {
+    extensions: { code: 'INTERNAL_SERVER_ERROR' },
+  });
+}

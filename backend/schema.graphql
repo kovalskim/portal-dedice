@@ -14,6 +14,11 @@ type Court {
   name: String!
 }
 
+"""
+A date-time string at UTC, such as 2007-12-03T10:15:30Z, compliant with the `date-time` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar.This scalar is serialized to a string in ISO 8601 format and parsed from a string in ISO 8601 format.
+"""
+scalar DateTimeISO
+
 input DeceasedPersonInput {
   birthdate: String!
   city: String!
@@ -32,8 +37,18 @@ type District {
   name: String!
 }
 
+type Message {
+  id: ID!
+  proceedingId: Float
+  text: String!
+  timestamp: DateTimeISO!
+  user: User
+  userId: Float
+}
+
 type Mutation {
   changePassword(newPassword: String!, oldPassword: String!, userId: String!): AuthInfo!
+  createMessage(proceedingId: Float!, text: String!): Message!
   createProceedings(data: DeceasedPersonInput!): Proceedings!
   identifyNotary(data: DeceasedPersonInput!): Schedule!
   newPassword(newPassword: String!, token: String!): String!
@@ -43,6 +58,10 @@ type Mutation {
   updateUser(afterTitle: String, beforeTitle: String, firstname: String!, lastname: String!, userId: String!): User!
   verifyEmail(token: String!): String!
   verifyToken(token: String!): String!
+}
+
+type NewMessageNotification {
+  id: ID!
 }
 
 type Participant {
@@ -76,6 +95,7 @@ type Proceedings {
 
 type Query {
   _empty: String!
+  allMessagesByProceedingId(proceedingId: Float!): [Message!]!
   districts: [District!]!
   getAllProceedings: [Proceedings!]!
   getProceeding(id: Float!): Proceedings
@@ -104,6 +124,10 @@ type SignInInfo {
   role: Role!
   token: String!
   user: User!
+}
+
+type Subscription {
+  subscribeChat(proceedingId: Float!): NewMessageNotification!
 }
 
 type User {

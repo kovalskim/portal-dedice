@@ -1,6 +1,5 @@
 import { useEffect } from 'react';
 import { useQuery } from '@apollo/client';
-import { Box } from '@chakra-ui/layout';
 import { Card, Flex, Spinner, Text } from '@chakra-ui/react';
 import { Outlet, useNavigate, useParams } from 'react-router-dom';
 
@@ -55,9 +54,14 @@ export const ProceedingLayout = () => {
         >
           <Sidebar proceeding={data.getProceeding} />
           <Card w="100%" minHeight="full" flex="1">
-            <Box px={{ base: 2, md: 12 }} py={{ base: 2, md: 8 }}>
+            <Flex
+              px={{ base: 2, md: 12 }}
+              py={{ base: 2, md: 8 }}
+              flex={1}
+              flexDirection="column"
+            >
               <Outlet context={{ proceeding: data.getProceeding }} />
-            </Box>
+            </Flex>
           </Card>
         </Flex>
       )}

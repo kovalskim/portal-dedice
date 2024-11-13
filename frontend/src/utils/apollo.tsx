@@ -7,11 +7,15 @@ import {
   ApolloProvider,
   from,
   InMemoryCache,
+  split,
 } from '@apollo/client';
 import { NetworkError } from '@apollo/client/errors';
 import { onError } from '@apollo/client/link/error';
+import { GraphQLWsLink } from '@apollo/client/link/subscriptions';
+import { getMainDefinition } from '@apollo/client/utilities';
 import createUploadLink from 'apollo-upload-client/createUploadLink.mjs';
 import { GraphQLFormattedError } from 'graphql';
+import { createClient } from 'graphql-ws';
 import { useNavigate } from 'react-router-dom';
 
 import { config } from '@frontend/config';
@@ -63,7 +67,7 @@ export const EnhancedApolloProvider = ({ children }: Props) => {
   const cache = useMemo(() => new InMemoryCache(), []);
 
   const client = new ApolloClient({
-    link: from([errorLink, authLink, uploadLink]),
+    link: from([errorLink, authLink, splitLink]),
     cache,
     defaultOptions: {
       watchQuery: {
@@ -104,3 +108,24 @@ const uploadLink = createUploadLink({
     'Apollo-Require-Preflight': 'ok', // This is for CSRF
   },
 });
+
+const wsLink = new GraphQLWsLink(
+  createClient({
+    url: config.GRAPHQL_WS,
+    connectionParams: () => ({
+      Authorization: localStorage.getItem('token') || '',
+    }),
+  }),
+);
+
+const splitLink = split(
+  ({ query }) => {
+    const definition = getMainDefinition(query);
+    return (
+      definition.kind === 'OperationDefinition' &&
+      definition.operation === 'subscription'
+    );
+  },
+  wsLink,
+  uploadLink,
+);

@@ -18,7 +18,7 @@ export const Field = ({
 }: FieldProps) => {
   return (
     <FormControl id={id} isRequired={isRequired} isInvalid={!!error}>
-      <FormLabel>{label}</FormLabel>
+      {label && <FormLabel>{label}</FormLabel>}
       {children}
       <FormErrorMessage>{error}</FormErrorMessage>
     </FormControl>

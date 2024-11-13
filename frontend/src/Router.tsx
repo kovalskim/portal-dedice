@@ -11,6 +11,7 @@ import { ProceedingsParticipants } from '@frontend/pages/proceeding/participants
 import { ProfilePage } from '@frontend/pages/profile/ProfilePage.tsx';
 
 import { ErrorPage } from './pages/errorPages/ErrorPage';
+import { ProceedingChat } from './pages/proceeding/chat/ProceedingChat';
 import { App } from './App';
 import { MainLayout } from './components';
 import {
@@ -60,8 +61,11 @@ export const getRouter = () => {
                 path={Routes.proceedingParticipants}
                 element={<ProceedingsParticipants />}
               />
+              <Route
+                path={Routes.proceedingChat}
+                element={<ProceedingChat />}
+              />
               <Route path={Routes.proceedingFiles} element={<NotFoundPage />} />
-              <Route path={Routes.proceedingChat} element={<NotFoundPage />} />
               <Route
                 path={Routes.proceedingAssets}
                 element={<NotFoundPage />}

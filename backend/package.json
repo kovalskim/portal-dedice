@@ -20,6 +20,8 @@
     "@apollo/server": "^4.11.0",
     "@faker-js/faker": "^9.0.0",
     "@graphql-tools/mock": "^9.0.4",
+    "@graphql-tools/schema": "^10.0.7",
+    "@graphql-yoga/subscription": "^5.0.1",
     "@types/node": "^20.16.5",
     "argon2": "^0.41.1",
     "cors": "^2.8.5",
@@ -31,6 +33,7 @@
     "graphql-scalars": "^1.23.0",
     "graphql-tools": "^9.0.1",
     "graphql-upload": "^15.0.2",
+    "graphql-ws": "^5.16.0",
     "jsonwebtoken": "^9.0.2",
     "mariadb": "^3.2.3",
     "mjml": "^4.15.3",
@@ -38,7 +41,8 @@
     "nodemailer": "^6.9.15",
     "reflect-metadata": "^0.2.2",
     "type-graphql": "^2.0.0-rc.2",
-    "unique-slug": "^4.0.0"
+    "unique-slug": "^4.0.0",
+    "ws": "^8.18.0"
   },
   "devDependencies": {
     "@parcel/watcher": "^2.3.0",
