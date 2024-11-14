@@ -28,6 +28,24 @@ async function seed() {
   const db = connection.db;
   console.log('Database connection established');
 
+  console.log('Deleting tables');
+  await db.delete(participantStates);
+  await db.delete(participants);
+  await db.delete(verificationTokens);
+  await db.delete(users);
+  await db.delete(districts);
+  await db.delete(schedules);
+  await db.delete(proceedings);
+  await db.delete(phases);
+  await db.delete(participants);
+  await db.delete(meetings);
+  await db.delete(files);
+  await db.delete(messages);
+  await db.delete(taskStates);
+  await db.delete(tasks);
+  await db.delete(courts);
+  await db.delete(roles);
+
   try {
     if ((await db.select().from(roles)).length === 0) {
       console.log('No roles found, inserting sample roles');
@@ -87,11 +105,6 @@ async function seed() {
     } else {
       console.log('Users already exist, skipping seed');
     }
-    console.log('Deleting tables');
-    await db.delete(schedules);
-    await db.delete(districts);
-    await db.delete(courts);
-    console.log('Tables deleted');
 
     console.log('Inserting courts');
     await db.insert(courts).values(courtsData);
@@ -101,11 +114,6 @@ async function seed() {
 
     console.log('Inserting schedules');
     await db.insert(schedules).values(schedulesData);
-
-    await db.delete(participants);
-    await db.delete(proceedings);
-    await db.delete(phases);
-    await db.delete(participantStates);
 
     if ((await db.select().from(phases)).length === 0) {
       console.log('No phases found, inserting sample phases');
@@ -145,24 +153,3 @@ seed().catch((err) => {
   console.error('Error in seed function:', err);
   process.exit(1);
 });
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const dropAllTables = async (db) => {
-  console.log('Dropping tables');
-  await db.delete(participantStates);
-  await db.delete(participants);
-  await db.delete(verificationTokens);
-  await db.delete(users);
-  await db.delete(districts);
-  await db.delete(schedules);
-  await db.delete(proceedings);
-  await db.delete(phases);
-  await db.delete(participants);
-  await db.delete(meetings);
-  await db.delete(files);
-  await db.delete(messages);
-  await db.delete(taskStates);
-  await db.delete(tasks);
-  await db.delete(courts);
-  await db.delete(roles);
-};
