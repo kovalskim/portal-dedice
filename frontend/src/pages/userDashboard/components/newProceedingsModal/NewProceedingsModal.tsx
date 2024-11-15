@@ -17,6 +17,7 @@ import {
 } from '@frontend/gql/proceedings/mutations';
 import { GET_ALL_PROCEEDINGS } from '@frontend/gql/proceedings/queries';
 import { useCustomToast } from '@frontend/hooks/useCustomToast.ts';
+import { useProceedings } from '@frontend/hooks/useProceedings.ts';
 import {
   DeceasedPersonForm,
   DeceasedPersonFormFields,
@@ -33,6 +34,8 @@ export const NewProceedingsModal: FC<NewProceedingsModalProps> = ({
 }) => {
   const formId = 'create-proceedings-form';
   const showToast = useCustomToast();
+
+  const { refetch } = useProceedings();
 
   const [createProceedings, { loading, error }] =
     useMutation<CreateProceedingsResponse>(CREATE_PROCEEDING, {
@@ -61,6 +64,7 @@ export const NewProceedingsModal: FC<NewProceedingsModalProps> = ({
         description: `Bylo vytvořeno nové dědické řízení!`,
         status: 'success',
       });
+      refetch(); // refetch proceedings listed in table
     });
   };
 

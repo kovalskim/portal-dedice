@@ -1,14 +1,35 @@
 import { gql } from '@apollo/client';
 
 export const GET_ALL_PROCEEDINGS = gql`
-  query GetAllProceedings {
-    getAllProceedings {
-      id
-      proceedingsNumber
-      deceasedFirstName
-      deceasedLastName
-      startDate
-      phaseTitle
+  query GetAllProceedings(
+    $pageSize: Float!
+    $currentPage: Float!
+    $sortOrder: String!
+    $filterProceedingNumber: String!
+    $filterDeceasedName: String!
+    $filterStartDate: String!
+    $filterPhaseId: Float!
+    $filterStatus: String!
+  ) {
+    getAllProceedings(
+      pageSize: $pageSize
+      currentPage: $currentPage
+      sortOrder: $sortOrder
+      filterProceedingNumber: $filterProceedingNumber
+      filterDeceasedName: $filterDeceasedName
+      filterStartDate: $filterStartDate
+      filterPhaseId: $filterPhaseId
+      filterStatus: $filterStatus
+    ) {
+      data {
+        id
+        proceedingsNumber
+        deceasedFirstName
+        deceasedLastName
+        startDate
+        phaseTitle
+      }
+      total
     }
   }
 `;
@@ -18,15 +39,23 @@ export type Proceeding = {
   proceedingsNumber: string;
   deceasedFirstName: string;
   deceasedLastName: string;
-  deceasedDateOfDeath: string;
-  phaseId: number;
+  deceasedDateOfDeath?: string;
+  phaseId?: number;
+  phaseTitle?: string;
   startDate: string;
-  notary: {
+  notary?: {
     id: number;
     beforeTitle: string;
     firstname: string;
     lastname: string;
     afterTitle: string;
+  };
+};
+
+export type ProceedingsResponse = {
+  getAllProceedings: {
+    data: Proceeding[];
+    total: number;
   };
 };
 

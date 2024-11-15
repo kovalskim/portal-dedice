@@ -1,4 +1,5 @@
-import { and, eq } from 'drizzle-orm';
+import { endOfDay, startOfDay } from 'date-fns';
+import { and, asc, desc, eq, gte, like, lte } from 'drizzle-orm';
 import { MySql2Database } from 'drizzle-orm/mysql2';
 
 import {
@@ -8,6 +9,7 @@ import {
   proceedings,
   users,
 } from '@backend/db/schema';
+import { UserRole } from '@backend/graphql/modules/user/roleType';
 
 export interface ProceedingsDTO {
   id: number;
@@ -114,8 +116,20 @@ export class ProceedingsRepository {
     return newProceedingsId[0].id;
   }
 
-  async getAllProceedings(): Promise<ProceedingsDTO[]> {
-    const proceedingsWithTitle = await this.db
+  private async fetchProceedings(
+    identifier: { type: 'notary' | 'participant'; id: number },
+    currentPage: number = 1,
+    pageSize: number = 0,
+    sortOrder: 'asc' | 'desc' = 'desc',
+    filterProceedingNumber?: string,
+    filterDeceasedName?: string,
+    filterStartDate?: string,
+    filterPhaseId?: number,
+    filterStatus?: string,
+  ): Promise<{ data: ProceedingsDTO[]; total: number }> {
+    const offset = (currentPage - 1) * pageSize;
+
+    let query = this.db
       .select({
         id: proceedings.id,
         phaseId: proceedings.phaseId,
@@ -133,8 +147,119 @@ export class ProceedingsRepository {
         phaseTitle: phases.title,
       })
       .from(proceedings)
-      .leftJoin(phases, eq(proceedings.phaseId, phases.id));
-    return proceedingsWithTitle as ProceedingsDTO[];
+      .innerJoin(phases, eq(proceedings.phaseId, phases.id));
+
+    const whereConditions = [];
+
+    if (identifier.type === UserRole.NOTARY) {
+      whereConditions.push(eq(proceedings.notaryId, identifier.id));
+    } else {
+      query = query.innerJoin(
+        participants,
+        eq(proceedings.id, participants.proceedingId),
+      );
+      whereConditions.push(eq(participants.userId, identifier.id));
+    }
+
+    if (filterProceedingNumber) {
+      whereConditions.push(
+        like(proceedings.proceedingsNumber, `%${filterProceedingNumber}%`),
+      );
+    }
+
+    if (filterDeceasedName) {
+      const [deceasedFirstName, deceasedLastName] =
+        filterDeceasedName.split(' ');
+      whereConditions.push(
+        like(proceedings.deceasedFirstName, `%${deceasedFirstName ?? ''}%`),
+        like(proceedings.deceasedLastName, `%${deceasedLastName ?? ''}%`),
+      );
+    }
+
+    if (filterStartDate) {
+      const normalizedStartDate = new Date(filterStartDate);
+      whereConditions.push(
+        gte(proceedings.startDate, startOfDay(normalizedStartDate)),
+        lte(proceedings.startDate, endOfDay(normalizedStartDate)),
+      );
+    }
+
+    if (filterPhaseId) {
+      whereConditions.push(eq(proceedings.phaseId, filterPhaseId));
+    }
+
+    if (filterStatus && filterStatus === 'Ukončené') {
+      whereConditions.push(eq(proceedings.phaseId, 4));
+    } else if (filterStatus && filterStatus === 'Probíhající') {
+      whereConditions.push(lte(proceedings.phaseId, 3));
+    }
+
+    query.where(and(...whereConditions));
+
+    if (sortOrder === 'desc') {
+      query.orderBy(desc(proceedings.proceedingsNumber));
+    } else {
+      query.orderBy(asc(proceedings.proceedingsNumber));
+    }
+
+    const allProceedings = await query.execute();
+    const limitProceedings = await query.limit(pageSize).offset(offset);
+
+    return {
+      data: limitProceedings as ProceedingsDTO[],
+      total: allProceedings.length,
+    };
+  }
+
+  async getAllProceedingsByNotaryId(
+    notaryId: number,
+    currentPage: number = 1,
+    pageSize: number = 0,
+    sortOrder: 'asc' | 'desc' = 'desc',
+    filterProceedingNumber?: string,
+    filterDeceasedName?: string,
+    filterStartDate?: string,
+    filterPhaseId?: number,
+    filterStatus?: string,
+  ): Promise<{ data: ProceedingsDTO[]; total: number }> {
+    // this is not react code, so the eslint rule does not make sense here
+    // eslint-disable-next-line react/no-is-mounted
+    return this.fetchProceedings(
+      { type: 'notary', id: notaryId },
+      currentPage,
+      pageSize,
+      sortOrder,
+      filterProceedingNumber,
+      filterDeceasedName,
+      filterStartDate,
+      filterPhaseId,
+      filterStatus,
+    );
+  }
+
+  async getAllProceedingsByParticipantId(
+    userId: number,
+    currentPage: number = 1,
+    pageSize: number = 0,
+    sortOrder: 'asc' | 'desc' = 'desc',
+    filterProceedingNumber?: string,
+    filterDeceasedName?: string,
+    filterStartDate?: string,
+    filterPhaseId?: number,
+    filterStatus?: string,
+  ): Promise<{ data: ProceedingsDTO[]; total: number }> {
+    // eslint-disable-next-line react/no-is-mounted
+    return this.fetchProceedings(
+      { type: 'participant', id: userId },
+      currentPage,
+      pageSize,
+      sortOrder,
+      filterProceedingNumber,
+      filterDeceasedName,
+      filterStartDate,
+      filterPhaseId,
+      filterStatus,
+    );
   }
 
   async getProceedingParticipants(
@@ -170,7 +295,7 @@ export class ProceedingsRepository {
   }
 
   async isUserParticipantInProceeding(userId: number, proceedingId: number) {
-    const participant = await this.db
+    return await this.db
       .select()
       .from(participants)
       .where(
@@ -178,8 +303,17 @@ export class ProceedingsRepository {
           eq(participants.userId, userId),
           eq(participants.proceedingId, proceedingId),
         ),
-      );
+      )
+      .then((result) => result.length > 0);
+  }
 
-    return participant.length > 0;
+  async isUserNotaryInProceeding(userId: number, proceedingId: number) {
+    return await this.db
+      .select()
+      .from(proceedings)
+      .where(
+        and(eq(proceedings.notaryId, userId), eq(proceedings.id, proceedingId)),
+      )
+      .then((result) => result.length > 0);
   }
 }

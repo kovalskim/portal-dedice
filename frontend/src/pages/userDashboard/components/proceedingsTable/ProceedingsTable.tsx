@@ -1,11 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import { useQuery } from '@apollo/client';
+import React from 'react';
 import {
   ArrowDownIcon,
   ArrowUpIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
-  SearchIcon,
   WarningIcon,
 } from '@chakra-ui/icons';
 import {
@@ -14,8 +12,11 @@ import {
   Flex,
   Heading,
   IconButton,
+  Input,
+  Select,
   Spinner,
   Table,
+  TableContainer,
   Tbody,
   Td,
   Text,
@@ -23,238 +24,237 @@ import {
   Thead,
   Tr,
 } from '@chakra-ui/react';
-import { SubmitHandler } from 'react-hook-form';
-import { z } from 'zod';
 
-import {
-  Form,
-  InputField,
-  PrimaryButton,
-  SelectField,
-} from '@frontend/components';
+import { PrimaryButton } from '@frontend/components';
 import { RouterNavButton } from '@frontend/components/navigation/atoms/RouterNavButton.tsx';
-import { GET_ALL_PROCEEDINGS } from '@frontend/gql/proceedings/queries';
+import { useProceedings } from '@frontend/hooks/useProceedings.ts';
 import { Routes } from '@frontend/routes.ts';
 import { insertIdToUrl } from '@frontend/utils/util.tsx';
 
-type Proceeding = {
-  id: number;
-  proceedingsNumber: string;
-  startDate: string;
-  phaseTitle: string;
-  deceasedFirstName: string;
-  deceasedLastName: string;
-};
-
-type FormFields = z.infer<typeof schema>;
-
-const schema = z.object({
-  proceedingNumber: z.string().optional(),
-  proceedingFilter: z.enum(['Vše', 'Probíhající', 'Ukončeno']).optional(),
-});
-
-const PAGE_SIZE = 8;
-
 export const ProceedingsTable: React.FC = () => {
-  const [proceedings, setProceedings] = useState<Proceeding[]>([]);
-  const [filteredProceedings, setFilteredProceedings] = useState<Proceeding[]>(
-    [],
-  );
-  const [currentPage, setCurrentPage] = useState<number>(1);
-  const [sortProcNumberOrder, setSortProcNumberOrder] = useState<
-    'asc' | 'desc'
-  >('desc');
-
-  const { loading, error, data } = useQuery(GET_ALL_PROCEEDINGS);
-
-  useEffect(() => {
-    if (data && data.getAllProceedings) {
-      setProceedings(data.getAllProceedings);
-      setFilteredProceedings(data.getAllProceedings);
-    }
-  }, [data]);
-
-  useEffect(() => {
-    const sortedData = [...proceedings].sort((a, b) => {
-      const numA = a.proceedingsNumber || '';
-      const numB = b.proceedingsNumber || '';
-      return sortProcNumberOrder === 'asc'
-        ? numA.localeCompare(numB)
-        : numB.localeCompare(numA);
-    });
-    setFilteredProceedings(sortedData);
-    setCurrentPage(1);
-  }, [proceedings, sortProcNumberOrder]);
-
-  const toggleSortOrder = () => {
-    setSortProcNumberOrder((prevOrder) =>
-      prevOrder === 'asc' ? 'desc' : 'asc',
-    );
-  };
-
-  const onSubmit: SubmitHandler<FormFields> = async (data: FormFields) => {
-    const { proceedingNumber, proceedingFilter } = data;
-
-    const filtered = proceedings.filter((proceeding) => {
-      const matchesNumber = proceedingNumber
-        ? proceeding.proceedingsNumber.includes(proceedingNumber)
-        : true;
-      const matchesPhase =
-        proceedingFilter === 'Vše'
-          ? true
-          : proceeding.phaseTitle === proceedingFilter?.toLocaleLowerCase();
-
-      return matchesNumber && matchesPhase;
-    });
-
-    setFilteredProceedings(filtered);
-    setCurrentPage(1);
-  };
+  const {
+    loading,
+    error,
+    proceedings,
+    totalProceedings,
+    currentPage,
+    totalPages,
+    setCurrentPage,
+    sortOrder,
+    toggleSortOrder,
+    filterData,
+    handleFilter,
+  } = useProceedings();
 
   const handlePreviousPage = () => {
     setCurrentPage((prevPage) => Math.max(prevPage - 1, 1));
   };
 
   const handleNextPage = () => {
-    setCurrentPage((prevPage) =>
-      Math.min(prevPage + 1, Math.ceil(filteredProceedings.length / PAGE_SIZE)),
-    );
+    setCurrentPage((prevPage) => Math.min(prevPage + 1, totalPages));
   };
 
-  const totalPages = Math.ceil(filteredProceedings.length / PAGE_SIZE);
-  const paginatedProceedings = filteredProceedings.slice(
-    (currentPage - 1) * PAGE_SIZE,
-    currentPage * PAGE_SIZE,
-  );
-
   return (
-    <Form
-      defaultValues={{
-        proceedingNumber: '',
-        proceedingFilter: 'Vše',
-      }}
-      onSubmit={onSubmit}
-    >
+    <>
       <Box p={8}>
         <Heading fontSize="2xl" fontWeight="bold" mb={4}>
           Seznam dědických řízení
         </Heading>
-        <Box display="flex" mb={4} gap={4} alignItems="center">
-          <InputField
-            name="proceedingNumber"
-            placeholder="Zadejte číslo dědického řízení"
-            flex="1"
-          />
-          <SelectField name="proceedingFilter" width="150px">
-            <option value="Vše">Vše</option>
-            <option value="Probíhající">Probíhající</option>
-            <option value="Ukončeno">Ukončeno</option>
-          </SelectField>
-          <PrimaryButton
-            paddingX={8}
-            leftIcon={<SearchIcon />}
-            type="submit"
-            disabled={loading}
-          >
-            Hledat
-          </PrimaryButton>
-        </Box>
-        <Box borderWidth="1px" borderRadius="lg">
-          <Table variant="simple" size="md">
-            <Thead>
-              <Tr>
-                <Th>
-                  <Flex
-                    alignItems="center"
-                    cursor="pointer"
-                    onClick={toggleSortOrder}
-                    _hover={{ color: 'blue.600' }}
-                  >
-                    Číslo řízení
-                    {sortProcNumberOrder === 'asc' ? (
-                      <ArrowUpIcon ml={2} />
-                    ) : (
-                      <ArrowDownIcon ml={2} />
-                    )}
-                  </Flex>
-                </Th>
-                <Th>Zůstavitel</Th>
-                <Th>Zahájení řízení</Th>
-                <Th>Stav</Th>
-                <Th>Akce</Th>
-              </Tr>
-            </Thead>
-            <Tbody>
-              {loading ? (
+        <Flex gap={4} mt={4}>
+          {['Vše', 'Probíhající', 'Ukončené'].map((status) => (
+            <PrimaryButton
+              key={status}
+              py={2}
+              px={8}
+              size="sm"
+              borderRadius="full"
+              variant={filterData.filterStatus === status ? 'solid' : 'outline'}
+              onClick={() =>
+                handleFilter({
+                  ...filterData,
+                  filterStatus: status,
+                })
+              }
+            >
+              {status}
+            </PrimaryButton>
+          ))}
+        </Flex>
+        <Box maxW="100vw">
+          <TableContainer borderWidth="1px" borderRadius="lg" mt={6}>
+            <Table variant="simple" size="md">
+              <Thead>
                 <Tr>
-                  <Td colSpan={5} textAlign="center" py={10}>
-                    <Center>
-                      <Spinner size="lg" color="yellow.500" />
-                      <Text ml={4} fontSize="lg" color="gray.500">
-                        Načítání dat...
-                      </Text>
-                    </Center>
-                  </Td>
-                </Tr>
-              ) : error ? (
-                <Tr>
-                  <Td colSpan={5} textAlign="center" py={10}>
-                    <Center>
-                      <WarningIcon color="red.500" boxSize={6} mr={2} />
-                      <Text fontSize="lg" color="red.500">
-                        Došlo k chybě při načítání dat.
-                      </Text>
-                    </Center>
-                  </Td>
-                </Tr>
-              ) : paginatedProceedings.length > 0 ? (
-                paginatedProceedings.map((proceeding) => (
-                  <Tr
-                    key={proceeding.id}
-                    bg="white"
-                    _hover={{ bg: 'goldenYellow.10' }}
-                  >
-                    <Td>{proceeding.proceedingsNumber}</Td>
-                    <Td>{`${proceeding.deceasedFirstName} ${proceeding.deceasedLastName}`}</Td>
-                    <Td>
-                      {new Date(proceeding.startDate).toLocaleDateString(
-                        'cs-CZ',
-                        {
-                          day: '2-digit',
-                          month: '2-digit',
-                          year: 'numeric',
-                        },
+                  <Th>
+                    <Flex
+                      alignItems="center"
+                      cursor="pointer"
+                      onClick={toggleSortOrder}
+                      _hover={{ color: 'blue.600' }}
+                    >
+                      Číslo řízení
+                      {sortOrder === 'asc' ? (
+                        <ArrowUpIcon ml={2} />
+                      ) : (
+                        <ArrowDownIcon ml={2} />
                       )}
-                    </Td>
-                    <Td>{proceeding.phaseTitle}</Td>
-                    <Td>
-                      <RouterNavButton
-                        to={insertIdToUrl(
-                          Routes.proceedingOverview,
-                          proceeding.id,
-                        )}
+                    </Flex>
+                    <Input
+                      mt={2}
+                      borderRadius="md"
+                      name="proceedingNumber"
+                      size="sm"
+                      placeholder="Hledat číslo řízení"
+                      flex="1"
+                      onChange={(e) =>
+                        handleFilter({
+                          ...filterData,
+                          proceedingNumber: e.target.value,
+                        })
+                      }
+                    />
+                  </Th>
+                  <Th verticalAlign="top">
+                    <Flex direction="column">
+                      Zůstavitel
+                      <Input
+                        mt={2}
+                        py={2}
+                        borderRadius="md"
+                        name="deceasedName"
                         size="sm"
+                        placeholder="Hledat jméno zůstavitele"
+                        flex="1"
+                        onChange={(e) =>
+                          handleFilter({
+                            ...filterData,
+                            deceasedName: e.target.value,
+                          })
+                        }
+                      />
+                    </Flex>
+                  </Th>
+                  <Th verticalAlign="top">
+                    <Flex direction="column">
+                      Zahájení řízení
+                      <Input
+                        mt={2}
+                        py={2}
+                        type="date"
+                        borderRadius="md"
+                        name="startDate"
+                        size="sm"
+                        placeholder="Hledat datum zahájení řízení"
+                        flex="1"
+                        onChange={(e) =>
+                          handleFilter({
+                            ...filterData,
+                            startDate: e.target.value,
+                          })
+                        }
+                      />
+                    </Flex>
+                  </Th>
+                  <Th verticalAlign="top">
+                    <Flex direction="column">
+                      Aktuální fáze
+                      <Select
+                        mt={2}
+                        height={9}
+                        placeholder="Hledat aktuální fázi"
+                        borderRadius="md"
+                        name="phaseId"
+                        size="sm"
+                        flex="1"
+                        onChange={(e) =>
+                          handleFilter({
+                            ...filterData,
+                            phaseId: Number(e.target.value),
+                          })
+                        }
                       >
-                        Detail
-                      </RouterNavButton>
+                        <option value="1">Úvodní fáze</option>
+                        <option value="2">Předběžné šetření</option>
+                        <option value="3">Pozůstalostní řízení</option>
+                        <option value="4">Ukončené</option>
+                      </Select>
+                    </Flex>
+                  </Th>
+                  <Th verticalAlign="top">Akce</Th>
+                </Tr>
+              </Thead>
+              <Tbody>
+                {loading ? (
+                  <Tr>
+                    <Td colSpan={5} textAlign="center" py={10}>
+                      <Center>
+                        <Spinner size="lg" color="yellow.500" />
+                        <Text ml={4} fontSize="lg" color="gray.500">
+                          Načítání dat...
+                        </Text>
+                      </Center>
                     </Td>
                   </Tr>
-                ))
-              ) : (
-                <Tr>
-                  <Td colSpan={5} textAlign="center" py={10}>
-                    <Text fontSize="lg" color="gray.500">
-                      Žádné dědické řízení nebylo nalezeno
-                    </Text>
-                  </Td>
-                </Tr>
-              )}
-            </Tbody>
-          </Table>
+                ) : error ? (
+                  <Tr>
+                    <Td colSpan={5} textAlign="center" py={10}>
+                      <Center>
+                        <WarningIcon color="red.500" boxSize={6} mr={2} />
+                        <Text fontSize="lg" color="red.500">
+                          Došlo k chybě při načítání dat.
+                        </Text>
+                      </Center>
+                    </Td>
+                  </Tr>
+                ) : proceedings.length > 0 ? (
+                  proceedings.map((proceeding) => (
+                    <Tr
+                      key={proceeding.id}
+                      bg="white"
+                      _hover={{ bg: 'goldenYellow.10' }}
+                    >
+                      <Td>{proceeding.proceedingsNumber}</Td>
+                      <Td>{`${proceeding.deceasedFirstName} ${proceeding.deceasedLastName}`}</Td>
+                      <Td>
+                        {new Date(proceeding.startDate).toLocaleDateString(
+                          'cs-CZ',
+                          {
+                            day: '2-digit',
+                            month: '2-digit',
+                            year: 'numeric',
+                          },
+                        )}
+                      </Td>
+                      <Td>{proceeding.phaseTitle ?? ''}</Td>
+                      <Td>
+                        <RouterNavButton
+                          to={insertIdToUrl(
+                            Routes.proceedingOverview,
+                            proceeding.id,
+                          )}
+                          size="sm"
+                        >
+                          Detail
+                        </RouterNavButton>
+                      </Td>
+                    </Tr>
+                  ))
+                ) : (
+                  <Tr>
+                    <Td colSpan={5} textAlign="center" py={10}>
+                      <Text fontSize="lg" color="gray.500">
+                        Žádné dědické řízení nebylo nalezeno
+                      </Text>
+                    </Td>
+                  </Tr>
+                )}
+              </Tbody>
+            </Table>
+          </TableContainer>
         </Box>
         <Flex justifyContent="space-between" alignItems="center" mt={4}>
           <Text fontSize="md" color="gray.600">
-            Záznamů: {filteredProceedings.length}
+            Záznamů: {totalProceedings}
           </Text>
           <Box display="flex" alignItems="center" gap={2}>
             <IconButton
@@ -279,7 +279,7 @@ export const ProceedingsTable: React.FC = () => {
           </Box>
         </Flex>
       </Box>
-    </Form>
+    </>
   );
 };
 

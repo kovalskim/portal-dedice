@@ -28,7 +28,7 @@ export const SidebarProceedingsInfo = ({
         </Badge>
         <Text fontWeight="medium" pt={2}>
           Přidělený notář:{' '}
-          {`${proceeding.notary.beforeTitle} ${proceeding.notary.firstname} ${proceeding.notary.lastname} ${proceeding.notary.afterTitle && ','} ${proceeding.notary.afterTitle}`}
+          {`${proceeding.notary?.beforeTitle} ${proceeding.notary?.firstname} ${proceeding.notary?.lastname} ${proceeding.notary?.afterTitle && ','} ${proceeding.notary?.afterTitle}`}
         </Text>
         <Text fontWeight="medium" pt={2}>
           Zůstavitel:&nbsp;

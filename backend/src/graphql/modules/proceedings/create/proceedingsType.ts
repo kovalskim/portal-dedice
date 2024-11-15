@@ -44,3 +44,12 @@ export class Proceedings {
   @Field(() => String, { nullable: true })
   phaseTitle?: string;
 }
+
+@ObjectType()
+export class PaginatedProceedings {
+  @Field(() => [Proceedings])
+  data!: Proceedings[];
+
+  @Field(() => Number)
+  total!: number;
+}

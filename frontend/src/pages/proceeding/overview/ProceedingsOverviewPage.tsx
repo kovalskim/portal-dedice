@@ -26,17 +26,19 @@ export type OutletContextType = { proceeding: Proceeding };
 export const ProceedingsOverviewPage = () => {
   const { proceeding } = useOutletContext<OutletContextType>();
 
+  if (!proceeding || proceeding.phaseId === undefined) return null;
+
   return (
     <>
       <Box>
         <Tabs
           width="100%"
           colorScheme="goldenYellow"
-          defaultIndex={(proceeding?.phaseId - 1) | 0}
+          defaultIndex={proceeding?.phaseId ? proceeding.phaseId - 1 : 0}
         >
           <TabList>
             <Flex direction={{ base: 'column', md: 'row' }} width="full">
-              <Tab flex={1} isDisabled={proceeding?.phaseId !== 1}>
+              <Tab flex={1} isDisabled={proceeding.phaseId !== 1}>
                 {proceeding?.phaseId > 1 && (
                   <CheckCircleIcon color="green" mr={4} />
                 )}
