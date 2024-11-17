@@ -26,6 +26,13 @@ export const GET_ALL_PROCEEDINGS = gql`
         proceedingsNumber
         deceasedFirstName
         deceasedLastName
+        deceasedDateOfBirth
+        deceasedDateOfDeath
+        deceasedStreetWithNumber
+        deceasedCity
+        deceasedDistrict
+        deceasedPostalCode
+        deceasedSex
         startDate
         phaseTitle
       }
@@ -43,6 +50,12 @@ export type Proceeding = {
   phaseId?: number;
   phaseTitle?: string;
   startDate: string;
+  deceasedDateOfBirth: string;
+  deceasedStreetWithNumber: string;
+  deceasedCity: string;
+  deceasedDistrict: string;
+  deceasedPostalCode: string;
+  deceasedSex: string;
   notary?: {
     id: number;
     beforeTitle: string;

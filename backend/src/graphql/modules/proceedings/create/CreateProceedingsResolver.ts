@@ -1,10 +1,12 @@
 import { GraphQLError } from 'graphql';
 import { Arg, Ctx, Mutation, Resolver } from 'type-graphql';
 
-import { DeceasedPersonInput } from '@backend/graphql/modules/educator/DeceasedPersonInput';
+import { NewProceedingInput } from '@backend/graphql/modules/proceedings/create/NewProceedingInput';
+import { newProceedingInputSchema } from '@backend/graphql/modules/proceedings/create/NewProceedingInputSchema';
+import { createToken } from '@backend/libs/jwt';
+import { sendNarratorInvitationEmail } from '@backend/services/emailService/emailService';
 import { CustomContext } from '@backend/types/types';
 
-import { deceasedPersonInputSchema } from '../../educator/DeceasedPersonInputSchema';
 import { UserRole } from '../../user/roleType';
 
 import { Proceedings } from './proceedingsType';
@@ -13,11 +15,17 @@ import { Proceedings } from './proceedingsType';
 export class CreateProceedingsResolver {
   @Mutation(() => Proceedings)
   async createProceedings(
-    @Arg('data') input: DeceasedPersonInput,
-    @Ctx() { authUser, usersRepository, proceedingsRepository }: CustomContext,
+    @Arg('data') input: NewProceedingInput,
+    @Ctx()
+    {
+      authUser,
+      usersRepository,
+      proceedingsRepository,
+      participantInvitationsRepository,
+    }: CustomContext,
   ): Promise<Proceedings> {
     try {
-      deceasedPersonInputSchema.parse(input);
+      newProceedingInputSchema.parse(input);
     } catch (error) {
       throw new GraphQLError('Validation error', {
         extensions: {
@@ -44,21 +52,40 @@ export class CreateProceedingsResolver {
       });
     }
 
-    const proceedingsNumber = `${new Date().getFullYear()}_${new Date().getMonth()}_${new Date().getDate()}_${input.firstname[0]}${input.lastname.slice(0, 2)}`;
+    const proceedingsNumber = `${new Date().getFullYear()}_${new Date().getMonth()}_${new Date().getDate()}_${input.deceasedPersonInfo.firstname[0]}${input.deceasedPersonInfo.lastname.slice(0, 2)}`;
     // Create the proceedings in the database
     const newProceedingsId = await proceedingsRepository.createProceedings({
       proceedingsNumber: proceedingsNumber,
       notaryId: authUser!.id,
       startDate: new Date(), //TODO: taky jako input
-      deceasedFirstName: input.firstname,
-      deceasedLastName: input.lastname,
-      deceasedDateOfDeath: new Date(input.deathdate),
-      deceasedDateOfBirth: new Date(input.birthdate),
-      deceasedStreetWithNumber: input.streetWithNumber,
-      deceasedCity: input.city,
-      deceasedDistrict: input.district,
-      deceasedPostalCode: input.postalCode,
+      deceasedFirstName: input.deceasedPersonInfo.firstname,
+      deceasedLastName: input.deceasedPersonInfo.lastname,
+      deceasedDateOfDeath: new Date(input.deceasedPersonInfo.deathdate),
+      deceasedDateOfBirth: new Date(input.deceasedPersonInfo.birthdate),
+      deceasedStreetWithNumber: input.deceasedPersonInfo.streetWithNumber,
+      deceasedCity: input.deceasedPersonInfo.city,
+      deceasedDistrict: input.deceasedPersonInfo.district,
+      deceasedPostalCode: input.deceasedPersonInfo.postalCode,
+      deceasedSex: input.deceasedPersonInfo.sex,
     });
+
+    const token = createToken({ email: input.narratorContactInfo.email });
+
+    await participantInvitationsRepository.createParticipantInvitation({
+      proceedingId: newProceedingsId,
+      participantEmail: input.narratorContactInfo.email!,
+      participantFirstname: input.narratorContactInfo.firstname!,
+      participantLastname: input.narratorContactInfo.lastname!,
+      token: token,
+      expiresAt: new Date(),
+    });
+
+    await sendNarratorInvitationEmail(
+      input.narratorContactInfo.email!,
+      input.narratorContactInfo.firstname!,
+      input.narratorContactInfo.lastname!,
+      token,
+    );
 
     const newProceedings =
       await proceedingsRepository.getProceedingsById(newProceedingsId);

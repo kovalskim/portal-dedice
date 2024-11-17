@@ -96,6 +96,7 @@ export const proceedings = mysqlTable('proceedings', {
   deceasedPostalCode: varchar('deceased_postal_code', {
     length: 255,
   }).notNull(),
+  deceasedSex: varchar('sex', { length: 255 }),
   phaseId: int('phase_id')
     .notNull()
     .references(() => phases.id)
@@ -111,7 +112,9 @@ export const participants = mysqlTable('participants', {
     .references(() => users.id),
   proceedingId: int('proceeding_id')
     .notNull()
-    .references(() => proceedings.id),
+    .references(() => proceedings.id, {
+      onDelete: 'cascade',
+    }),
   participantStateId: int('participant_state_id').references(
     () => participantStates.id,
   ),
@@ -120,6 +123,27 @@ export const participants = mysqlTable('participants', {
 export const participantStates = mysqlTable('participant_states', {
   id: int('id').primaryKey().autoincrement(),
   title: varchar('title', { length: 255 }).notNull(),
+});
+
+export const participantInvitations = mysqlTable('participant_invitations', {
+  id: int('id').primaryKey().autoincrement(),
+
+  proceedingId: int('proceeding_id')
+    .notNull()
+    .references(() => proceedings.id, {
+      onDelete: 'cascade',
+    }),
+
+  participantEmail: varchar('participant_email', { length: 255 }).notNull(),
+  participantFirstname: varchar('participant_firstname', {
+    length: 255,
+  }).notNull(),
+  participantLastname: varchar('participant_lastname', {
+    length: 255,
+  }).notNull(),
+
+  token: varchar('token', { length: 255 }).notNull(),
+  expiresAt: timestamp('expires_at').notNull(),
 });
 
 const MeetingType: [string, ...string[]] = ['online', 'in_person'];
@@ -131,7 +155,9 @@ export const meetings = mysqlTable('meetings', {
   type: mysqlEnum('type', MeetingType).notNull(),
   startDateTime: datetime('start_date_time').notNull(),
   userId: int('user_id').references(() => users.id),
-  proceedingId: int('proceeding_id').references(() => proceedings.id),
+  proceedingId: int('proceeding_id').references(() => proceedings.id, {
+    onDelete: 'cascade',
+  }),
 });
 
 export const files = mysqlTable('files', {
@@ -140,13 +166,17 @@ export const files = mysqlTable('files', {
   timestamp: timestamp('timestamp').notNull().defaultNow(),
   userId: int('user_id').references(() => users.id),
   alias: varchar('alias', { length: 255 }).notNull(),
-  proceedingId: int('proceeding_id').references(() => proceedings.id),
+  proceedingId: int('proceeding_id').references(() => proceedings.id, {
+    onDelete: 'cascade',
+  }),
 });
 
 export const messages = mysqlTable('messages', {
   id: int('id').primaryKey().autoincrement(),
   userId: int('user_id').references(() => users.id),
-  proceedingId: int('proceeding_id').references(() => proceedings.id),
+  proceedingId: int('proceeding_id').references(() => proceedings.id, {
+    onDelete: 'cascade',
+  }),
   text: varchar('text', { length: 4096 }).notNull(),
   timestamp: timestamp('timestamp').notNull().defaultNow(),
 });
@@ -162,5 +192,7 @@ export const tasks = mysqlTable('tasks', {
   taskStateId: int('task_state_id').references(() => taskStates.id),
   fileId: int('file_id').references(() => files.id),
   textAnswer: varchar('text_answer', { length: 1024 }),
-  proceedingId: int('proceeding_id').references(() => proceedings.id),
+  proceedingId: int('proceeding_id').references(() => proceedings.id, {
+    onDelete: 'cascade',
+  }),
 });

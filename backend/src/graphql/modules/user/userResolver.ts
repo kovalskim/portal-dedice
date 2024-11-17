@@ -333,7 +333,7 @@ export class UserResolver {
         'password_reset',
       );
 
-    if (!tokenRecord || !tokenRecord.expiresAt) {
+    if (!tokenRecord || !tokenRecord.userId || !tokenRecord.expiresAt) {
       throw validationError('Invalid or expired verification token');
     }
 

@@ -42,6 +42,18 @@ export class Proceedings {
   deceasedPostalCode!: string;
 
   @Field(() => String, { nullable: true })
+  deceasedSex?: string;
+
+  @Field({ nullable: true })
+  narratorFirstname?: string;
+
+  @Field({ nullable: true })
+  narratorLastname?: string;
+
+  @Field({ nullable: true })
+  narratorEmail?: string;
+
+  @Field(() => String, { nullable: true })
   phaseTitle?: string;
 }
 

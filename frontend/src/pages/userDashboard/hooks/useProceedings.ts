@@ -40,6 +40,7 @@ export const useProceedings = () => {
         filterPhaseId: filterData.phaseId,
         filterStatus: filterData.filterStatus,
       },
+      fetchPolicy: 'network-only',
     },
   );
 

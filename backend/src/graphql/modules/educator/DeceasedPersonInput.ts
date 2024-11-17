@@ -28,4 +28,13 @@ export class DeceasedPersonInput {
 
   @Field()
   postalCode!: string;
+
+  @Field({ nullable: true })
+  narratorFirstname?: string;
+
+  @Field({ nullable: true })
+  narratorLastname?: string;
+
+  @Field({ nullable: true })
+  narratorEmail?: string;
 }

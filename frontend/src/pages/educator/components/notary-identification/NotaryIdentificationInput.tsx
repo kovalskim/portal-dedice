@@ -4,6 +4,7 @@ import { SubmitHandler } from 'react-hook-form';
 
 import { InfoHintBox } from '@frontend/components';
 import { Link } from '@frontend/components/links';
+import { useEducatorStorage } from '@frontend/hooks/useEducatorStorage.ts';
 import {
   DeceasedPersonForm,
   DeceasedPersonFormFields,
@@ -16,6 +17,10 @@ type NotaryIdentificationInputProps = {
 export const NotaryIdentificationInput = ({
   onSubmit,
 }: NotaryIdentificationInputProps) => {
+  const { storage } = useEducatorStorage();
+
+  const defaultFormData = storage.deceasedPersonFormData;
+
   return (
     <>
       <Box mb="6">
@@ -36,6 +41,7 @@ export const NotaryIdentificationInput = ({
         Zadejte údaje o zůstaviteli (zemřelé osobě)
       </Heading>
       <DeceasedPersonForm
+        loadDefaultFrom={defaultFormData}
         id="deceasedPersonForm"
         onSubmit={(data) => onSubmit(data)}
       />

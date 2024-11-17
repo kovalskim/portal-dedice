@@ -29,21 +29,20 @@ async function seed() {
   console.log('Database connection established');
 
   console.log('Deleting tables');
-  await db.delete(participantStates);
   await db.delete(participants);
+  await db.delete(participantStates);
   await db.delete(verificationTokens);
-  await db.delete(users);
   await db.delete(districts);
   await db.delete(schedules);
+  await db.delete(messages);
   await db.delete(proceedings);
   await db.delete(phases);
-  await db.delete(participants);
   await db.delete(meetings);
   await db.delete(files);
-  await db.delete(messages);
   await db.delete(taskStates);
   await db.delete(tasks);
   await db.delete(courts);
+  await db.delete(users);
   await db.delete(roles);
 
   try {

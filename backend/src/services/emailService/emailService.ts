@@ -129,3 +129,30 @@ export const sendEmailToParticipant = async (
 
   await sendEmail(email, subject, htmlContent);
 };
+
+export const sendNarratorInvitationEmail = async (
+  email: string,
+  firstname: string,
+  lastname: string,
+  token: string,
+) => {
+  const subject = 'Pozvánka do Portálu dědice';
+
+  const invitationLink = `${process.env.APP_URL}/proceedings?invitation_token=${token}`;
+
+  const bodies = await Promise.all([
+    buildHeading(`Dobrý den, ${firstname} ${lastname}`),
+    buildText('Byl/a jste pozván/a k účasti v dědickém řízení.'),
+    buildButton('Přijmout pozvánku', encodeURI(invitationLink)),
+    buildText('Nebo zkopírujte a vložte tuto URL do svého prohlížeče:'),
+    buildLink(invitationLink, encodeURI(invitationLink)),
+    buildText(
+      'Tento e-mail byl automaticky vygenerován. Pokud tuto pozvánku nepoznáváte, pravděpodobně se jedná o omyl. V takovém případě tento e-mail ignorujte.',
+    ),
+  ]);
+
+  const layout = await buildLayout(...bodies);
+  const htmlContent = getEmailBody(layout);
+
+  await sendEmail(email, subject, htmlContent);
+};

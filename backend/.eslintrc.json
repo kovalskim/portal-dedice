@@ -3,7 +3,10 @@
   "overrides": [
     {
       "files": ["*.ts", "*.tsx"],
-      "rules": {}
+      "rules": {
+        "react/no-is-mounted": "off",
+        "react-hooks/rules-of-hooks": "off"
+      }
     }
   ]
 }

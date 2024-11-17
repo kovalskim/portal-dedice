@@ -12,59 +12,63 @@ import {
 
 import { PrimaryButton, SecondaryButton } from '@frontend/components';
 import {
-  CREATE_PROCEEDING,
-  CreateProceedingsResponse,
+  UPDATE_PROCEEDING,
+  UpdateProceedingsResponse,
 } from '@frontend/gql/proceedings/mutations';
-import { GET_ALL_PROCEEDINGS } from '@frontend/gql/proceedings/queries';
 import { useCustomToast } from '@frontend/hooks/useCustomToast.ts';
-import { useProceedings } from '@frontend/hooks/useProceedings.ts';
 import {
   DeceasedPersonForm,
   DeceasedPersonFormFields,
 } from '@frontend/pages/educator/components/notary-identification/DeceasedPersonForm';
+import { useProceedings } from '@frontend/pages/userDashboard/hooks/useProceedings.ts';
 
-interface NewProceedingsModalProps {
+interface EditProceedingsModalProps {
   isOpen: boolean;
   onClose: () => void;
+  proceedingId?: number;
+  initialData?: DeceasedPersonFormFields;
 }
 
-export const NewProceedingsModal: FC<NewProceedingsModalProps> = ({
+export const EditProceedingsModal: FC<EditProceedingsModalProps> = ({
   isOpen,
   onClose,
+  proceedingId,
+  initialData,
 }) => {
-  const formId = 'create-proceedings-form';
+  const formId = 'edit-proceedings-form';
   const showToast = useCustomToast();
 
   const { refetch } = useProceedings();
 
-  const [createProceedings, { loading, error }] =
-    useMutation<CreateProceedingsResponse>(CREATE_PROCEEDING, {
-      refetchQueries: [{ query: GET_ALL_PROCEEDINGS }],
+  const [updateProceedings, { loading, error }] =
+    useMutation<UpdateProceedingsResponse>(UPDATE_PROCEEDING, {
+      fetchPolicy: 'network-only',
     });
 
   useEffect(() => {
     if (error && isOpen) {
       showToast({
-        title: 'Založení nového dědického řízení se nezdařilo',
-        description: 'Při vytváření dědického řízení došlo k problémům.',
+        title: 'Aktualizace dědického řízení se nezdařila',
+        description: 'Při aktualizaci dědického řízení došlo k problémům.',
         status: 'error',
       });
     }
   }, [error, showToast, isOpen]);
 
   const onSubmit = (data: DeceasedPersonFormFields) => {
-    createProceedings({
+    updateProceedings({
       variables: {
+        id: Number(proceedingId),
         data: data,
       },
     }).then(() => {
       onClose();
       showToast({
-        title: 'Založení nového dědického řízení proběhlo úspěšně.',
-        description: `Bylo vytvořeno nové dědické řízení!`,
+        title: 'Aktualizace dědického řízení proběhla úspěšně.',
+        description: `Dědické řízení bylo úspěšně aktualizováno!`,
         status: 'success',
       });
-      refetch(); // refetch proceedings listed in table
+      refetch();
     });
   };
 
@@ -72,17 +76,21 @@ export const NewProceedingsModal: FC<NewProceedingsModalProps> = ({
     <Modal isOpen={isOpen} onClose={onClose} size="xl">
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>Nové dědické řízení</ModalHeader>
+        <ModalHeader>Upravit dědické řízení</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
-          <DeceasedPersonForm id={formId} onSubmit={(data) => onSubmit(data)} />
+          <DeceasedPersonForm
+            id={formId}
+            onSubmit={(data) => onSubmit(data)}
+            loadDefaultFrom={initialData}
+          />
         </ModalBody>
         <ModalFooter justifyContent="space-between">
           <SecondaryButton onClick={onClose} disabled={loading}>
             Zrušit
           </SecondaryButton>
           <PrimaryButton type="submit" form={formId} isLoading={loading}>
-            Založit řízení
+            Uložit změny
           </PrimaryButton>
         </ModalFooter>
       </ModalContent>

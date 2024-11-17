@@ -21,7 +21,7 @@ import {
 import { FancySelectField } from '@frontend/components/forms/fields/FancySelectField';
 import { TextareaField } from '@frontend/components/forms/fields/TextareaField';
 import { useAuth } from '@frontend/context/auth';
-import { SEND_MESSAGE_TO_PARTICIPANS } from '@frontend/gql/proceedings/mutations';
+import { SEND_MESSAGE_TO_PARTICIPANTS } from '@frontend/gql/proceedings/mutations';
 import { Participant } from '@frontend/gql/proceedings/queries';
 import { useCustomToast } from '@frontend/hooks/useCustomToast';
 
@@ -55,7 +55,7 @@ export const SendEmailModal = ({
   const { user } = useAuth();
   const showToast = useCustomToast();
   const [sendMessageToParticipants, { loading, error }] = useMutation<void>(
-    SEND_MESSAGE_TO_PARTICIPANS,
+    SEND_MESSAGE_TO_PARTICIPANTS,
   );
 
   const onSubmit = (data: SendEmailFields) => {

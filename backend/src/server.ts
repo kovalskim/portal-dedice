@@ -22,6 +22,7 @@ import { getConnection } from '@backend/db/db';
 import { DistrictResolver } from '@backend/graphql/modules/educator/DistrictResolver';
 import { ScheduleResolver } from '@backend/graphql/modules/educator/ScheduleResolver';
 import { EmptyResolver } from '@backend/graphql/modules/empty/emptyResolver';
+import { AcceptParticipantInvitationResolver } from '@backend/graphql/modules/participantInvitation/AcceptParticipantInvitationResolver';
 import { UserResolver } from '@backend/graphql/modules/user/userResolver';
 import { parseAndVerifyJWT } from '@backend/libs/jwt';
 import { mockResolvers } from '@backend/mocks/mocks';
@@ -32,9 +33,13 @@ import { CustomContext } from '@backend/types/types';
 import { MessageResolver } from './graphql/modules/chat/MessageResolver';
 import { pubSub } from './graphql/modules/chat/PubSub';
 import { CreateProceedingsResolver } from './graphql/modules/proceedings/create/CreateProceedingsResolver';
+import { DeleteProceedingsResolver } from './graphql/modules/proceedings/delete/DeleteProceedingsResolver';
 import { GetProceedingsResolver } from './graphql/modules/proceedings/get/GetProceedingsResolver';
 import { SendMessageResolver } from './graphql/modules/proceedings/send/SendMessageResolver';
+import { UpdateProceedingsResolver } from './graphql/modules/proceedings/update/UpdateProceedingsResolver';
 import { MessagesRepository } from './repository/MessagesRepository';
+import { ParticipantInvitationsRepository } from './repository/ParticipantInvitationsRepository';
+import { ParticipantsRepository } from './repository/ParticipantsRepository';
 
 const init = async () => {
   const app = express();
@@ -48,9 +53,12 @@ const init = async () => {
       ScheduleResolver,
       CreateProceedingsResolver,
       GetProceedingsResolver,
+      UpdateProceedingsResolver,
+      DeleteProceedingsResolver,
       DistrictResolver,
       MessageResolver,
       SendMessageResolver,
+      AcceptParticipantInvitationResolver,
     ],
     emitSchemaFile: true,
     pubSub: pubSub,
@@ -61,7 +69,6 @@ const init = async () => {
     path: '/graphql',
   });
 
-  // eslint-disable-next-line react-hooks/rules-of-hooks
   const serverCleanup = useServer({ schema }, wsServer);
 
   const server = new ApolloServer({
@@ -105,6 +112,10 @@ const init = async () => {
       usersRepository: new UsersRepository(drizzle.db),
       proceedingsRepository: new ProceedingsRepository(drizzle.db),
       messageRepository: new MessagesRepository(drizzle.db),
+      participantInvitationsRepository: new ParticipantInvitationsRepository(
+        drizzle.db,
+      ),
+      participantsRepository: new ParticipantsRepository(drizzle.db),
     };
   };
 

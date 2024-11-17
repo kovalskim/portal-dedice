@@ -1,17 +1,62 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { AddIcon } from '@chakra-ui/icons';
 import { Card, Flex, Heading, Text } from '@chakra-ui/react';
 
 import { PrimaryButton } from '@frontend/components';
 import { useAuth } from '@frontend/context/auth';
 import { Role } from '@frontend/context/auth/auth-core';
+import { DeceasedPersonFormFields } from '@frontend/pages/educator/components/notary-identification/DeceasedPersonForm';
+import { InvitationModal } from '@frontend/pages/userDashboard/components/InvitationModal.tsx';
+import { DeleteProceedingsModal } from '@frontend/pages/userDashboard/components/proceedingsModals/DeleteProceedingsModal.tsx';
+import { EditProceedingsModal } from '@frontend/pages/userDashboard/components/proceedingsModals/EditProceedingsModal.tsx';
+import { useNewProceedingFormStore } from '@frontend/pages/userDashboard/hooks/useNewProceedingFormStore.ts';
 
-import { NewProceedingsModal } from './components/newProceedingsModal/NewProceedingsModal';
+import { NewProceedingsModal } from './components/proceedingsModals/NewProceedingsModal';
 import ProceedingsTable from './components/proceedingsTable/ProceedingsTable';
 
 export const UserDashboard = () => {
   const [newProceedingsModalOpen, setNewProceedingsModalOpen] = useState(false);
+  const [editProceedingsModalOpen, setEditProceedingsModalOpen] =
+    useState(false);
+  const [deleteProceedingsModalOpen, setDeleteProceedingsModalOpen] =
+    useState(false);
+  const [selectedProceeding, setSelectedProceeding] = useState<{
+    id: number;
+    data?: DeceasedPersonFormFields;
+  } | null>(null);
+
+  const { resetFormStore } = useNewProceedingFormStore();
+
   const { role } = useAuth();
+
+  const handleEditProceeding = (id: number, data: DeceasedPersonFormFields) => {
+    setSelectedProceeding({ id, data });
+    setEditProceedingsModalOpen(true);
+  };
+
+  const handleDeleteProceeding = (id: number) => {
+    setSelectedProceeding({ id });
+    setDeleteProceedingsModalOpen(true);
+  };
+
+  // reseting formstore and states on closing modals
+  useEffect(() => {
+    if (!newProceedingsModalOpen) {
+      resetFormStore();
+    }
+    if (!(editProceedingsModalOpen || deleteProceedingsModalOpen)) {
+      setSelectedProceeding(null);
+    }
+  }, [
+    resetFormStore,
+    newProceedingsModalOpen,
+    editProceedingsModalOpen,
+    deleteProceedingsModalOpen,
+  ]);
+
+  const handleCloseModal = () => {
+    setNewProceedingsModalOpen(false);
+  };
 
   return (
     <Flex direction="column" gap={4} py={{ sm: 2, lg: 4 }}>
@@ -19,7 +64,6 @@ export const UserDashboard = () => {
         <Heading as="h2" size="lg">
           Vítejte na Portálu dědice
         </Heading>
-        {/* TODO pridať podmienku či je to notár <Text>Notářský modul</Text> */}
       </Flex>
       <Text>
         Portál dědice je vaším průvodcem dědickým řízením, který slouží jako
@@ -38,13 +82,33 @@ export const UserDashboard = () => {
       )}
 
       <Card>
-        <ProceedingsTable />
+        <ProceedingsTable
+          onEditProceeding={handleEditProceeding}
+          onDeleteProceeding={handleDeleteProceeding}
+        />
       </Card>
 
       <NewProceedingsModal
         isOpen={newProceedingsModalOpen}
-        onClose={() => setNewProceedingsModalOpen(false)}
+        onClose={handleCloseModal}
       />
+      {selectedProceeding !== null && (
+        <>
+          <EditProceedingsModal
+            isOpen={editProceedingsModalOpen}
+            onClose={() => setEditProceedingsModalOpen(false)}
+            proceedingId={selectedProceeding?.id}
+            initialData={selectedProceeding?.data}
+          />
+          <DeleteProceedingsModal
+            isOpen={deleteProceedingsModalOpen}
+            onClose={() => setDeleteProceedingsModalOpen(false)}
+            proceedingId={selectedProceeding?.id}
+          />
+        </>
+      )}
+
+      <InvitationModal />
     </Flex>
   );
 };

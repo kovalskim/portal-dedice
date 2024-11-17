@@ -1,0 +1,96 @@
+import { FC, useEffect } from 'react';
+import { useMutation } from '@apollo/client';
+import {
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+  Text,
+} from '@chakra-ui/react';
+
+import { PrimaryButton, SecondaryButton } from '@frontend/components';
+import {
+  DELETE_PROCEEDING,
+  DeleteProceedingsResponse,
+} from '@frontend/gql/proceedings/mutations';
+import { GET_ALL_PROCEEDINGS } from '@frontend/gql/proceedings/queries';
+import { useCustomToast } from '@frontend/hooks/useCustomToast.ts';
+import { useProceedings } from '@frontend/pages/userDashboard/hooks/useProceedings.ts';
+
+interface DeleteProceedingsModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  proceedingId?: number;
+}
+
+export const DeleteProceedingsModal: FC<DeleteProceedingsModalProps> = ({
+  isOpen,
+  onClose,
+  proceedingId,
+}) => {
+  const showToast = useCustomToast();
+
+  const { refetch } = useProceedings();
+
+  const [deleteProceeding, { loading, error }] =
+    useMutation<DeleteProceedingsResponse>(DELETE_PROCEEDING, {
+      refetchQueries: [{ query: GET_ALL_PROCEEDINGS }],
+      fetchPolicy: 'network-only',
+    });
+
+  useEffect(() => {
+    if (error && isOpen) {
+      showToast({
+        title: 'Smazání dědického řízení se nezdařilo',
+        description: 'Při mazání dědického řízení došlo k problémům.',
+        status: 'error',
+      });
+    }
+  }, [error, showToast, isOpen]);
+
+  const handleDelete = () => {
+    deleteProceeding({
+      variables: { id: Number(proceedingId) },
+    }).then(() => {
+      refetch();
+
+      showToast({
+        title: 'Dědické řízení bylo úspěšně smazáno.',
+        description: 'Řízení bylo odstraněno.',
+        status: 'success',
+      });
+      onClose();
+    });
+  };
+
+  return (
+    <Modal isOpen={isOpen} onClose={onClose} size="md">
+      <ModalOverlay />
+      <ModalContent>
+        <ModalHeader>Potvrzení smazání řízení</ModalHeader>
+        <ModalCloseButton />
+        <ModalBody>
+          <Text>
+            Opravdu chcete smazat toto dědické řízení? Tuto akci nelze vrátit
+            zpět.
+          </Text>
+        </ModalBody>
+        <ModalFooter justifyContent="space-between">
+          <SecondaryButton onClick={onClose} disabled={loading}>
+            Zrušit
+          </SecondaryButton>
+          <PrimaryButton
+            colorScheme="red"
+            onClick={handleDelete}
+            isLoading={loading}
+          >
+            Smazat
+          </PrimaryButton>
+        </ModalFooter>
+      </ModalContent>
+    </Modal>
+  );
+};

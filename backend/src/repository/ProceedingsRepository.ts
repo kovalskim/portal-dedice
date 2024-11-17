@@ -27,6 +27,7 @@ export interface ProceedingsDTO {
   deceasedCity: string;
   deceasedDistrict: string;
   deceasedPostalCode: string;
+  deceasedSex?: string;
   phaseTitle?: string;
 }
 
@@ -42,6 +43,10 @@ export interface CreateProceedingsDTO {
   deceasedPostalCode: string;
   notaryId: number;
   startDate: Date;
+  deceasedSex?: string;
+  narratorFirstname?: string;
+  narratorLastname?: string;
+  narratorEmail?: string;
 }
 
 interface ParticipantDTO {
@@ -119,6 +124,7 @@ export class ProceedingsRepository {
         deceasedCity: proceedings.deceasedCity,
         deceasedDistrict: proceedings.deceasedDistrict,
         deceasedPostalCode: proceedings.deceasedPostalCode,
+        deceasedSex: proceedings.deceasedSex,
         phaseTitle: phases.title,
       })
       .from(proceedings)
@@ -197,8 +203,6 @@ export class ProceedingsRepository {
     filterPhaseId?: number,
     filterStatus?: string,
   ): Promise<{ data: ProceedingsDTO[]; total: number }> {
-    // this is not react code, so the eslint rule does not make sense here
-    // eslint-disable-next-line react/no-is-mounted
     return this.fetchProceedings(
       { type: 'notary', id: notaryId },
       currentPage,
@@ -223,7 +227,6 @@ export class ProceedingsRepository {
     filterPhaseId?: number,
     filterStatus?: string,
   ): Promise<{ data: ProceedingsDTO[]; total: number }> {
-    // eslint-disable-next-line react/no-is-mounted
     return this.fetchProceedings(
       { type: 'participant', id: userId },
       currentPage,
@@ -235,6 +238,33 @@ export class ProceedingsRepository {
       filterPhaseId,
       filterStatus,
     );
+  }
+
+  async updateProceeding(
+    proceedingId: number,
+    data: Partial<CreateProceedingsDTO>,
+  ): Promise<ProceedingsDTO | null> {
+    await this.db
+      .update(proceedings)
+      .set(data)
+      .where(eq(proceedings.id, proceedingId));
+
+    const updatedProceeding = await this.getProceedingsById(proceedingId);
+
+    if (!updatedProceeding) {
+      throw new Error('Proceeding not found or update failed');
+    }
+
+    return updatedProceeding;
+  }
+
+  async deleteProceeding(proceedingId: number): Promise<void> {
+    await this.db.delete(proceedings).where(eq(proceedings.id, proceedingId));
+
+    const deletedProceeding = await this.getProceedingsById(proceedingId);
+    if (deletedProceeding) {
+      throw new Error('Delete failed: proceeding still exists');
+    }
   }
 
   async getProceedingParticipants(

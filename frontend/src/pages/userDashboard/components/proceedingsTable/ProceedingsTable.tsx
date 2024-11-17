@@ -4,6 +4,8 @@ import {
   ArrowUpIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
+  DeleteIcon,
+  EditIcon,
   WarningIcon,
 } from '@chakra-ui/icons';
 import {
@@ -27,11 +29,22 @@ import {
 
 import { PrimaryButton } from '@frontend/components';
 import { RouterNavButton } from '@frontend/components/navigation/atoms/RouterNavButton.tsx';
-import { useProceedings } from '@frontend/hooks/useProceedings.ts';
+import { useAuth } from '@frontend/context/auth';
+import { Role } from '@frontend/context/auth/auth-core';
+import { DeceasedPersonFormFields } from '@frontend/pages/educator/components/notary-identification/DeceasedPersonForm';
+import { useProceedings } from '@frontend/pages/userDashboard/hooks/useProceedings.ts';
 import { Routes } from '@frontend/routes.ts';
 import { insertIdToUrl } from '@frontend/utils/util.tsx';
 
-export const ProceedingsTable: React.FC = () => {
+type ProceedingsTableProps = {
+  onEditProceeding?: (id: number, data: DeceasedPersonFormFields) => void;
+  onDeleteProceeding?: (id: number) => void;
+};
+
+export const ProceedingsTable: React.FC<ProceedingsTableProps> = ({
+  onEditProceeding,
+  onDeleteProceeding,
+}) => {
   const {
     loading,
     error,
@@ -45,6 +58,8 @@ export const ProceedingsTable: React.FC = () => {
     filterData,
     handleFilter,
   } = useProceedings();
+
+  const { role } = useAuth();
 
   const handlePreviousPage = () => {
     setCurrentPage((prevPage) => Math.max(prevPage - 1, 1));
@@ -60,7 +75,7 @@ export const ProceedingsTable: React.FC = () => {
         <Heading fontSize="2xl" fontWeight="bold" mb={4}>
           Seznam dědických řízení
         </Heading>
-        <Flex gap={4} mt={4}>
+        <Flex gap={4} mt={4} direction={{ base: 'column', sm: 'row' }}>
           {['Vše', 'Probíhající', 'Ukončené'].map((status) => (
             <PrimaryButton
               key={status}
@@ -80,8 +95,13 @@ export const ProceedingsTable: React.FC = () => {
             </PrimaryButton>
           ))}
         </Flex>
-        <Box maxW="100vw">
-          <TableContainer borderWidth="1px" borderRadius="lg" mt={6}>
+        <Box w="100%">
+          <TableContainer
+            maxW={{ base: '80vw', md: '90vw', lg: '100vw' }}
+            borderWidth="1px"
+            borderRadius="lg"
+            mt={6}
+          >
             <Table variant="simple" size="md">
               <Thead>
                 <Tr>
@@ -227,15 +247,59 @@ export const ProceedingsTable: React.FC = () => {
                       </Td>
                       <Td>{proceeding.phaseTitle ?? ''}</Td>
                       <Td>
-                        <RouterNavButton
-                          to={insertIdToUrl(
-                            Routes.proceedingOverview,
-                            proceeding.id,
+                        <Flex direction="row" gap={2}>
+                          <RouterNavButton
+                            to={insertIdToUrl(
+                              Routes.proceedingOverview,
+                              proceeding.id,
+                            )}
+                            size="sm"
+                          >
+                            Detail
+                          </RouterNavButton>
+
+                          {role === Role.NOTARY && (
+                            <>
+                              <IconButton
+                                aria-label="Edit proceeding"
+                                icon={<EditIcon />}
+                                size="sm"
+                                ml={1}
+                                onClick={() =>
+                                  onEditProceeding?.(proceeding.id, {
+                                    sex: proceeding.deceasedSex,
+                                    firstname: proceeding.deceasedFirstName,
+                                    lastname: proceeding.deceasedLastName,
+                                    birthdate:
+                                      proceeding.deceasedDateOfBirth.split(
+                                        'T',
+                                      )[0],
+                                    deathdate:
+                                      proceeding.deceasedDateOfDeath?.split(
+                                        'T',
+                                      )[0] || '',
+                                    streetWithNumber:
+                                      proceeding.deceasedStreetWithNumber,
+                                    city: proceeding.deceasedCity,
+                                    district: proceeding.deceasedDistrict,
+                                    postalCode: proceeding.deceasedPostalCode,
+                                  })
+                                }
+                              />
+
+                              <IconButton
+                                aria-label="Delete proceeding"
+                                colorScheme="red"
+                                icon={<DeleteIcon />}
+                                size="sm"
+                                ml={1}
+                                onClick={() =>
+                                  onDeleteProceeding?.(proceeding.id)
+                                }
+                              />
+                            </>
                           )}
-                          size="sm"
-                        >
-                          Detail
-                        </RouterNavButton>
+                        </Flex>
                       </Td>
                     </Tr>
                   ))

@@ -2,42 +2,24 @@ import { Flex, Radio } from '@chakra-ui/react';
 import { SubmitHandler } from 'react-hook-form';
 import { z } from 'zod';
 
-import { Form, InputField, RadioGroupField, zod } from '@frontend/components';
+import { Form, InputField, RadioGroupField } from '@frontend/components';
 import { zodResolver } from '@frontend/components/forms';
-import { useEducatorStorage } from '@frontend/hooks/useEducatorStorage.ts';
 import { AutocompleteAddress } from '@frontend/pages/educator/components/notary-identification/AutocompleteAddress.tsx';
+import { baseDeceasedInfoSchema } from '@frontend/pages/educator/components/notary-identification/baseDeceasedInfoSchema.ts';
 import { useValidDistricts } from '@frontend/pages/educator/components/notary-identification/useValidDistricts.ts';
-
-const postalCodeRegex = new RegExp('^\\d{3}\\s\\d{2}$');
-
-const baseDeceasedInfoSchema = zod.object({
-  sex: zod.string().min(1, { message: 'Povinné pole' }),
-  firstname: zod.string().min(1, { message: 'Povinné pole' }),
-  lastname: zod.string().min(1, { message: 'Povinné pole' }),
-  birthdate: zod.string().min(1, { message: 'Povinné pole' }),
-  deathdate: zod.string().min(1, { message: 'Povinné pole' }),
-  streetWithNumber: zod.string().min(1, { message: 'Povinné pole' }),
-  city: zod
-    .string()
-    .min(1, { message: 'Povinné pole' })
-    .refine((val) => val === 'Praha' || '', {
-      message: 'V současné době je podporována pouze obec Praha',
-    }),
-  district: zod.string().min(1, { message: 'Povinné pole' }),
-  postalCode: zod
-    .string()
-    .min(1, { message: 'Povinné pole' })
-    .regex(postalCodeRegex, { message: 'Neplatné PSČ' }),
-});
 
 export type DeceasedPersonFormFields = z.infer<typeof baseDeceasedInfoSchema>;
 type DeceasedInfoFormProps = {
   id: string;
+  loadDefaultFrom?: DeceasedPersonFormFields | undefined;
   onSubmit: SubmitHandler<DeceasedPersonFormFields>;
 };
 
-export const DeceasedPersonForm = ({ id, onSubmit }: DeceasedInfoFormProps) => {
-  const { storage } = useEducatorStorage();
+export const DeceasedPersonForm = ({
+  id,
+  onSubmit,
+  loadDefaultFrom,
+}: DeceasedInfoFormProps) => {
   const { validDistrictNames, error } = useValidDistricts();
 
   const schemaWithDistrictValidation = baseDeceasedInfoSchema.extend({
@@ -64,21 +46,21 @@ export const DeceasedPersonForm = ({ id, onSubmit }: DeceasedInfoFormProps) => {
     },
   );
 
-  const formData = storage.deceasedPersonFormData;
+  const formData = loadDefaultFrom;
   return (
     <Form
       id={id}
       resolver={zodResolver(completeSchema)}
       defaultValues={{
-        sex: formData ? formData.sex : '',
-        firstname: formData ? formData.firstname : '',
-        lastname: formData ? formData.lastname : '',
-        birthdate: formData ? formData.birthdate : '',
-        deathdate: formData ? formData.deathdate : '',
-        streetWithNumber: formData ? formData.streetWithNumber : '',
-        city: formData ? formData.city : '',
-        district: formData ? formData.district : '',
-        postalCode: formData ? formData.postalCode : '',
+        sex: formData?.sex ?? '',
+        firstname: formData?.firstname ?? '',
+        lastname: formData?.lastname ?? '',
+        birthdate: formData?.birthdate ?? '',
+        deathdate: formData?.deathdate ?? '',
+        streetWithNumber: formData?.streetWithNumber ?? '',
+        city: formData?.city ?? '',
+        district: formData?.district ?? '',
+        postalCode: formData?.postalCode ?? '',
       }}
       onSubmit={(data) => onSubmit(data)}
     >
