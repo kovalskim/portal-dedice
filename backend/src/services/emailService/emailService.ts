@@ -107,3 +107,25 @@ export const sendNewMessageNotification = async (
 
   await sendEmail(email, subject, htmlContent);
 };
+
+export const sendEmailToParticipant = async (
+  title: string,
+  message: string,
+  proceedingId: number,
+  email: string,
+) => {
+  const subject: string = `Zpráva z Portálu dědice - řízení ${proceedingId}`;
+  const portalLink = `${process.env.APP_URL}/logIn`;
+
+  const bodies = await Promise.all([
+    buildHeading(title),
+    buildText(message),
+    buildText('Do Portálu dědice se můžete níže:'),
+    buildButton('Přihlásit se do Portálu dědice', encodeURI(portalLink)),
+  ]);
+
+  const layout = await buildLayout(...bodies);
+  const htmlContent = getEmailBody(layout);
+
+  await sendEmail(email, subject, htmlContent);
+};

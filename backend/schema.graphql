@@ -53,6 +53,7 @@ type Mutation {
   identifyNotary(data: DeceasedPersonInput!): Schedule!
   newPassword(newPassword: String!, token: String!): String!
   restorePassword(email: String!): String!
+  sendMessageToParticipans(data: SendEmailRequest!): String!
   signIn(email: String!, password: String!): SignInInfo!
   signUp(email: String!, firstname: String!, lastname: String!, password: String!): AuthInfo!
   updateUser(afterTitle: String, beforeTitle: String, firstname: String!, lastname: String!, userId: String!): User!
@@ -124,6 +125,13 @@ type Schedule {
   pattern: String!
   secondaryNotaryId: Float
   secondaryNotaryName: String!
+}
+
+input SendEmailRequest {
+  message: String!
+  proceedingsId: Float!
+  recivers: [String!]!
+  title: String!
 }
 
 type SignInInfo {

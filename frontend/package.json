@@ -27,6 +27,7 @@
     "@hookform/resolvers": "~3.9.0",
     "@uidotdev/usehooks": "^2.4.1",
     "apollo-upload-client": "^18.0.1",
+    "chakra-react-select": "^5.0.2",
     "cross-fetch": "^4.0.0",
     "date-fns": "^4.1.0",
     "framer-motion": "^11.5.4",

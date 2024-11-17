@@ -49,3 +49,9 @@ export function serverError(message: string) {
     extensions: { code: 'INTERNAL_SERVER_ERROR' },
   });
 }
+
+export function forbiddenError(message: string) {
+  return new GraphQLError(message, {
+    extensions: { code: 'FORBIDDEN' },
+  });
+}

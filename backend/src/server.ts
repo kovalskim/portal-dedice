@@ -33,6 +33,7 @@ import { MessageResolver } from './graphql/modules/chat/MessageResolver';
 import { pubSub } from './graphql/modules/chat/PubSub';
 import { CreateProceedingsResolver } from './graphql/modules/proceedings/create/CreateProceedingsResolver';
 import { GetProceedingsResolver } from './graphql/modules/proceedings/get/GetProceedingsResolver';
+import { SendMessageResolver } from './graphql/modules/proceedings/send/SendMessageResolver';
 import { MessagesRepository } from './repository/MessagesRepository';
 
 const init = async () => {
@@ -49,6 +50,7 @@ const init = async () => {
       GetProceedingsResolver,
       DistrictResolver,
       MessageResolver,
+      SendMessageResolver,
     ],
     emitSchemaFile: true,
     pubSub: pubSub,

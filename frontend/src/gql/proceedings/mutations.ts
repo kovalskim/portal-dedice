@@ -15,3 +15,9 @@ export const CREATE_PROCEEDING = gql`
     }
   }
 `;
+
+export const SEND_MESSAGE_TO_PARTICIPANS = gql`
+  mutation sendMessageToParticipans($data: SendEmailRequest!) {
+    sendMessageToParticipans(data: $data)
+  }
+`;

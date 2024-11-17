@@ -1,0 +1,171 @@
+import { useMutation } from '@apollo/client';
+import {
+  Flex,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+  SystemStyleObject,
+} from '@chakra-ui/react';
+
+import {
+  Form,
+  InputField,
+  PrimaryButton,
+  zod,
+  zodResolver,
+} from '@frontend/components';
+import { FancySelectField } from '@frontend/components/forms/fields/FancySelectField';
+import { TextareaField } from '@frontend/components/forms/fields/TextareaField';
+import { useAuth } from '@frontend/context/auth';
+import { SEND_MESSAGE_TO_PARTICIPANS } from '@frontend/gql/proceedings/mutations';
+import { Participant } from '@frontend/gql/proceedings/queries';
+import { useCustomToast } from '@frontend/hooks/useCustomToast';
+
+const baseSendEmailSchema = zod.object({
+  title: zod
+    .string()
+    .min(1, { message: 'Povinné pole' })
+    .max(100, 'Přesáhl jste maximální povolenou délku'),
+  message: zod
+    .string()
+    .min(1, { message: 'Povinné pole' })
+    .max(2000, 'Přesáhl jste maximální povolenou délku'),
+  receivers: zod.array(
+    zod.object({ label: zod.string(), value: zod.string() }),
+  ),
+});
+
+type SendEmailFields = zod.infer<typeof baseSendEmailSchema>;
+
+type SendEmailModalProps = {
+  receivers?: Participant[];
+  isOpen: boolean;
+  onClose: () => void;
+};
+
+export const SendEmailModal = ({
+  receivers,
+  isOpen,
+  onClose,
+}: SendEmailModalProps) => {
+  const { user } = useAuth();
+  const showToast = useCustomToast();
+  const [sendMessageToParticipants, { loading, error }] = useMutation<void>(
+    SEND_MESSAGE_TO_PARTICIPANS,
+  );
+
+  const onSubmit = (data: SendEmailFields) => {
+    const proceedingsId =
+      receivers && receivers?.length > 0
+        ? receivers[0].proceedingId
+        : undefined;
+
+    const receiversEmails =
+      data.receivers.length > 0
+        ? data.receivers.map((val) => val.value)
+        : receivers
+            ?.filter((val) => val.user.email !== user?.email)
+            .map((val) => val.user.email);
+
+    if (!receiversEmails || receiversEmails.length === 0) {
+      showToast({
+        title: 'Chybí příjemci zprávy',
+        description: 'Je potreba mít alespoň jednoho příjemce zprávy.',
+        status: 'error',
+      });
+      return;
+    }
+
+    sendMessageToParticipants({
+      variables: {
+        data: {
+          ...data,
+          receivers: receiversEmails,
+          proceedingsId,
+        },
+      },
+    })
+      .then(() => {
+        onClose();
+        showToast({
+          title: 'Odeslání zprávy proběhlo úspěšně.',
+          description: `Zpráva byla odeslána!`,
+          status: 'success',
+        });
+      })
+      .catch(() => {
+        onClose();
+        showToast({
+          title: 'Odeslání zprávy se nezdařilo',
+          description: 'Při odesílání zprávy došlo k problémům.',
+          status: 'error',
+        });
+      });
+  };
+
+  console.log(error);
+
+  return (
+    <Modal isOpen={isOpen} onClose={onClose} size="xl">
+      <ModalOverlay />
+      <ModalContent>
+        <ModalHeader>Hromadná zpráva</ModalHeader>
+        <ModalCloseButton />
+        <ModalBody>
+          <Form
+            id={'sendEmail'}
+            resolver={zodResolver(baseSendEmailSchema)}
+            defaultValues={{
+              title: '',
+              message: '',
+              receivers: [],
+            }}
+            onSubmit={onSubmit}
+          >
+            <Flex direction="column" gap={4}>
+              <InputField
+                name="title"
+                label="Napis"
+                placeholder="Zadejte nadpis zprávy..."
+              />
+              <TextareaField
+                name="message"
+                label="Zpráva"
+                placeholder="Zadejte zprávu pro příjemce..."
+                rows={10}
+              />
+              <FancySelectField
+                label="Příjemci:"
+                name="receivers"
+                placeholder="Všichni"
+                isMulti
+                tagColorScheme="goldenYellow"
+                options={receivers
+                  ?.filter((val) => val.user.email !== user?.email)
+                  .map((val) => ({
+                    label: val.user.email,
+                    value: val.user.email,
+                  }))}
+                chakraStyles={{
+                  container: (provided: SystemStyleObject) => ({
+                    ...provided,
+                    width: '100%',
+                  }),
+                }}
+              />
+            </Flex>
+          </Form>
+        </ModalBody>
+        <ModalFooter justifyContent="center">
+          <PrimaryButton type="submit" form={'sendEmail'} isLoading={loading}>
+            Odeslat
+          </PrimaryButton>
+        </ModalFooter>
+      </ModalContent>
+    </Modal>
+  );
+};

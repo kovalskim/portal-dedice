@@ -1,6 +1,6 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useQuery } from '@apollo/client';
-import { AddIcon } from '@chakra-ui/icons';
+import { AddIcon, EmailIcon } from '@chakra-ui/icons';
 import {
   Box,
   Button,
@@ -28,10 +28,13 @@ import {
 import { useCustomToast } from '@frontend/hooks/useCustomToast.ts';
 import { OutletContextType } from '@frontend/pages';
 
+import { SendEmailModal } from './components/sendEmail/SendEmailModal';
+
 export const ProceedingsParticipants = () => {
   const showToast = useCustomToast();
   const { role } = useAuth();
   const { proceeding } = useOutletContext<OutletContextType>();
+  const [openSendEmailModal, setOpenSendEmailModal] = useState(false);
 
   const { data, loading, error } = useQuery<ParticipantsResponse>(
     GET_PROCEEDING_PARTICIPANTS,
@@ -63,10 +66,22 @@ export const ProceedingsParticipants = () => {
       >
         <Heading size="md" mb={{ base: 2, md: 0 }}>
           Seznam účastníků
-        </Heading>
-        {role === Role.NOTARY && (
-          <PrimaryButton leftIcon={<AddIcon />}>Přidat účastníka</PrimaryButton>
-        )}
+        </Heading>{' '}
+        <Flex gap={4} direction={{ base: 'column', md: 'row' }}>
+          {role === Role.NOTARY && (
+            <PrimaryButton
+              leftIcon={<EmailIcon />}
+              onClick={() => setOpenSendEmailModal(true)}
+            >
+              Odeslat email
+            </PrimaryButton>
+          )}
+          {role === Role.NOTARY && (
+            <PrimaryButton leftIcon={<AddIcon />}>
+              Přidat účastníka
+            </PrimaryButton>
+          )}
+        </Flex>
       </Flex>
       {loading && (
         <Flex justifyContent="center" mt={6}>
@@ -119,6 +134,11 @@ export const ProceedingsParticipants = () => {
           </Table>
         </TableContainer>
       )}
+      <SendEmailModal
+        receivers={data?.proceedingParticipants}
+        isOpen={openSendEmailModal}
+        onClose={() => setOpenSendEmailModal(false)}
+      />
     </Box>
   );
 };
