@@ -25,6 +25,7 @@ export interface UserDTO {
   roleId: number;
   beforeTitle: string | null;
   afterTitle: string | null;
+  emailNotifications: boolean;
 }
 
 export class UsersRepository {

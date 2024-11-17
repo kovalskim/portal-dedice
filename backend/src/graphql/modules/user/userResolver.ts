@@ -35,7 +35,7 @@ export class UserResolver {
     @Arg('id') stringId: string,
     @Ctx() { usersRepository }: CustomContext,
   ): Promise<User | null> {
-    const id = parseInt(stringId, 10);
+    const id = parseInt(stringId);
     const user = await usersRepository.getUserById(id);
     return user ?? null;
   }
@@ -66,11 +66,15 @@ export class UserResolver {
       throw unauthenticatedError('Unauthenticated');
     }
 
-    const userId = parseInt(stringId, 10);
+    const userId = parseInt(stringId);
     const user = await usersRepository.getUserById(userId);
 
     if (!user) {
       throw notFoundError('User not found');
+    }
+
+    if (authUser.id !== user.id) {
+      throw unauthorizedError('Unauthorized');
     }
 
     await usersRepository.updateUser({
@@ -79,6 +83,35 @@ export class UserResolver {
       firstname,
       lastname,
       afterTitle,
+    });
+
+    return await usersRepository.getUserById(userId);
+  }
+
+  @Mutation(() => User)
+  async updateUserPreferences(
+    @Arg('userId') stringId: string,
+    @Arg('emailNotifications') emailNotifications: boolean,
+    @Ctx() { authUser, usersRepository }: CustomContext,
+  ): Promise<User> {
+    if (!authUser) {
+      throw unauthenticatedError('Unauthenticated');
+    }
+
+    const userId = parseInt(stringId);
+    const user = await usersRepository.getUserById(userId);
+
+    if (!user) {
+      throw notFoundError('User not found');
+    }
+
+    if (authUser.id !== user.id) {
+      throw unauthorizedError('Unauthorized');
+    }
+
+    await usersRepository.updateUser({
+      ...user,
+      emailNotifications,
     });
 
     return await usersRepository.getUserById(userId);
@@ -217,6 +250,7 @@ export class UserResolver {
       lastname,
       afterTitle: null,
       isVerified: false,
+      emailNotifications: true,
     };
 
     return { user: userObject, token: token };

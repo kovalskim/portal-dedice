@@ -40,5 +40,10 @@ export const theme = extendTheme({
         focusBorderColor: 'goldenYellow.500',
       },
     },
+    Checkbox: {
+      defaultProps: {
+        colorScheme: 'goldenYellow',
+      },
+    },
   },
 });

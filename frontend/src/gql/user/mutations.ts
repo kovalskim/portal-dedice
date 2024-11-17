@@ -34,6 +34,7 @@ export const SIGN_IN_MUTATION = gql`
         lastname
         afterTitle
         email
+        emailNotifications
       }
       role {
         id
@@ -65,6 +66,21 @@ export const UPDATE_USER_MUTATION = gql`
       lastname
       afterTitle
       email
+    }
+  }
+`;
+
+export const UPDATE_USER_PREFERENCES_MUTATION = gql`
+  mutation UpdateUserPreferences(
+    $emailNotifications: Boolean!
+    $userId: String!
+  ) {
+    updateUserPreferences(
+      emailNotifications: $emailNotifications
+      userId: $userId
+    ) {
+      id
+      emailNotifications
     }
   }
 `;

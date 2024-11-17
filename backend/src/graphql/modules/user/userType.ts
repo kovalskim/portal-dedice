@@ -24,6 +24,9 @@ export class User {
 
   @Field()
   isVerified!: boolean;
+
+  @Field()
+  emailNotifications!: boolean;
 }
 
 @ObjectType()

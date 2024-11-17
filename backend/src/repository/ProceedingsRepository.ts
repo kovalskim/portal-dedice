@@ -11,6 +11,8 @@ import {
 } from '@backend/db/schema';
 import { UserRole } from '@backend/graphql/modules/user/roleType';
 
+import { UserDTO } from './UsersRepository';
+
 export interface ProceedingsDTO {
   id: number;
   phaseId: number;
@@ -42,40 +44,13 @@ export interface CreateProceedingsDTO {
   startDate: Date;
 }
 
-interface ParticipantRow {
-  participants: {
-    proceedingId: number;
-  };
-  participant_states: {
-    id: number;
-    title: string;
-  };
-  users: {
-    id: number;
-    beforeTitle: string | null;
-    firstname: string;
-    lastname: string;
-    afterTitle: string | null;
-    email: string;
-    isVerified: boolean;
-  };
-}
-
 interface ParticipantDTO {
   proceedingId: number;
   participantState: {
     id: number;
     title: string;
   };
-  user: {
-    id: number;
-    firstname: string;
-    afterTitle: string | null;
-    beforeTitle: string | null;
-    isVerified: boolean;
-    email: string;
-    lastname: string;
-  };
+  user: UserDTO;
 }
 
 export class ProceedingsRepository {
@@ -274,18 +249,10 @@ export class ProceedingsRepository {
         eq(participantStates.id, participants.participantStateId),
       )
       .where(eq(participants.proceedingId, proceedingId))
-      .then((rows: ParticipantRow[]) =>
+      .then((rows) =>
         rows.map((row) => ({
           proceedingId: row.participants.proceedingId,
-          user: {
-            id: row.users.id,
-            beforeTitle: row.users.beforeTitle,
-            firstname: row.users.firstname,
-            lastname: row.users.lastname,
-            afterTitle: row.users.afterTitle,
-            email: row.users.email,
-            isVerified: row.users.isVerified,
-          },
+          user: row.users,
           participantState: {
             id: row.participant_states.id,
             title: row.participant_states.title,

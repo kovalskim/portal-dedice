@@ -27,6 +27,7 @@ export type AuthUser = {
   lastname: string;
   email: string;
   afterTitle: string | null;
+  emailNotifications: boolean;
 };
 
 const LOCAL_STORAGE_AUTH_KEY = 'project-auth';

@@ -56,12 +56,18 @@ type Mutation {
   signIn(email: String!, password: String!): SignInInfo!
   signUp(email: String!, firstname: String!, lastname: String!, password: String!): AuthInfo!
   updateUser(afterTitle: String, beforeTitle: String, firstname: String!, lastname: String!, userId: String!): User!
+  updateUserPreferences(emailNotifications: Boolean!, userId: String!): User!
   verifyEmail(token: String!): String!
   verifyToken(token: String!): String!
 }
 
 type NewMessageNotification {
   id: ID!
+}
+
+type PaginatedProceedings {
+  data: [Proceedings!]!
+  total: Float!
 }
 
 type Participant {
@@ -97,7 +103,7 @@ type Query {
   _empty: String!
   allMessagesByProceedingId(proceedingId: Float!): [Message!]!
   districts: [District!]!
-  getAllProceedings: [Proceedings!]!
+  getAllProceedings(currentPage: Float! = 1, filterDeceasedName: String, filterPhaseId: Float, filterProceedingNumber: String, filterStartDate: String, filterStatus: String, pageSize: Float! = 2, sortOrder: String! = "desc"): PaginatedProceedings!
   getProceeding(id: Float!): Proceedings
   proceedingParticipants(id: Float!): [Participant!]!
   user(id: String!): User
@@ -134,6 +140,7 @@ type User {
   afterTitle: String
   beforeTitle: String
   email: String!
+  emailNotifications: Boolean!
   firstname: String!
   id: ID!
   isVerified: Boolean!

@@ -26,6 +26,7 @@ export const users = mysqlTable('users', {
   email: varchar('email', { length: 255 }).notNull(),
   password: varchar('password', { length: 255 }).notNull(),
   isVerified: boolean('isVerified').default(false).notNull(),
+  emailNotifications: boolean('email_notifications').default(true).notNull(),
 });
 
 export const VerificationReason: [string, ...string[]] = [

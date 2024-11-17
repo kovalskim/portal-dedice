@@ -73,7 +73,12 @@ export class MessageResolver {
     @Arg('proceedingId') proceedingId: number,
     @Arg('text') text: string,
     @Ctx()
-    { authUser, proceedingsRepository, messageRepository }: CustomContext,
+    {
+      authUser,
+      proceedingsRepository,
+      messageRepository,
+      usersRepository,
+    }: CustomContext,
   ): Promise<Message> {
     if (!authUser) {
       throw new GraphQLError('Unauthorized', {
@@ -116,18 +121,34 @@ export class MessageResolver {
     const participants =
       await proceedingsRepository.getProceedingParticipants(proceedingId);
     for (const participant of participants) {
-      if (participant.user.id !== authUser.id) {
+      if (
+        participant.user.id !== authUser.id &&
+        participant.user.emailNotifications
+      ) {
         sendNewMessageNotification(
           participant.user.email,
           `${newMessage.user.firstname} ${newMessage.user.lastname}`,
           newMessage.text,
           proceedingId,
         );
-        // if (participant.allowEmailNotifications){ // TODO: add option to turn off email notifications
-        // send email
-        // }
       }
     }
+
+    // notify also notary
+    const proceeding =
+      await proceedingsRepository.getProceedingsById(proceedingId);
+    if (proceeding.notaryId !== authUser.id) {
+      const notary = await usersRepository.getUserById(proceeding.notaryId);
+      if (notary && notary.emailNotifications) {
+        sendNewMessageNotification(
+          notary.email,
+          `${newMessage.user.firstname} ${newMessage.user.lastname}`,
+          newMessage.text,
+          proceedingId,
+        );
+      }
+    }
+
     return newMessage;
   }
 

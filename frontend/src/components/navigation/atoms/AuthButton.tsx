@@ -4,7 +4,6 @@ import {
   ChevronDownIcon,
   Divider,
   MinusIcon,
-  SettingsIcon,
 } from '@chakra-ui/icons';
 import {
   Button,
@@ -52,9 +51,6 @@ export const AuthButton = ({ onClose }: AuthButtonProps) => {
       <MenuList>
         <RouterLink to={Routes.profile} textColor="black" noUnderline>
           <MenuItem icon={<AtSignIcon />}>Můj profil</MenuItem>
-        </RouterLink>
-        <RouterLink to={Routes.home} textColor="black" noUnderline>
-          <MenuItem icon={<SettingsIcon />}>Nastavení</MenuItem>
         </RouterLink>
         <Divider></Divider>
         <MenuItem
