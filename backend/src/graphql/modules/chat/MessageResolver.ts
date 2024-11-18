@@ -118,7 +118,7 @@ export class MessageResolver {
 
     // Notify all subscribers about new message
     pubSub.publish(CHAT_TOPIC, {
-      newMessageId: 1,
+      newMessageId: newMessage.id,
       proceedingId: proceedingId,
     });
 

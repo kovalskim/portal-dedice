@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useMutation } from '@apollo/client';
 import {
   Flex,
@@ -88,26 +89,25 @@ export const SendEmailModal = ({
           proceedingsId,
         },
       },
-    })
-      .then(() => {
-        onClose();
-        showToast({
-          title: 'Odeslání zprávy proběhlo úspěšně.',
-          description: `Zpráva byla odeslána!`,
-          status: 'success',
-        });
-      })
-      .catch(() => {
-        onClose();
-        showToast({
-          title: 'Odeslání zprávy se nezdařilo',
-          description: 'Při odesílání zprávy došlo k problémům.',
-          status: 'error',
-        });
+    }).then(() => {
+      onClose();
+      showToast({
+        title: 'Odeslání zprávy proběhlo úspěšně.',
+        description: `Zpráva byla odeslána!`,
+        status: 'success',
       });
+    });
   };
 
-  console.log(error);
+  useEffect(() => {
+    if (error) {
+      showToast({
+        title: 'Odeslání zprávy se nezdařilo',
+        description: 'Při odesílání zprávy došlo k problémům.',
+        status: 'error',
+      });
+    }
+  }, [error, showToast]);
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} size="xl">

@@ -4,7 +4,6 @@ stages:
   - install
   - lint
   - build
-# - test
 
 variables:
   YARN_CACHE_FOLDER: '$CI_PROJECT_DIR/cache/yarn'
@@ -57,21 +56,6 @@ lint:
   needs: [install]
   script:
     - yarn lint
-
-# test-frontend:
-#   stage: test
-#   interruptible: true
-#   rules:
-#     - !reference [.rules, rules]
-#   cache:
-#     key: ${CI_COMMIT_REF_SLUG}
-#     paths:
-#       - cache/yarn
-#       - node_modules
-#     policy: pull
-#   needs: []
-#   script:
-#     - yarn frontend test
 
 build-frontend:
   stage: build
