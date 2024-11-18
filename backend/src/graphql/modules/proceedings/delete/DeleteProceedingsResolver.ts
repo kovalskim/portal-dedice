@@ -2,9 +2,8 @@ import { GraphQLError } from 'graphql';
 import { Arg, Ctx, Mutation, Resolver } from 'type-graphql';
 
 import { unauthorizedError } from '@backend/graphql/errors';
+import { Proceedings } from '@backend/graphql/modules/proceedings/create/proceedingsType';
 import { CustomContext } from '@backend/types/types';
-
-import { Proceedings } from '../create/proceedingsType';
 
 @Resolver(() => Proceedings)
 export class DeleteProceedingsResolver {

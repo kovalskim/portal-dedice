@@ -17,6 +17,12 @@ import {
   validationError,
   verificationError,
 } from '@backend/graphql/errors';
+import { Role, UserRole } from '@backend/graphql/modules/user/roleType';
+import {
+  AuthInfo,
+  SignInInfo,
+  User,
+} from '@backend/graphql/modules/user/userType';
 import { createToken, parseAndVerifyJWT } from '@backend/libs/jwt';
 import {
   sendPasswordResetEmail,
@@ -24,9 +30,7 @@ import {
 } from '@backend/services/emailService/emailService';
 import { type CustomContext } from '@backend/types/types';
 
-import { Role, UserRole } from './roleType';
 import { signUpSchema } from './userSchema';
-import { AuthInfo, SignInInfo, User } from './userType';
 
 @Resolver(() => User)
 export class UserResolver {

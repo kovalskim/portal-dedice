@@ -11,13 +11,17 @@ import {
 } from 'type-graphql';
 
 import { serverError } from '@backend/graphql/errors';
+import {
+  Message,
+  NewMessageNotification,
+} from '@backend/graphql/modules/chat/MessageType';
+import {
+  NewMessagePayload,
+  pubSub,
+} from '@backend/graphql/modules/chat/PubSub';
+import { User } from '@backend/graphql/modules/user/userType';
 import { sendNewMessageNotification } from '@backend/services/emailService/emailService';
 import { CustomContext } from '@backend/types/types';
-
-import { User } from '../user/userType';
-
-import { Message, NewMessageNotification } from './MessageType';
-import { NewMessagePayload, pubSub } from './PubSub';
 
 export const CHAT_TOPIC = 'CHAT_TOPIC';
 

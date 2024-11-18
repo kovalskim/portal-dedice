@@ -5,12 +5,10 @@ import {
   notFoundError,
   unauthorizedError,
 } from '@backend/graphql/errors';
+import { Proceedings } from '@backend/graphql/modules/proceedings/create/proceedingsType';
+import { SendEmailRequest } from '@backend/graphql/modules/proceedings/send/sendMessageType';
 import { sendEmailToParticipant } from '@backend/services/emailService/emailService';
 import { CustomContext } from '@backend/types/types';
-
-import { Proceedings } from '../create/proceedingsType';
-
-import { SendEmailRequest } from './sendMessageType';
 
 @Resolver(() => Proceedings)
 export class SendMessageResolver {

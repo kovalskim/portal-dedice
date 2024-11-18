@@ -4,9 +4,8 @@ import { Arg, Ctx, Mutation, Resolver } from 'type-graphql';
 import { unauthorizedError } from '@backend/graphql/errors';
 import { DeceasedPersonInput } from '@backend/graphql/modules/educator/DeceasedPersonInput';
 import { baseDeceasedInfoSchema } from '@backend/graphql/modules/proceedings/create/NewProceedingInputSchema';
+import { Proceedings } from '@backend/graphql/modules/proceedings/create/proceedingsType';
 import { CustomContext } from '@backend/types/types';
-
-import { Proceedings } from '../create/proceedingsType';
 
 @Resolver(() => Proceedings)
 export class UpdateProceedingsResolver {

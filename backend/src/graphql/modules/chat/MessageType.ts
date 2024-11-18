@@ -1,6 +1,6 @@
 import { Field, ID, ObjectType } from 'type-graphql';
 
-import { User } from '../user/userType';
+import { User } from '@backend/graphql/modules/user/userType';
 
 @ObjectType()
 export class Message {

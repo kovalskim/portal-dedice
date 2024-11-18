@@ -1,6 +1,6 @@
 import { Field, ID, ObjectType } from 'type-graphql';
 
-import { Role } from './roleType';
+import { Role } from '@backend/graphql/modules/user/roleType';
 
 @ObjectType()
 export class User {
