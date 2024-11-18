@@ -12,7 +12,6 @@ import {
 } from '@chakra-ui/react';
 import {
   FaChartPie,
-  FaCog,
   FaComments,
   FaFolderOpen,
   FaHome,
@@ -31,7 +30,7 @@ type SidebarMenuProps = {
 
 export const SidebarMenu = ({ id }: SidebarMenuProps) => {
   return (
-    <Box mt={{ base: 0, md: 8 }}>
+    <Box mt={{ base: 0, md: 6 }}>
       <Show below="md">
         <Menu>
           <MenuButton
@@ -81,14 +80,6 @@ export const SidebarMenu = ({ id }: SidebarMenuProps) => {
                 Rozvrh majetku
               </RouterNavLink>
             </MenuItem>
-            <MenuItem>
-              <RouterNavLink
-                to={insertIdToUrl(Routes.proceedingSettings, id)}
-                width="full"
-              >
-                Nastavení
-              </RouterNavLink>
-            </MenuItem>
           </MenuList>
         </Menu>
       </Show>
@@ -129,13 +120,6 @@ export const SidebarMenu = ({ id }: SidebarMenuProps) => {
           >
             <FaChartPie />
             <Text ml={2}>Rozvrh majetku</Text>
-          </RouterSidebarButton>
-          <RouterSidebarButton
-            to={insertIdToUrl(Routes.proceedingSettings, id)}
-            width="full"
-          >
-            <FaCog />
-            <Text ml={2}>Nastavení</Text>
           </RouterSidebarButton>
         </Flex>
       </Show>

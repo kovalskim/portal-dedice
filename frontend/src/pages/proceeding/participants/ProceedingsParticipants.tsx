@@ -73,11 +73,11 @@ export const ProceedingsParticipants = () => {
               leftIcon={<EmailIcon />}
               onClick={() => setOpenSendEmailModal(true)}
             >
-              Odeslat email
+              Hromadná zpráva
             </PrimaryButton>
           )}
           {role === Role.NOTARY && (
-            <PrimaryButton leftIcon={<AddIcon />}>
+            <PrimaryButton variant="outline" leftIcon={<AddIcon />}>
               Přidat účastníka
             </PrimaryButton>
           )}
@@ -106,7 +106,7 @@ export const ProceedingsParticipants = () => {
                 <Th>Jméno</Th>
                 <Th>Email</Th>
                 <Th>Stav</Th>
-                <Th>Akce</Th>
+                {role === Role.NOTARY && <Th>Akce</Th>}
               </Tr>
             </Thead>
             <Tbody>
@@ -121,13 +121,17 @@ export const ProceedingsParticipants = () => {
                   </Td>
                   <Td>{participant.user.email}</Td>
                   <Td>{participant.participantState.title}</Td>
-                  <Td>
-                    {/* TODO zobrazit akce Schválit/Zamítnout/Odstranit */}
-                    <Button size="sm" mr={2}>
-                      Akce
-                    </Button>
-                    <Button size="sm">Akce</Button>
-                  </Td>
+                  {role === Role.NOTARY && (
+                    <Td>
+                      {/* TODO zobrazit akce Schválit/Zamítnout/Odstranit */}
+                      <Button size="sm" mr={2} colorScheme="green">
+                        Schválit
+                      </Button>
+                      <Button size="sm" colorScheme="red">
+                        Zamítnout
+                      </Button>
+                    </Td>
+                  )}
                 </Tr>
               ))}
             </Tbody>

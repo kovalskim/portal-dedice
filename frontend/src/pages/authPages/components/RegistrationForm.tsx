@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { Box } from '@chakra-ui/layout';
-import { Center, Flex, Heading, Stack, Text } from '@chakra-ui/react';
+import { Center, Flex, Heading, Stack, Text, Tooltip } from '@chakra-ui/react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { SubmitHandler } from 'react-hook-form';
 import * as z from 'zod';
@@ -90,8 +90,17 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
             gap="5"
           >
             <Box>
-              <InputField name="password" type="password" label="Heslo" />
-              <Text fontSize={'sm'}>Heslo musí mít alespoň 8&nbsp;znaků</Text>
+              <Tooltip
+                hasArrow
+                bg="gray.100"
+                color="black"
+                fontSize="xs"
+                fontWeight="normal"
+                label="Minimálně 8 znaků"
+                placement="top-end"
+              >
+                <InputField name="password" type="password" label="Heslo" />
+              </Tooltip>
             </Box>
             <Box>
               <InputField

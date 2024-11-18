@@ -10,12 +10,14 @@ import { InvitationModal } from '@frontend/pages/userDashboard/components/Invita
 import { DeleteProceedingsModal } from '@frontend/pages/userDashboard/components/proceedingsModals/DeleteProceedingsModal.tsx';
 import { EditProceedingsModal } from '@frontend/pages/userDashboard/components/proceedingsModals/EditProceedingsModal.tsx';
 import { useNewProceedingFormStore } from '@frontend/pages/userDashboard/hooks/useNewProceedingFormStore.ts';
+import { firstNameInVokativ } from '@frontend/utils/languageUtils.ts';
 
 import { NewProceedingsModal } from './components/proceedingsModals/NewProceedingsModal';
 import ProceedingsTable from './components/proceedingsTable/ProceedingsTable';
 
 export const UserDashboard = () => {
   const [newProceedingsModalOpen, setNewProceedingsModalOpen] = useState(false);
+  const { user, role } = useAuth();
   const [editProceedingsModalOpen, setEditProceedingsModalOpen] =
     useState(false);
   const [deleteProceedingsModalOpen, setDeleteProceedingsModalOpen] =
@@ -26,8 +28,6 @@ export const UserDashboard = () => {
   } | null>(null);
 
   const { resetFormStore } = useNewProceedingFormStore();
-
-  const { role } = useAuth();
 
   const handleEditProceeding = (id: number, data: DeceasedPersonFormFields) => {
     setSelectedProceeding({ id, data });
@@ -62,7 +62,7 @@ export const UserDashboard = () => {
     <Flex direction="column" gap={4} py={{ sm: 2, lg: 4 }}>
       <Flex direction="row" alignItems="center" gap={20}>
         <Heading as="h2" size="lg">
-          Vítejte na Portálu dědice
+          Vítejte na Portálu dědice, {firstNameInVokativ(user?.firstname)}!
         </Heading>
       </Flex>
       <Text>

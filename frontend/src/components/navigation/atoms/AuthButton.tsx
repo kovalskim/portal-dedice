@@ -1,10 +1,5 @@
 import { MouseEventHandler } from 'react';
-import {
-  AtSignIcon,
-  ChevronDownIcon,
-  Divider,
-  MinusIcon,
-} from '@chakra-ui/icons';
+import { ChevronDownIcon, Divider, SettingsIcon } from '@chakra-ui/icons';
 import {
   Button,
   Menu,
@@ -13,6 +8,7 @@ import {
   MenuList,
   useBreakpointValue,
 } from '@chakra-ui/react';
+import { FaList, FaSignOutAlt } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 
 import { RouterLink } from '@frontend/components/navigation/atoms/RouterLink.tsx';
@@ -49,12 +45,15 @@ export const AuthButton = ({ onClose }: AuthButtonProps) => {
         {user.firstname} {user.lastname}
       </MenuButton>
       <MenuList>
+        <RouterLink to={Routes.proceedings} textColor="black" noUnderline>
+          <MenuItem icon={<FaList />}>Seznam řízení</MenuItem>
+        </RouterLink>
         <RouterLink to={Routes.profile} textColor="black" noUnderline>
-          <MenuItem icon={<AtSignIcon />}>Můj profil</MenuItem>
+          <MenuItem icon={<SettingsIcon />}>Nastavení profilu</MenuItem>
         </RouterLink>
         <Divider></Divider>
         <MenuItem
-          icon={<MinusIcon />}
+          icon={<FaSignOutAlt />}
           onClick={() => {
             signOut();
             showToast({

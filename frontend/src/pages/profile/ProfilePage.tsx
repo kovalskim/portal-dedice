@@ -179,15 +179,16 @@ export const ProfilePage = () => {
           base: '90%',
           lg: '80%',
         }}
-        p={8}
+        p={12}
       >
-        <Heading>Můj profil</Heading>
+        <Heading size="lg">Nastavení profilu</Heading>
         <Flex
           gap="8"
           my={12}
           mx={6}
-          flexDirection={{ base: 'column', md: 'row' }}
-          alignItems={{ base: 'center', md: 'flex-start' }}
+          direction={{ base: 'column', md: 'row' }}
+          justifyContent="center"
+          alignItems="center"
         >
           <Avatar
             name={`${user.firstname} ${user.lastname}`}
@@ -200,9 +201,6 @@ export const ProfilePage = () => {
             </Text>
             <Text color="fg.muted" fontSize={'lg'}>
               {user.email}
-            </Text>
-            <Text color="fg.muted" fontSize={'lg'}>
-              {role}
             </Text>
           </Stack>
         </Flex>

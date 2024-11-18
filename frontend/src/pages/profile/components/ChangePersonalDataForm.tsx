@@ -49,10 +49,10 @@ export const ChangePersonalDataForm: FC<ChangePersonalDataFormProps> = ({
     <Box mt={4}>
       <Form
         defaultValues={{
-          beforeTitle: user?.beforeTitle ?? null,
+          beforeTitle: user?.beforeTitle ?? '',
           firstname: user?.firstname,
           lastname: user?.lastname,
-          afterTitle: user?.afterTitle ?? null,
+          afterTitle: user?.afterTitle ?? '',
         }}
         resolver={zodResolver(schema)}
         onSubmit={onSubmit}
