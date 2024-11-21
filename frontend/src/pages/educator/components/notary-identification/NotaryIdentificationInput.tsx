@@ -3,12 +3,12 @@ import { Heading } from '@chakra-ui/react';
 import { SubmitHandler } from 'react-hook-form';
 
 import { InfoHintBox } from '@frontend/components';
-import { Link } from '@frontend/components/links';
-import { useEducatorStorage } from '@frontend/hooks/useEducatorStorage.ts';
 import {
   DeceasedPersonForm,
   DeceasedPersonFormFields,
-} from '@frontend/pages/educator/components/notary-identification/DeceasedPersonForm.tsx';
+} from '@frontend/components/forms/deceasedPersonForm/DeceasedPersonForm.tsx';
+import { Link } from '@frontend/components/links';
+import { useEducatorStorage } from '@frontend/hooks/useEducatorStorage.ts';
 
 type NotaryIdentificationInputProps = {
   onSubmit: SubmitHandler<DeceasedPersonFormFields>;

@@ -14,12 +14,12 @@ import {
 } from '@chakra-ui/react';
 
 import { PrimaryButton, SecondaryButton } from '@frontend/components';
+import { DeceasedPersonFormFields } from '@frontend/components/forms/deceasedPersonForm/DeceasedPersonForm.tsx';
 import {
   CREATE_PROCEEDING,
   CreateProceedingsResponse,
 } from '@frontend/gql/proceedings/mutations';
 import { useCustomToast } from '@frontend/hooks/useCustomToast.ts';
-import { DeceasedPersonFormFields } from '@frontend/pages/educator/components/notary-identification/DeceasedPersonForm.tsx';
 import { ParticipantFormFields } from '@frontend/pages/userDashboard/components/proceedingsModals/AddParticipantForm.tsx';
 import {
   NewProceedingForm,

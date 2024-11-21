@@ -3,9 +3,9 @@ import { AddIcon } from '@chakra-ui/icons';
 import { Card, Flex, Heading, Text } from '@chakra-ui/react';
 
 import { PrimaryButton } from '@frontend/components';
+import { DeceasedPersonFormFields } from '@frontend/components/forms/deceasedPersonForm/DeceasedPersonForm.tsx';
 import { useAuth } from '@frontend/context/auth';
 import { Role } from '@frontend/context/auth/auth-core';
-import { DeceasedPersonFormFields } from '@frontend/pages/educator/components/notary-identification/DeceasedPersonForm';
 import { InvitationModal } from '@frontend/pages/userDashboard/components/InvitationModal.tsx';
 import { DeleteProceedingsModal } from '@frontend/pages/userDashboard/components/proceedingsModals/DeleteProceedingsModal.tsx';
 import { EditProceedingsModal } from '@frontend/pages/userDashboard/components/proceedingsModals/EditProceedingsModal.tsx';

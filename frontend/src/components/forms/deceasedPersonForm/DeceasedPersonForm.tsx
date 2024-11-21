@@ -4,8 +4,8 @@ import { z } from 'zod';
 
 import { Form, InputField, RadioGroupField } from '@frontend/components';
 import { zodResolver } from '@frontend/components/forms';
-import { AutocompleteAddress } from '@frontend/pages/educator/components/notary-identification/AutocompleteAddress.tsx';
-import { baseDeceasedInfoSchema } from '@frontend/pages/educator/components/notary-identification/baseDeceasedInfoSchema.ts';
+import { AutocompleteAddress } from '@frontend/components/forms/deceasedPersonForm/AutocompleteAddress.tsx';
+import { baseDeceasedInfoSchema } from '@frontend/components/forms/deceasedPersonForm/baseDeceasedInfoSchema.ts';
 import { useValidDistricts } from '@frontend/pages/educator/components/notary-identification/useValidDistricts.ts';
 
 export type DeceasedPersonFormFields = z.infer<typeof baseDeceasedInfoSchema>;

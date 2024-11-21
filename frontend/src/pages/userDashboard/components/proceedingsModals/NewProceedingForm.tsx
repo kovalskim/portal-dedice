@@ -1,11 +1,11 @@
 import { Heading } from '@chakra-ui/react';
 
 import { zod } from '@frontend/components';
-import { baseDeceasedInfoSchema } from '@frontend/pages/educator/components/notary-identification/baseDeceasedInfoSchema.ts';
+import { baseDeceasedInfoSchema } from '@frontend/components/forms/deceasedPersonForm/baseDeceasedInfoSchema.ts';
 import {
   DeceasedPersonForm,
   DeceasedPersonFormFields,
-} from '@frontend/pages/educator/components/notary-identification/DeceasedPersonForm.tsx';
+} from '@frontend/components/forms/deceasedPersonForm/DeceasedPersonForm.tsx';
 import {
   AddParticipantForm,
   ParticipantFormFields,

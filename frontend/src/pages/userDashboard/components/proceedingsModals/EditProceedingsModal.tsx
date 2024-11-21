@@ -12,14 +12,14 @@ import {
 
 import { PrimaryButton, SecondaryButton } from '@frontend/components';
 import {
+  DeceasedPersonForm,
+  DeceasedPersonFormFields,
+} from '@frontend/components/forms/deceasedPersonForm/DeceasedPersonForm.tsx';
+import {
   UPDATE_PROCEEDING,
   UpdateProceedingsResponse,
 } from '@frontend/gql/proceedings/mutations';
 import { useCustomToast } from '@frontend/hooks/useCustomToast.ts';
-import {
-  DeceasedPersonForm,
-  DeceasedPersonFormFields,
-} from '@frontend/pages/educator/components/notary-identification/DeceasedPersonForm';
 import { useProceedings } from '@frontend/pages/userDashboard/hooks/useProceedings.ts';
 
 interface EditProceedingsModalProps {

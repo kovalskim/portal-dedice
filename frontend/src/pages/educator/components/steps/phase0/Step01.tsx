@@ -1,6 +1,6 @@
+import { DeceasedPersonFormFields } from '@frontend/components/forms/deceasedPersonForm/DeceasedPersonForm.tsx';
 import { useEducatorState } from '@frontend/hooks/useEducatorState.ts';
 import { useEducatorStorage } from '@frontend/hooks/useEducatorStorage.ts';
-import { DeceasedPersonFormFields } from '@frontend/pages/educator/components/notary-identification/DeceasedPersonForm.tsx';
 import { NotaryIdentificationInput } from '@frontend/pages/educator/components/notary-identification/NotaryIdentificationInput.tsx';
 
 import { StepperWrapper } from '../common/StepperWrapper.tsx';

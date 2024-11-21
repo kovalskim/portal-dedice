@@ -28,10 +28,10 @@ import {
 } from '@chakra-ui/react';
 
 import { PrimaryButton } from '@frontend/components';
+import { DeceasedPersonFormFields } from '@frontend/components/forms/deceasedPersonForm/DeceasedPersonForm.tsx';
 import { RouterNavButton } from '@frontend/components/navigation/atoms/RouterNavButton.tsx';
 import { useAuth } from '@frontend/context/auth';
 import { Role } from '@frontend/context/auth/auth-core';
-import { DeceasedPersonFormFields } from '@frontend/pages/educator/components/notary-identification/DeceasedPersonForm';
 import { useProceedings } from '@frontend/pages/userDashboard/hooks/useProceedings.ts';
 import { Routes } from '@frontend/routes.ts';
 import { insertIdToUrl } from '@frontend/utils/util.tsx';
