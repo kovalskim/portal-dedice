@@ -38,14 +38,17 @@ export const ProceedingLayout = () => {
     }
   }, [error, showToast, navigate]);
 
+  if (loading) {
+    return (
+      <Flex width="full" justifyContent="center" gap={10}>
+        <Spinner size="md" color="goldenYellow.500" />
+        <Text color="goldenYellow.500">Načítání dědického řízení</Text>
+      </Flex>
+    );
+  }
+
   return (
     <>
-      {loading && (
-        <Flex height="full" gap={10}>
-          <Spinner size="md" color="goldenYellow.500" />
-          <Text color="goldenYellow.500">Načítání dědického řízení</Text>
-        </Flex>
-      )}
       {data && (
         <Flex
           height="full"

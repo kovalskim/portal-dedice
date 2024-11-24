@@ -20,7 +20,7 @@ export const Message: FC<MessageProps> = ({ message, myMessage }) => {
       alignSelf={myMessage ? 'flex-end' : 'flex-start'}
       padding={4}
       borderRadius={16}
-      maxW={'70%'}
+      maxW={{ base: '80%', md: '70%' }}
     >
       <Flex
         justifyContent={myMessage ? 'flex-end' : 'flex-start'}

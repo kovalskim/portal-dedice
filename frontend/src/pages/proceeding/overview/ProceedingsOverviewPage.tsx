@@ -58,9 +58,8 @@ export const ProceedingsOverviewPage = () => {
               </Tab>
             </Flex>
           </TabList>
-
           <TabPanels mt={2}>
-            <TabPanel>
+            <TabPanel px={0}>
               <InfoHintBox title={'Co probíhá v úvodní fázi dědického řízení?'}>
                 Úvodní fáze dědického řízení začíná okamžikem odeslání úmrtního
                 listu na matriku. V průběhu této fáze je pověřen příslušný notář

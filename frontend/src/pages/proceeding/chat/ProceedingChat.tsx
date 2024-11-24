@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useMutation, useQuery, useSubscription } from '@apollo/client';
-import { Flex, Input } from '@chakra-ui/react';
+import { Flex, Input, Spinner, Text } from '@chakra-ui/react';
 import { useWindowSize } from '@uidotdev/usehooks';
 import { useParams } from 'react-router-dom';
 
@@ -103,8 +103,12 @@ export const ProceedingChat = () => {
   }, [sendingMessageError, showToast]);
 
   if (allMessagesLoading && messages.length === 0) {
-    // TODO lepsi loading
-    return <div>Načítavam zprávy...</div>;
+    return (
+      <Flex width="full" justifyContent="center" gap={10} my="auto">
+        <Spinner size="md" color="goldenYellow.500" />
+        <Text color="goldenYellow.500">Načítání zpráv</Text>
+      </Flex>
+    );
   }
 
   return (
