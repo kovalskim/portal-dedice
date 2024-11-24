@@ -21,7 +21,6 @@ import { MOCKS, PORT } from '@backend/config';
 import { getConnection } from '@backend/db/db';
 import { DistrictResolver } from '@backend/graphql/modules/educator/DistrictResolver';
 import { ScheduleResolver } from '@backend/graphql/modules/educator/ScheduleResolver';
-import { EmptyResolver } from '@backend/graphql/modules/empty/emptyResolver';
 import { AcceptParticipantInvitationResolver } from '@backend/graphql/modules/participantInvitation/AcceptParticipantInvitationResolver';
 import { UserResolver } from '@backend/graphql/modules/user/userResolver';
 import { parseAndVerifyJWT } from '@backend/libs/jwt';
@@ -48,7 +47,6 @@ const init = async () => {
 
   const schema = await buildSchema({
     resolvers: [
-      EmptyResolver,
       UserResolver,
       ScheduleResolver,
       CreateProceedingsResolver,
