@@ -20,7 +20,32 @@ export const QuestionsSection = () => {
       >
         Často se ptáte
       </Heading>
-      <Accordion defaultIndex={[0]} allowMultiple>
+      <Accordion
+        defaultIndex={[1]}
+        allowMultiple
+        display={'flex'}
+        flexDirection={'column-reverse'}
+      >
+        <AccordionItem>
+          <AccordionButton>
+            <Heading
+              fontSize="lg"
+              fontWeight="500"
+              textAlign="left"
+              flex="1"
+              py={2}
+            >
+              Mohu získat potřebné informace i bez registrace?
+            </Heading>
+            <AccordionIcon />
+          </AccordionButton>
+          <AccordionPanel pb={4}>
+            Ano, odpovědi na Vaše otázky týkající se průběhu dědického řízení
+            můžete získat i bez registrace / přihlášení do Portálu dědice.
+            Interaktivní nachytřovadlo je dostupné všem na jedno kliknutí.
+          </AccordionPanel>
+        </AccordionItem>
+
         <AccordionItem>
           <AccordionButton>
             <Heading
@@ -39,26 +64,6 @@ export const QuestionsSection = () => {
             pomocí registračního formuláře. Po ověření e-mailové adresy je možné
             se přihlásit. Později bude dostupné jednotné přihlášení pomocí
             BankID.
-          </AccordionPanel>
-        </AccordionItem>
-
-        <AccordionItem>
-          <AccordionButton>
-            <Heading
-              fontSize="lg"
-              fontWeight="500"
-              textAlign="left"
-              flex="1"
-              py={2}
-            >
-              Mohu získat potřebné informace i bez registrace?
-            </Heading>
-            <AccordionIcon />
-          </AccordionButton>
-          <AccordionPanel pb={4}>
-            Ano, odpovědi na Vaše otázky týkající se průběhu dědického řízení
-            můžete získat i bez registrace / přihlášení do Portálu dědice.
-            Interaktivní nachytřovadlo je dostupné všem na jedno kliknutí.
           </AccordionPanel>
         </AccordionItem>
       </Accordion>
