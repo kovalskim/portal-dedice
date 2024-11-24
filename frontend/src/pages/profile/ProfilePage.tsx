@@ -176,19 +176,19 @@ export const ProfilePage = () => {
         width="100%"
         minHeight="500px"
         maxW={{
-          base: '90%',
-          lg: '80%',
+          md: '80%',
         }}
-        p={12}
+        p={{ base: 6, md: 12 }}
       >
         <Heading size="lg">Nastavení profilu</Heading>
         <Flex
           gap="8"
-          my={12}
-          mx={6}
+          my={{ base: 6, md: 12 }}
+          mx={{ base: 0, md: 12 }}
           direction={{ base: 'column', md: 'row' }}
           justifyContent="center"
           alignItems="center"
+          textAlign={{ base: 'center', md: 'left' }}
         >
           <Avatar
             name={`${user.firstname} ${user.lastname}`}
