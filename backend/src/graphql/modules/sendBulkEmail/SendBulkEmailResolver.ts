@@ -6,12 +6,12 @@ import {
   unauthorizedError,
 } from '@backend/graphql/errors';
 import { Proceedings } from '@backend/graphql/modules/proceedings/create/proceedingsType';
-import { SendEmailRequest } from '@backend/graphql/modules/proceedings/send/sendMessageType';
+import { SendEmailRequest } from '@backend/graphql/modules/sendBulkEmail/sendBulkEmailType';
 import { sendEmailToParticipant } from '@backend/services/emailService/emailService';
 import { CustomContext } from '@backend/types/types';
 
 @Resolver(() => Proceedings)
-export class SendMessageResolver {
+export class SendBulkEmailResolver {
   @Mutation(() => String)
   async sendMessageToParticipants(
     @Arg('data') input: SendEmailRequest,

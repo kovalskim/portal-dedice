@@ -29,8 +29,8 @@ import { AcceptParticipantInvitationResolver } from '@backend/graphql/modules/pa
 import { CreateProceedingsResolver } from '@backend/graphql/modules/proceedings/create/CreateProceedingsResolver';
 import { DeleteProceedingsResolver } from '@backend/graphql/modules/proceedings/delete/DeleteProceedingsResolver';
 import { GetProceedingsResolver } from '@backend/graphql/modules/proceedings/get/GetProceedingsResolver';
-import { SendMessageResolver } from '@backend/graphql/modules/proceedings/send/SendMessageResolver';
 import { UpdateProceedingsResolver } from '@backend/graphql/modules/proceedings/update/UpdateProceedingsResolver';
+import { SendBulkEmailResolver } from '@backend/graphql/modules/sendBulkEmail/SendBulkEmailResolver';
 import { UserResolver } from '@backend/graphql/modules/user/userResolver';
 import { parseAndVerifyJWT } from '@backend/libs/jwt';
 import { mockResolvers } from '@backend/mocks/mocks';
@@ -59,7 +59,7 @@ const init = async () => {
       DeleteProceedingsResolver,
       DistrictResolver,
       MessageResolver,
-      SendMessageResolver,
+      SendBulkEmailResolver,
       AcceptParticipantInvitationResolver,
       FileResolver,
       NotaryPaymentCalculationResolver,
