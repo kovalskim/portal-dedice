@@ -2,11 +2,11 @@ import { Box } from '@chakra-ui/layout';
 import { Heading } from '@chakra-ui/react';
 import { SubmitHandler } from 'react-hook-form';
 
-import { InfoHintBox } from '@frontend/components';
 import {
   DeceasedPersonForm,
   DeceasedPersonFormFields,
 } from '@frontend/components/forms/deceasedPersonForm/DeceasedPersonForm.tsx';
+import { InfoHintBox } from '@frontend/components/infoHintBox/InfoHintBox';
 import { Link } from '@frontend/components/links';
 import { useEducatorStorage } from '@frontend/hooks/useEducatorStorage.ts';
 

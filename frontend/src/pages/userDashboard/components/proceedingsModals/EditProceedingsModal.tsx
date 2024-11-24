@@ -10,7 +10,7 @@ import {
   ModalOverlay,
 } from '@chakra-ui/react';
 
-import { PrimaryButton, SecondaryButton } from '@frontend/components';
+import { PrimaryButton, SecondaryButton } from '@frontend/components/buttons';
 import {
   DeceasedPersonForm,
   DeceasedPersonFormFields,

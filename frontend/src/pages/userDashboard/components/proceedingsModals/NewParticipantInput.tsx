@@ -1,6 +1,6 @@
 import { Flex } from '@chakra-ui/react';
 
-import { InputField } from '@frontend/components';
+import { InputField } from '@frontend/components/forms/fields/InputField';
 
 export const NewParticipantInput = () => {
   return (

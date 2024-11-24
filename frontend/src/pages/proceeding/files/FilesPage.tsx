@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useQuery } from '@apollo/client';
 import { Box } from '@chakra-ui/layout';
 import {
@@ -14,14 +14,16 @@ import { MdCheckCircle } from 'react-icons/md';
 import { PiUploadSimple } from 'react-icons/pi';
 import { useOutletContext } from 'react-router-dom';
 
-import { InfoHintBox, PrimaryButton } from '@frontend/components';
+import { PrimaryButton } from '@frontend/components/buttons';
+import { InfoHintBox } from '@frontend/components/infoHintBox/InfoHintBox';
 import { FILES_BY_PROCEEDING_ID } from '@frontend/gql/file/queries.ts';
 import { File } from '@frontend/gql/file/types.ts';
 import { useCustomToast } from '@frontend/hooks/useCustomToast.ts';
-import { OutletContextType } from '@frontend/pages';
 import { FileList } from '@frontend/pages/proceeding/files/FileList.tsx';
 import { UploadFileModal } from '@frontend/pages/proceeding/files/UploadFileModal.tsx';
 import { MAX_FILES } from '@frontend/utils/constants';
+
+import { OutletContextType } from '../overview/ProceedingsOverviewPage';
 
 interface FilesData {
   filesByProceeding: File[];

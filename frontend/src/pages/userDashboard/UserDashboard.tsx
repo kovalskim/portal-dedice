@@ -2,10 +2,9 @@ import { useEffect, useState } from 'react';
 import { AddIcon } from '@chakra-ui/icons';
 import { Card, Flex, Heading, Text } from '@chakra-ui/react';
 
-import { PrimaryButton } from '@frontend/components';
+import { PrimaryButton } from '@frontend/components/buttons';
 import { DeceasedPersonFormFields } from '@frontend/components/forms/deceasedPersonForm/DeceasedPersonForm.tsx';
-import { useAuth } from '@frontend/context/auth';
-import { Role } from '@frontend/context/auth/auth-core';
+import { Role, useAuth } from '@frontend/context/auth/auth-core';
 import { InvitationModal } from '@frontend/pages/userDashboard/components/InvitationModal.tsx';
 import { DeleteProceedingsModal } from '@frontend/pages/userDashboard/components/proceedingsModals/DeleteProceedingsModal.tsx';
 import { EditProceedingsModal } from '@frontend/pages/userDashboard/components/proceedingsModals/EditProceedingsModal.tsx';

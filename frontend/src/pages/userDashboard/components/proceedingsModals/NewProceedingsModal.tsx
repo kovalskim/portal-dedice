@@ -13,7 +13,7 @@ import {
   Text,
 } from '@chakra-ui/react';
 
-import { PrimaryButton, SecondaryButton } from '@frontend/components';
+import { PrimaryButton, SecondaryButton } from '@frontend/components/buttons';
 import { DeceasedPersonFormFields } from '@frontend/components/forms/deceasedPersonForm/DeceasedPersonForm.tsx';
 import {
   CREATE_PROCEEDING,

@@ -10,7 +10,7 @@ import {
   UnorderedList,
 } from '@chakra-ui/react';
 
-import { InfoHintBox } from '@frontend/components';
+import { InfoHintBox } from '@frontend/components/infoHintBox/InfoHintBox';
 import { useEducatorState } from '@frontend/hooks/useEducatorState.ts';
 
 import { StepperWrapper } from '../../common/StepperWrapper';

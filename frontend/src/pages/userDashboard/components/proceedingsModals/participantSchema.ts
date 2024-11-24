@@ -1,4 +1,4 @@
-import { zod } from '@frontend/components';
+import * as zod from 'zod';
 
 export const participantSchema = zod.object({
   firstname: zod.string().min(1, { message: 'Povinné pole' }),

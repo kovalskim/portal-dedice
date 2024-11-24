@@ -1,7 +1,7 @@
 import { Flex } from '@chakra-ui/layout';
 import { Input, InputProps, Text } from '@chakra-ui/react';
 
-import { PrimaryButton } from '@frontend/components';
+import { PrimaryButton } from '@frontend/components/buttons';
 
 import { FormField, type FormFieldBaseProps } from './FormField';
 

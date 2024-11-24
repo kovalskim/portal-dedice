@@ -1,6 +1,6 @@
 import { Heading, ListItem, Stack, UnorderedList } from '@chakra-ui/react';
 
-import { InfoHintBox } from '@frontend/components';
+import { InfoHintBox } from '@frontend/components/infoHintBox/InfoHintBox';
 import { Result, useEducatorStorage } from '@frontend/hooks/useEducatorStorage';
 
 type ResolutionOfInheritanceProps = {

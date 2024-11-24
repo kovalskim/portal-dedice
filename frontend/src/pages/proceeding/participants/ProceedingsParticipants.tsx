@@ -18,15 +18,14 @@ import {
 } from '@chakra-ui/react';
 import { useOutletContext } from 'react-router-dom';
 
-import { PrimaryButton } from '@frontend/components';
-import { useAuth } from '@frontend/context/auth';
-import { Role } from '@frontend/context/auth/auth-core';
+import { PrimaryButton } from '@frontend/components/buttons';
+import { Role, useAuth } from '@frontend/context/auth/auth-core';
 import {
   GET_PROCEEDING_PARTICIPANTS,
   ParticipantsResponse,
 } from '@frontend/gql/proceedings/queries.ts';
 import { useCustomToast } from '@frontend/hooks/useCustomToast.ts';
-import { OutletContextType } from '@frontend/pages';
+import { OutletContextType } from '@frontend/pages/proceeding/overview/ProceedingsOverviewPage';
 
 import { SendEmailModal } from './components/sendEmail/SendEmailModal';
 

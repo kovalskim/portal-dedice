@@ -18,7 +18,7 @@ import {
 } from '@chakra-ui/react';
 import { useOutletContext } from 'react-router-dom';
 
-import { InfoHintBox } from '@frontend/components';
+import { InfoHintBox } from '@frontend/components/infoHintBox/InfoHintBox';
 import { Proceeding } from '@frontend/gql/proceedings/queries.ts';
 
 export type OutletContextType = { proceeding: Proceeding };

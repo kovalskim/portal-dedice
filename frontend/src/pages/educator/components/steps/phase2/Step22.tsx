@@ -1,4 +1,4 @@
-import { InfoHintBox } from '@frontend/components';
+import { InfoHintBox } from '@frontend/components/infoHintBox/InfoHintBox';
 import { useEducatorState } from '@frontend/hooks/useEducatorState.ts';
 import { useEducatorStorage } from '@frontend/hooks/useEducatorStorage.ts';
 

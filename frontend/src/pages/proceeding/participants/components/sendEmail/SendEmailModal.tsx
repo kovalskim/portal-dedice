@@ -11,17 +11,15 @@ import {
   ModalOverlay,
   SystemStyleObject,
 } from '@chakra-ui/react';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as zod from 'zod';
 
-import {
-  Form,
-  InputField,
-  PrimaryButton,
-  zod,
-  zodResolver,
-} from '@frontend/components';
+import { PrimaryButton } from '@frontend/components/buttons';
 import { FancySelectField } from '@frontend/components/forms/fields/FancySelectField';
+import { InputField } from '@frontend/components/forms/fields/InputField';
 import { TextareaField } from '@frontend/components/forms/fields/TextareaField';
-import { useAuth } from '@frontend/context/auth';
+import { Form } from '@frontend/components/forms/Form';
+import { useAuth } from '@frontend/context/auth/auth-core';
 import { SEND_MESSAGE_TO_PARTICIPANTS } from '@frontend/gql/proceedings/mutations';
 import { Participant } from '@frontend/gql/proceedings/queries';
 import { useCustomToast } from '@frontend/hooks/useCustomToast';

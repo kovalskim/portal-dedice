@@ -1,6 +1,6 @@
 import { Navigate, Outlet, useLocation } from 'react-router-dom';
 
-import { useAuth } from '@frontend/context/auth';
+import { useAuth } from '@frontend/context/auth/auth-core';
 import { Routes } from '@frontend/routes/routes.ts';
 import { useProtectedRouteStore } from '@frontend/routes/useProtectedRouteStore.ts';
 

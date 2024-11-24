@@ -1,4 +1,4 @@
-import { NumberedStepper } from '@frontend/components';
+import { NumberedStepper } from '@frontend/components/stepper';
 
 type SecondPhaseStepperProps = {
   activeStep: number;

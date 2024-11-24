@@ -1,7 +1,7 @@
 import { ListItem, Stack, UnorderedList } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 
-import { PrimaryButton, SecondaryButton } from '@frontend/components/index.ts';
+import { PrimaryButton, SecondaryButton } from '@frontend/components/buttons';
 import { useEducatorState } from '@frontend/hooks/useEducatorState.ts';
 import { useEducatorStorage } from '@frontend/hooks/useEducatorStorage';
 import { Routes } from '@frontend/routes/routes.ts';

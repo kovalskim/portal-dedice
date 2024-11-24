@@ -5,27 +5,25 @@ import {
 } from 'react-router-dom';
 
 import { App } from '@frontend/App.tsx';
-import { MainLayout } from '@frontend/components';
-import {
-  EmailConfirmationPage,
-  EmailVerificationPage,
-  HomePage,
-  LogInPage,
-  NotFoundPage,
-  ProceedingLayout,
-  ProceedingsOverviewPage,
-  SignUpPage,
-  UserDashboard,
-} from '@frontend/pages';
+import { MainLayout } from '@frontend/components/layouts/MainLayout';
+import { EmailConfirmationPage } from '@frontend/pages/authPages/EmailConfirmationPage';
+import { EmailVerificationPage } from '@frontend/pages/authPages/EmailVerificationPage';
 import { ForgottenPasswordPage } from '@frontend/pages/authPages/ForgottenPasswordPage.tsx';
+import { LogInPage } from '@frontend/pages/authPages/LogInPage';
 import { NewPasswordPage } from '@frontend/pages/authPages/NewPasswordPage.tsx';
+import { SignUpPage } from '@frontend/pages/authPages/SignUpPage';
 import { EducatorPage } from '@frontend/pages/educator/EducatorPages.tsx';
 import { ErrorPage } from '@frontend/pages/errorPages/ErrorPage.tsx';
+import { NotFoundPage } from '@frontend/pages/errorPages/NotFoundPage';
+import { HomePage } from '@frontend/pages/home/HomePage';
 import { NotaryPaymentCalculationPage } from '@frontend/pages/notaryPaymentCalculation/NotaryPaymentCalculationPage.tsx';
 import { ProceedingChat } from '@frontend/pages/proceeding/chat/ProceedingChat.tsx';
 import { FilesPage } from '@frontend/pages/proceeding/files/FilesPage.tsx';
+import { ProceedingsOverviewPage } from '@frontend/pages/proceeding/overview/ProceedingsOverviewPage';
 import { ProceedingsParticipants } from '@frontend/pages/proceeding/participants/ProceedingsParticipants';
+import { ProceedingLayout } from '@frontend/pages/proceeding/ProceedingLayout';
 import { ProfilePage } from '@frontend/pages/profile/ProfilePage.tsx';
+import { UserDashboard } from '@frontend/pages/userDashboard/UserDashboard';
 import { ProtectedRoute } from '@frontend/routes/ProtectedRoute.tsx';
 import { Routes } from '@frontend/routes/routes.ts';
 

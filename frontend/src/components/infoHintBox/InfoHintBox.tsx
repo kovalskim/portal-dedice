@@ -11,7 +11,7 @@ import {
 } from '@chakra-ui/react';
 import { FaQuestionCircle } from 'react-icons/fa';
 
-import { theme } from '@frontend/components';
+import { theme } from '@frontend/components/design-system';
 
 export type InfoHintBoxProps = {
   title: string;

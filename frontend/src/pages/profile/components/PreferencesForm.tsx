@@ -6,8 +6,10 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { SubmitHandler } from 'react-hook-form';
 import * as z from 'zod';
 
-import { CheckboxField, Form, PrimaryButton } from '@frontend/components';
-import { useAuth } from '@frontend/context/auth';
+import { PrimaryButton } from '@frontend/components/buttons';
+import { CheckboxField } from '@frontend/components/forms/fields/CheckboxField';
+import { Form } from '@frontend/components/forms/Form';
+import { useAuth } from '@frontend/context/auth/auth-core';
 import { useCustomToast } from '@frontend/hooks/useCustomToast.ts';
 
 export type FormFields = z.infer<typeof schema>;

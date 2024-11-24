@@ -19,8 +19,8 @@ import { createClient } from 'graphql-ws';
 import { useNavigate } from 'react-router-dom';
 
 import { config } from '@frontend/config';
-import { useAuth } from '@frontend/context/auth';
-import { Routes } from '@frontend/routes/routes.ts';
+import { useAuth } from '@frontend/context/auth/auth-core';
+import { Routes } from '@frontend/routes/routes';
 
 type Props = {
   children: ReactNode;

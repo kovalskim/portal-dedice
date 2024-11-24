@@ -1,6 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
+import * as zod from 'zod';
 
-import { Form, zod } from '@frontend/components';
+import { Form } from '@frontend/components/forms/Form';
 import { NewParticipantInput } from '@frontend/pages/userDashboard/components/proceedingsModals/NewParticipantInput.tsx';
 import { participantSchema } from '@frontend/pages/userDashboard/components/proceedingsModals/participantSchema.ts';
 

@@ -1,10 +1,12 @@
 import { Flex, Radio } from '@chakra-ui/react';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { SubmitHandler } from 'react-hook-form';
 import { z } from 'zod';
 
-import { Form, InputField, RadioGroupField } from '@frontend/components';
-import { zodResolver } from '@frontend/components/forms';
 import { AutocompleteAddress } from '@frontend/components/forms/deceasedPersonForm/AutocompleteAddress.tsx';
+import { InputField } from '@frontend/components/forms/fields/InputField';
+import { RadioGroupField } from '@frontend/components/forms/fields/RadioGroupField';
+import { Form } from '@frontend/components/forms/Form';
 import { useValidDistricts } from '@frontend/pages/educator/components/notary-identification/useValidDistricts.ts';
 import { deceasedInfoSchema } from '@shared/schemas/deceasedInfoSchema';
 

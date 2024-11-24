@@ -2,7 +2,7 @@ import { Flex } from '@chakra-ui/react';
 import { usePlacesWidget } from 'react-google-autocomplete';
 import { useFormContext } from 'react-hook-form';
 
-import { InputField } from '@frontend/components';
+import { InputField } from '@frontend/components/forms/fields/InputField';
 import { config } from '@frontend/config.ts';
 
 type AddressComponent = {

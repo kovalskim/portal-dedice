@@ -4,7 +4,9 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { SubmitHandler } from 'react-hook-form';
 import * as z from 'zod';
 
-import { Form, InputField, PrimaryButton } from '@frontend/components';
+import { PrimaryButton } from '@frontend/components/buttons';
+import { InputField } from '@frontend/components/forms/fields/InputField';
+import { Form } from '@frontend/components/forms/Form';
 import { RouterLink } from '@frontend/components/navigation/atoms';
 import { useCustomToast } from '@frontend/hooks/useCustomToast.ts';
 import { Routes } from '@frontend/routes/routes.ts';

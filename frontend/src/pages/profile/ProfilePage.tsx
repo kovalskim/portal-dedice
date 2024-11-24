@@ -18,7 +18,7 @@ import {
 import { SubmitHandler } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 
-import { useAuth } from '@frontend/context/auth';
+import { useAuth } from '@frontend/context/auth/auth-core';
 import {
   CHANGE_PASSWORD_MUTATION,
   UPDATE_USER_MUTATION,

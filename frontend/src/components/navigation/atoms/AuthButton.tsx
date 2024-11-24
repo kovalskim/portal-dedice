@@ -13,7 +13,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { RouterLink } from '@frontend/components/navigation/atoms/RouterLink.tsx';
 import { RouterNavButton } from '@frontend/components/navigation/atoms/RouterNavButton.tsx';
-import { useAuth } from '@frontend/context/auth';
+import { useAuth } from '@frontend/context/auth/auth-core';
 import { useCustomToast } from '@frontend/hooks/useCustomToast.ts';
 import { Routes } from '@frontend/routes/routes.ts';
 

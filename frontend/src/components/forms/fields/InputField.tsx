@@ -1,7 +1,7 @@
 import { forwardRef } from 'react';
 import { Input, InputProps } from '@chakra-ui/react';
 
-import { theme } from '@frontend/components';
+import { theme } from '@frontend/components/design-system';
 
 import { FormField, type FormFieldBaseProps } from './FormField';
 

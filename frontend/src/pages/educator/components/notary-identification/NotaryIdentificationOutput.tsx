@@ -3,7 +3,7 @@ import { useMutation } from '@apollo/client';
 import { Box } from '@chakra-ui/layout';
 import { Alert, AlertIcon, Spinner, Text } from '@chakra-ui/react';
 
-import { InfoHintBox } from '@frontend/components';
+import { InfoHintBox } from '@frontend/components/infoHintBox/InfoHintBox';
 import {
   IdentifiedNotary,
   IDENTIFY_NOTARY,

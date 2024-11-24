@@ -1,9 +1,11 @@
-import React, { FC, useEffect } from 'react';
+import { FC, useEffect } from 'react';
 import { Box, Center, Heading, Stack, Text } from '@chakra-ui/react';
 import { SubmitHandler } from 'react-hook-form';
 import * as z from 'zod';
 
-import { Form, InputField, PrimaryButton } from '@frontend/components';
+import { PrimaryButton } from '@frontend/components/buttons';
+import { InputField } from '@frontend/components/forms/fields/InputField';
+import { Form } from '@frontend/components/forms/Form';
 import { RouterLink } from '@frontend/components/navigation/atoms';
 import { useCustomToast } from '@frontend/hooks/useCustomToast.ts';
 import { Routes } from '@frontend/routes/routes.ts';

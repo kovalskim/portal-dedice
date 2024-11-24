@@ -1,7 +1,7 @@
 import { FC, PropsWithChildren } from 'react';
 import { Box, Card, Container, Flex, Heading } from '@chakra-ui/react';
 
-import { PrimaryButton, SecondaryButton } from '@frontend/components';
+import { PrimaryButton, SecondaryButton } from '@frontend/components/buttons';
 import { SummaryStepper } from '@frontend/components/stepper/SummaryStepper';
 import { stepsCountShowenInEducation } from '@frontend/constants';
 import { useEducatorState } from '@frontend/hooks/useEducatorState';

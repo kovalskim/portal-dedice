@@ -14,12 +14,10 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import slugify from 'slugify';
 import * as z from 'zod';
 
-import {
-  Form,
-  InputField,
-  PrimaryButton,
-  SingleFileUploadField,
-} from '@frontend/components';
+import { PrimaryButton } from '@frontend/components/buttons';
+import { InputField } from '@frontend/components/forms/fields/InputField';
+import { SingleFileUploadField } from '@frontend/components/forms/fields/SingleFileUploadField';
+import { Form } from '@frontend/components/forms/Form';
 import {
   GET_SIGNED_URL_MUTATION,
   SAVE_FILE_MUTATION,

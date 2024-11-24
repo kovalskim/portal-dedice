@@ -1,6 +1,6 @@
 import { Box, Text } from '@chakra-ui/react';
 
-import { PrimaryButton } from '@frontend/components';
+import { PrimaryButton } from '@frontend/components/buttons';
 import { useEducatorState } from '@frontend/hooks/useEducatorState';
 
 import { StepperWrapper } from './common/StepperWrapper';

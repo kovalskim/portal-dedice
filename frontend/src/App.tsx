@@ -1,7 +1,7 @@
 import { Outlet } from 'react-router-dom';
 
 import { ChakraProvider, theme } from '@frontend/components/design-system';
-import { AuthProvider } from '@frontend/context/auth';
+import { AuthProvider } from '@frontend/context/auth/auth-core';
 import { EnhancedApolloProvider } from '@frontend/utils/apollo.tsx';
 
 export const App = () => {

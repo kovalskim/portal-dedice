@@ -1,6 +1,6 @@
 import { Heading } from '@chakra-ui/react';
+import * as zod from 'zod';
 
-import { zod } from '@frontend/components';
 import {
   DeceasedPersonForm,
   DeceasedPersonFormFields,

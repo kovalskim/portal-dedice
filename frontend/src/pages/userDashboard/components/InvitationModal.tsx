@@ -11,7 +11,7 @@ import {
 } from '@chakra-ui/react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-import { PrimaryButton, SecondaryButton } from '@frontend/components';
+import { PrimaryButton, SecondaryButton } from '@frontend/components/buttons';
 import { ACCEPT_INVITATION_MUTATION } from '@frontend/gql/proceedings/mutations.ts';
 import { useCustomToast } from '@frontend/hooks/useCustomToast.ts';
 import { Routes } from '@frontend/routes/routes.ts';

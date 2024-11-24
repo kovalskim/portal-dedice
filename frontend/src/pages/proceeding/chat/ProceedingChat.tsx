@@ -4,8 +4,9 @@ import { Flex, Input, Spinner, Text } from '@chakra-ui/react';
 import { useWindowSize } from '@uidotdev/usehooks';
 import { useParams } from 'react-router-dom';
 
-import { Form, PrimaryButton } from '@frontend/components';
-import { useAuth } from '@frontend/context/auth';
+import { PrimaryButton } from '@frontend/components/buttons';
+import { Form } from '@frontend/components/forms/Form';
+import { useAuth } from '@frontend/context/auth/auth-core';
 import { CREATE_MESSAGE_MUTATION } from '@frontend/gql/chat/mutations';
 import { ALL_MESSAGES_BY_PROCEEDING_ID } from '@frontend/gql/chat/queries';
 import { CHAT_SUBSCRIPTION } from '@frontend/gql/chat/subscriptions';

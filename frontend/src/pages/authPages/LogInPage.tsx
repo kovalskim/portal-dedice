@@ -9,7 +9,7 @@ import {
 import { SubmitHandler } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 
-import { useAuth } from '@frontend/context/auth';
+import { useAuth } from '@frontend/context/auth/auth-core';
 import { SIGN_IN_MUTATION } from '@frontend/gql/user/mutations.ts';
 import { useCustomToast } from '@frontend/hooks/useCustomToast.ts';
 import {

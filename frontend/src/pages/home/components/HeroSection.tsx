@@ -1,8 +1,8 @@
 import { Box, Flex, Heading, Image, Text } from '@chakra-ui/react';
 
 import { RouterNavButton } from '@frontend/components/navigation/atoms/RouterNavButton.tsx';
-import { useAuth } from '@frontend/context/auth';
-import { Routes } from '@frontend/routes/routes.ts';
+import { useAuth } from '@frontend/context/auth/auth-core';
+import { Routes } from '@frontend/routes/routes';
 
 export const HeroSection = () => {
   const { user } = useAuth();

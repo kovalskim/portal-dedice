@@ -1,6 +1,6 @@
 import { Stack } from '@chakra-ui/react';
 
-import { PrimaryButton, SecondaryButton } from '@frontend/components';
+import { PrimaryButton, SecondaryButton } from '@frontend/components/buttons';
 import { useEducatorState } from '@frontend/hooks/useEducatorState.ts';
 
 import { StepperWrapper } from '../common/StepperWrapper.tsx';
