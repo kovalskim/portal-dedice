@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 const postalCodeRegex = new RegExp('^\\d{3}\\s\\d{2}$');
 
-export const deceasedPersonInputSchema = z
+export const deceasedInfoSchema = z
   .object({
     sex: z.string().min(1, { message: 'Povinné pole' }),
     firstname: z.string().min(1, { message: 'Povinné pole' }),
@@ -10,7 +10,12 @@ export const deceasedPersonInputSchema = z
     birthdate: z.string().min(1, { message: 'Povinné pole' }),
     deathdate: z.string().min(1, { message: 'Povinné pole' }),
     streetWithNumber: z.string().min(1, { message: 'Povinné pole' }),
-    city: z.string().min(1, { message: 'Povinné pole' }),
+    city: z
+      .string()
+      .min(1, { message: 'Povinné pole' })
+      .refine((val) => val === 'Praha' || '', {
+        message: 'V současné době je podporována pouze obec Praha',
+      }),
     district: z.string().min(1, { message: 'Povinné pole' }),
     postalCode: z
       .string()

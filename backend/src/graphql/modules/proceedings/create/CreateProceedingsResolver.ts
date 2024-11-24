@@ -2,12 +2,12 @@ import { GraphQLError } from 'graphql';
 import { Arg, Ctx, Mutation, Resolver } from 'type-graphql';
 
 import { NewProceedingInput } from '@backend/graphql/modules/proceedings/create/NewProceedingInput';
-import { newProceedingInputSchema } from '@backend/graphql/modules/proceedings/create/NewProceedingInputSchema';
 import { Proceedings } from '@backend/graphql/modules/proceedings/create/proceedingsType';
 import { UserRole } from '@backend/graphql/modules/user/roleType';
 import { createToken } from '@backend/libs/jwt';
 import { sendNarratorInvitationEmail } from '@backend/services/emailService/emailService';
 import { CustomContext } from '@backend/types/types';
+import { newProceedingInputSchema } from '@shared/schemas/newProceedingInputSchema';
 
 @Resolver(() => Proceedings)
 export class CreateProceedingsResolver {

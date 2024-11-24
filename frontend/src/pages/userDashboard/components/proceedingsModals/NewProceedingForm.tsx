@@ -1,7 +1,6 @@
 import { Heading } from '@chakra-ui/react';
 
 import { zod } from '@frontend/components';
-import { baseDeceasedInfoSchema } from '@frontend/components/forms/deceasedPersonForm/baseDeceasedInfoSchema.ts';
 import {
   DeceasedPersonForm,
   DeceasedPersonFormFields,
@@ -10,15 +9,12 @@ import {
   AddParticipantForm,
   ParticipantFormFields,
 } from '@frontend/pages/userDashboard/components/proceedingsModals/AddParticipantForm.tsx';
-import { participantSchema } from '@frontend/pages/userDashboard/components/proceedingsModals/participantSchema.ts';
 import { useNewProceedingFormStore } from '@frontend/pages/userDashboard/hooks/useNewProceedingFormStore.ts';
+import { newProceedingInputSchema } from '@shared/schemas/newProceedingInputSchema';
 
-const NewProceedingFormSchema = zod.object({
-  deceasedPersonInfo: baseDeceasedInfoSchema,
-  narratorContactInfo: participantSchema,
-});
-
-export type NewProceedingFormFields = zod.infer<typeof NewProceedingFormSchema>;
+export type NewProceedingFormFields = zod.infer<
+  typeof newProceedingInputSchema
+>;
 
 type NewProceedingFormProps = {
   onSubmitStep1: (data: DeceasedPersonFormFields) => void;

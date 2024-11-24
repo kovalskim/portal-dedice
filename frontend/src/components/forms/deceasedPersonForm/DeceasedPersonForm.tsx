@@ -5,10 +5,10 @@ import { z } from 'zod';
 import { Form, InputField, RadioGroupField } from '@frontend/components';
 import { zodResolver } from '@frontend/components/forms';
 import { AutocompleteAddress } from '@frontend/components/forms/deceasedPersonForm/AutocompleteAddress.tsx';
-import { baseDeceasedInfoSchema } from '@frontend/components/forms/deceasedPersonForm/baseDeceasedInfoSchema.ts';
 import { useValidDistricts } from '@frontend/pages/educator/components/notary-identification/useValidDistricts.ts';
+import { deceasedInfoSchema } from '@shared/schemas/deceasedInfoSchema';
 
-export type DeceasedPersonFormFields = z.infer<typeof baseDeceasedInfoSchema>;
+export type DeceasedPersonFormFields = z.infer<typeof deceasedInfoSchema>;
 type DeceasedInfoFormProps = {
   id: string;
   loadDefaultFrom?: DeceasedPersonFormFields | undefined;
@@ -22,27 +22,12 @@ export const DeceasedPersonForm = ({
 }: DeceasedInfoFormProps) => {
   const { validDistrictNames, error } = useValidDistricts();
 
-  const schemaWithDistrictValidation = baseDeceasedInfoSchema.extend({
-    district: z.string().refine(
-      (district) => {
-        // Only validate district if there is no error and validDistrictNames is populated
-        return error || validDistrictNames.includes(district);
-      },
-      {
-        message: 'Zadejte platný název okresu či městské části',
-      },
-    ),
-  });
-
-  const completeSchema = schemaWithDistrictValidation.refine(
+  const schemaWithDistrictValidation = deceasedInfoSchema.refine(
     (data) => {
-      const birthdate = new Date(data.birthdate);
-      const deathdate = new Date(data.deathdate);
-      return deathdate > birthdate;
+      return error || validDistrictNames.includes(data.district);
     },
     {
-      message: 'Datum úmrtí musí být větší než datum narození',
-      path: ['deathdate'],
+      message: 'Zadejte platný název okresu či městské části',
     },
   );
 
@@ -50,7 +35,7 @@ export const DeceasedPersonForm = ({
   return (
     <Form
       id={id}
-      resolver={zodResolver(completeSchema)}
+      resolver={zodResolver(schemaWithDistrictValidation)}
       defaultValues={{
         sex: formData?.sex ?? '',
         firstname: formData?.firstname ?? '',

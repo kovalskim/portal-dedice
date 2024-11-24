@@ -3,9 +3,9 @@ import { Arg, Ctx, Mutation, Resolver } from 'type-graphql';
 
 import { unauthorizedError } from '@backend/graphql/errors';
 import { DeceasedPersonInput } from '@backend/graphql/modules/educator/DeceasedPersonInput';
-import { baseDeceasedInfoSchema } from '@backend/graphql/modules/proceedings/create/NewProceedingInputSchema';
 import { Proceedings } from '@backend/graphql/modules/proceedings/create/proceedingsType';
 import { CustomContext } from '@backend/types/types';
+import { deceasedInfoSchema } from '@shared/schemas/deceasedInfoSchema';
 
 @Resolver(() => Proceedings)
 export class UpdateProceedingsResolver {
@@ -16,7 +16,7 @@ export class UpdateProceedingsResolver {
     @Ctx() { authUser, proceedingsRepository }: CustomContext,
   ): Promise<Proceedings> {
     try {
-      baseDeceasedInfoSchema.parse(input);
+      deceasedInfoSchema.parse(input);
     } catch (error) {
       throw new GraphQLError('Validation error', {
         extensions: {

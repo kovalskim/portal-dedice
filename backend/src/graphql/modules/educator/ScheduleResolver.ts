@@ -13,9 +13,9 @@ import { courts, districts, schedules } from '@backend/db/schema';
 import { courtNotFoundError } from '@backend/graphql/errors';
 import { Court } from '@backend/graphql/modules/educator/CourtType';
 import { DeceasedPersonInput } from '@backend/graphql/modules/educator/DeceasedPersonInput';
-import { deceasedPersonInputSchema } from '@backend/graphql/modules/educator/DeceasedPersonInputSchema';
 import { Schedule } from '@backend/graphql/modules/educator/ScheduleType';
 import { CustomContext } from '@backend/types/types';
+import { deceasedInfoSchema } from '@shared/schemas/deceasedInfoSchema';
 
 @Resolver(() => Schedule)
 export class ScheduleResolver {
@@ -37,7 +37,7 @@ export class ScheduleResolver {
     @Ctx() { db }: CustomContext,
   ): Promise<Schedule> {
     try {
-      deceasedPersonInputSchema.parse(input);
+      deceasedInfoSchema.parse(input);
     } catch (error) {
       throw new GraphQLError('Validation error', {
         extensions: {
