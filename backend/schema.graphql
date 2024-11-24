@@ -26,6 +26,9 @@ input DeceasedPersonInput {
   district: String!
   firstname: String!
   lastname: String!
+  narratorEmail: String
+  narratorFirstname: String
+  narratorLastname: String
   postalCode: String!
   sex: String!
   streetWithNumber: String!
@@ -47,15 +50,18 @@ type Message {
 }
 
 type Mutation {
+  acceptParticipantInvitation(token: String!): Float!
   changePassword(newPassword: String!, oldPassword: String!, userId: String!): AuthInfo!
   createMessage(proceedingId: Float!, text: String!): Message!
-  createProceedings(data: DeceasedPersonInput!): Proceedings!
+  createProceedings(data: NewProceedingInput!): Proceedings!
+  deleteProceedings(id: Float!): Boolean!
   identifyNotary(data: DeceasedPersonInput!): Schedule!
   newPassword(newPassword: String!, token: String!): String!
   restorePassword(email: String!): String!
-  sendMessageToParticipans(data: SendEmailRequest!): String!
+  sendMessageToParticipants(data: SendEmailRequest!): String!
   signIn(email: String!, password: String!): SignInInfo!
   signUp(email: String!, firstname: String!, lastname: String!, password: String!): AuthInfo!
+  updateProceedings(data: DeceasedPersonInput!, id: Float!): Proceedings!
   updateUser(afterTitle: String, beforeTitle: String, firstname: String!, lastname: String!, userId: String!): User!
   updateUserPreferences(emailNotifications: Boolean!, userId: String!): User!
   verifyEmail(token: String!): String!
@@ -64,6 +70,11 @@ type Mutation {
 
 type NewMessageNotification {
   id: ID!
+}
+
+input NewProceedingInput {
+  deceasedPersonInfo: DeceasedPersonInput!
+  narratorContactInfo: ParticipantInput!
 }
 
 type PaginatedProceedings {
@@ -75,6 +86,12 @@ type Participant {
   participantState: ParticipantState!
   proceedingId: Float!
   user: User!
+}
+
+input ParticipantInput {
+  email: String!
+  firstname: String!
+  lastname: String!
 }
 
 type ParticipantState {
@@ -90,8 +107,12 @@ type Proceedings {
   deceasedFirstName: String!
   deceasedLastName: String!
   deceasedPostalCode: String!
+  deceasedSex: String
   deceasedStreetWithNumber: String!
   id: ID!
+  narratorEmail: String
+  narratorFirstname: String
+  narratorLastname: String
   notary: User!
   notaryId: Float!
   phaseId: Float!
@@ -130,7 +151,7 @@ type Schedule {
 input SendEmailRequest {
   message: String!
   proceedingsId: Float!
-  recivers: [String!]!
+  receivers: [String!]!
   title: String!
 }
 

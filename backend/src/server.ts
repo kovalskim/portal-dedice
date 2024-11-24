@@ -19,26 +19,25 @@ import { WebSocketServer } from 'ws';
 
 import { MOCKS, PORT } from '@backend/config';
 import { getConnection } from '@backend/db/db';
+import { MessageResolver } from '@backend/graphql/modules/chat/MessageResolver';
+import { pubSub } from '@backend/graphql/modules/chat/PubSub';
 import { DistrictResolver } from '@backend/graphql/modules/educator/DistrictResolver';
 import { ScheduleResolver } from '@backend/graphql/modules/educator/ScheduleResolver';
 import { AcceptParticipantInvitationResolver } from '@backend/graphql/modules/participantInvitation/AcceptParticipantInvitationResolver';
+import { CreateProceedingsResolver } from '@backend/graphql/modules/proceedings/create/CreateProceedingsResolver';
+import { DeleteProceedingsResolver } from '@backend/graphql/modules/proceedings/delete/DeleteProceedingsResolver';
+import { GetProceedingsResolver } from '@backend/graphql/modules/proceedings/get/GetProceedingsResolver';
+import { SendMessageResolver } from '@backend/graphql/modules/proceedings/send/SendMessageResolver';
+import { UpdateProceedingsResolver } from '@backend/graphql/modules/proceedings/update/UpdateProceedingsResolver';
 import { UserResolver } from '@backend/graphql/modules/user/userResolver';
 import { parseAndVerifyJWT } from '@backend/libs/jwt';
 import { mockResolvers } from '@backend/mocks/mocks';
+import { MessagesRepository } from '@backend/repository/MessagesRepository';
+import { ParticipantInvitationsRepository } from '@backend/repository/ParticipantInvitationsRepository';
+import { ParticipantsRepository } from '@backend/repository/ParticipantsRepository';
 import { ProceedingsRepository } from '@backend/repository/ProceedingsRepository';
 import { UsersRepository } from '@backend/repository/UsersRepository';
 import { CustomContext } from '@backend/types/types';
-
-import { MessageResolver } from './graphql/modules/chat/MessageResolver';
-import { pubSub } from './graphql/modules/chat/PubSub';
-import { CreateProceedingsResolver } from './graphql/modules/proceedings/create/CreateProceedingsResolver';
-import { DeleteProceedingsResolver } from './graphql/modules/proceedings/delete/DeleteProceedingsResolver';
-import { GetProceedingsResolver } from './graphql/modules/proceedings/get/GetProceedingsResolver';
-import { SendMessageResolver } from './graphql/modules/proceedings/send/SendMessageResolver';
-import { UpdateProceedingsResolver } from './graphql/modules/proceedings/update/UpdateProceedingsResolver';
-import { MessagesRepository } from './repository/MessagesRepository';
-import { ParticipantInvitationsRepository } from './repository/ParticipantInvitationsRepository';
-import { ParticipantsRepository } from './repository/ParticipantsRepository';
 
 const init = async () => {
   const app = express();
