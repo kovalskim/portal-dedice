@@ -60,18 +60,16 @@ export const UserDashboard = () => {
 
   return (
     <Flex direction="column" gap={4} py={{ sm: 2, lg: 4 }}>
-      <Flex direction="row" alignItems="center" gap={20}>
-        <Heading as="h2" size="lg">
-          Vítejte na Portálu dědice, {firstNameInVokativ(user?.firstname)}!
-        </Heading>
-      </Flex>
+      <Heading as="h2" size="lg">
+        Vítejte na Portálu dědice, {firstNameInVokativ(user?.firstname)}!
+      </Heading>
       <Text>
         Portál dědice je vaším průvodcem dědickým řízením, který slouží jako
         digitální podpora celého procesu propojující notáře a ostatní účastníky
         řízení a jako komunikační nástroj s přiděleným notářem.
       </Text>
       {role === Role.NOTARY && (
-        <Flex justifyContent="flex-end">
+        <Flex justifyContent="flex-end" mt={4}>
           <PrimaryButton
             leftIcon={<AddIcon />}
             onClick={() => setNewProceedingsModalOpen(true)}

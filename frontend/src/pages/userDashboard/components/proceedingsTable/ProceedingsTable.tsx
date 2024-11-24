@@ -71,7 +71,13 @@ export const ProceedingsTable: React.FC<ProceedingsTableProps> = ({
 
   return (
     <>
-      <Box p={8}>
+      <Box
+        p={{
+          base: 4,
+          md: 8,
+        }}
+        maxW={{ base: 'sm', md: '100%' }}
+      >
         <Heading fontSize="2xl" fontWeight="bold" mb={4}>
           Seznam dědických řízení
         </Heading>
@@ -95,14 +101,17 @@ export const ProceedingsTable: React.FC<ProceedingsTableProps> = ({
             </PrimaryButton>
           ))}
         </Flex>
-        <Box w="100%">
+        <Box overflowX="auto">
           <TableContainer
-            maxW={{ base: '80vw', md: '90vw', lg: '100vw' }}
             borderWidth="1px"
             borderRadius="lg"
             mt={6}
+            overflow="auto hidden"
+            maxW="100%"
+            whiteSpace="nowrap"
+            display="block"
           >
-            <Table variant="simple" size="md">
+            <Table variant="simple" size={{ base: 'sm', md: 'md' }} mt={2}>
               <Thead>
                 <Tr>
                   <Th>
