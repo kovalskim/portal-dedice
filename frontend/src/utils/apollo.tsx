@@ -20,7 +20,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { config } from '@frontend/config';
 import { useAuth } from '@frontend/context/auth';
-import { Routes } from '@frontend/routes';
+import { Routes } from '@frontend/routes/routes.ts';
 
 type Props = {
   children: ReactNode;

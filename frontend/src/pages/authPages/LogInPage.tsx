@@ -16,7 +16,8 @@ import {
   FormFields,
   LogInForm,
 } from '@frontend/pages/authPages/components/LogInForm.tsx';
-import { Routes } from '@frontend/routes.ts';
+import { Routes } from '@frontend/routes/routes.ts';
+import { useProtectedRouteStore } from '@frontend/routes/useProtectedRouteStore.ts';
 import { firstNameInVokativ } from '@frontend/utils/languageUtils.ts';
 
 export const LogInPage = () => {
@@ -24,6 +25,7 @@ export const LogInPage = () => {
   const auth = useAuth();
   const showToast = useCustomToast();
   const isMobile = useBreakpointValue({ base: true, md: false });
+  const { backlink, removeBacklink } = useProtectedRouteStore();
 
   const [signIn, { loading, error }] = useMutation(SIGN_IN_MUTATION);
 
@@ -47,7 +49,8 @@ export const LogInPage = () => {
         status: 'success',
       });
 
-      navigate(Routes.proceedings);
+      removeBacklink();
+      navigate(backlink ?? Routes.proceedings, { replace: true });
     } catch (err) {
       console.error(err);
     }

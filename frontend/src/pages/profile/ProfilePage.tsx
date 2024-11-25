@@ -33,7 +33,7 @@ import {
   ChangePersonalDataForm,
   FormFields as ChangePersonalDataFormFields,
 } from '@frontend/pages/profile/components/ChangePersonalDataForm.tsx';
-import { Routes } from '@frontend/routes.ts';
+import { Routes } from '@frontend/routes/routes.ts';
 
 import {
   FormFields as UpdatePreferencesFormFields,

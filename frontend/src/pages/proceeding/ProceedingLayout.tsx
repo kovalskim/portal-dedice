@@ -8,7 +8,7 @@ import {
   ProceedingResponse,
 } from '@frontend/gql/proceedings/queries.ts';
 import { useCustomToast } from '@frontend/hooks/useCustomToast.ts';
-import { Routes } from '@frontend/routes.ts';
+import { Routes } from '@frontend/routes/routes.ts';
 
 import { Sidebar } from './components/sidebar/Sidebar';
 

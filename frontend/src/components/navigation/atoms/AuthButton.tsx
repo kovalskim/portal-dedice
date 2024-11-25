@@ -15,7 +15,7 @@ import { RouterLink } from '@frontend/components/navigation/atoms/RouterLink.tsx
 import { RouterNavButton } from '@frontend/components/navigation/atoms/RouterNavButton.tsx';
 import { useAuth } from '@frontend/context/auth';
 import { useCustomToast } from '@frontend/hooks/useCustomToast.ts';
-import { Routes } from '@frontend/routes.ts';
+import { Routes } from '@frontend/routes/routes.ts';
 
 type AuthButtonProps = {
   onClose: MouseEventHandler<HTMLButtonElement | HTMLAnchorElement>;

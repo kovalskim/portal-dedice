@@ -12,7 +12,7 @@ import {
 import { InfoHintBox } from '@frontend/components';
 import { Link } from '@frontend/components/links';
 import { useEducatorState } from '@frontend/hooks/useEducatorState.ts';
-import { Routes } from '@frontend/routes.ts';
+import { Routes } from '@frontend/routes/routes.ts';
 
 import { SecondPhaseStepper } from '../../secondPhaseStepper/SecondPhaseStepper.tsx';
 import { StepperWrapper } from '../common/StepperWrapper.tsx';

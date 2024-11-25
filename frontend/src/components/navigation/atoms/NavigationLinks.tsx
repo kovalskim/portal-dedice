@@ -1,7 +1,7 @@
 import { MouseEventHandler } from 'react';
 
 import { RouterNavLink } from '@frontend/components/navigation/atoms/RouterNavLink.tsx';
-import { Routes } from '@frontend/routes.ts';
+import { Routes } from '@frontend/routes/routes.ts';
 
 type NavigationLinksProps = {
   onClose?: MouseEventHandler<HTMLAnchorElement>;

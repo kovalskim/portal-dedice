@@ -15,5 +15,4 @@ export enum Routes {
   proceedingChat = '/proceedings/:id/chat',
   proceedingAssets = '/proceedings/:id/assets',
   proceedingSettings = '/proceedings/:id/settings',
-  participantInvitationAcceptance = '/proceedings/invitation-acceptance',
 }

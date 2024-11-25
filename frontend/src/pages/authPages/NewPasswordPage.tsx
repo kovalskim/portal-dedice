@@ -19,7 +19,7 @@ import {
   FormFields,
   NewPasswordForm,
 } from '@frontend/pages/authPages/components/NewPasswordForm.tsx';
-import { Routes } from '@frontend/routes.ts';
+import { Routes } from '@frontend/routes/routes.ts';
 
 export const NewPasswordPage = () => {
   const navigate = useNavigate();

@@ -15,7 +15,7 @@ import {
   ForgottenPasswordForm,
   FormFields,
 } from '@frontend/pages/authPages/components/ForgottenPasswordForm.tsx';
-import { Routes } from '@frontend/routes.ts';
+import { Routes } from '@frontend/routes/routes.ts';
 
 export const ForgottenPasswordPage = () => {
   const navigate = useNavigate();

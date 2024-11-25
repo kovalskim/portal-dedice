@@ -14,7 +14,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { PrimaryButton, SecondaryButton } from '@frontend/components';
 import { ACCEPT_INVITATION_MUTATION } from '@frontend/gql/proceedings/mutations.ts';
 import { useCustomToast } from '@frontend/hooks/useCustomToast.ts';
-import { Routes } from '@frontend/routes.ts';
+import { Routes } from '@frontend/routes/routes.ts';
 
 export const InvitationModal = () => {
   const [isOpen, setIsOpen] = useState(false);

@@ -2,7 +2,7 @@ import { Flex, Heading, Image, Text } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 
 import { SecondaryButton } from '@frontend/components';
-import { Routes } from '@frontend/routes';
+import { Routes } from '@frontend/routes/routes.ts';
 
 export const EmailConfirmationPage = () => {
   const navigate = useNavigate();

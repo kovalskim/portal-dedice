@@ -1,7 +1,7 @@
 import { Box, Text } from '@chakra-ui/react';
 import { useRouteError } from 'react-router-dom';
 
-import { Routes } from '@frontend/routes';
+import { Routes } from '@frontend/routes/routes.ts';
 
 import { RouterLink } from '../../components/navigation/atoms';
 

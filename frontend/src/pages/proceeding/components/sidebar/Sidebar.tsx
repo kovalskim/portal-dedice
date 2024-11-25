@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 
 import { Link } from '@frontend/components/links';
 import { Proceeding } from '@frontend/gql/proceedings/queries.ts';
-import { Routes } from '@frontend/routes.ts';
+import { Routes } from '@frontend/routes/routes.ts';
 
 import { SidebarMenu } from './SidebarMenu';
 import { SidebarProceedingsInfo } from './SidebarProceedingsInfo';

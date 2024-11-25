@@ -1,7 +1,7 @@
 import { Box, Flex, Heading, Image, Text } from '@chakra-ui/react';
 
 import { FeatureCard } from '@frontend/pages/home/components/FeatureCard.tsx';
-import { Routes } from '@frontend/routes.ts';
+import { Routes } from '@frontend/routes/routes.ts';
 
 export const FeaturesSection = () => {
   return (

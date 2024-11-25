@@ -33,7 +33,7 @@ import { RouterNavButton } from '@frontend/components/navigation/atoms/RouterNav
 import { useAuth } from '@frontend/context/auth';
 import { Role } from '@frontend/context/auth/auth-core';
 import { useProceedings } from '@frontend/pages/userDashboard/hooks/useProceedings.ts';
-import { Routes } from '@frontend/routes.ts';
+import { Routes } from '@frontend/routes/routes.ts';
 import { insertIdToUrl } from '@frontend/utils/util.tsx';
 
 type ProceedingsTableProps = {

@@ -5,7 +5,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 
 import { VERIFY_EMAIL_MUTATION } from '@frontend/gql/user/mutations';
 import { useCustomToast } from '@frontend/hooks/useCustomToast.ts';
-import { Routes } from '@frontend/routes';
+import { Routes } from '@frontend/routes/routes.ts';
 
 export const EmailVerificationPage = () => {
   const location = useLocation();

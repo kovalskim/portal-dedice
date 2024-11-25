@@ -6,7 +6,7 @@ import * as z from 'zod';
 import { Form, InputField, PrimaryButton } from '@frontend/components';
 import { RouterLink } from '@frontend/components/navigation/atoms';
 import { useCustomToast } from '@frontend/hooks/useCustomToast.ts';
-import { Routes } from '@frontend/routes.ts';
+import { Routes } from '@frontend/routes/routes.ts';
 
 export type FormFields = z.infer<typeof schema>;
 

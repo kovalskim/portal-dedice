@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { PrimaryButton, SecondaryButton } from '@frontend/components/index.ts';
 import { useEducatorState } from '@frontend/hooks/useEducatorState.ts';
 import { useEducatorStorage } from '@frontend/hooks/useEducatorStorage';
-import { Routes } from '@frontend/routes';
+import { Routes } from '@frontend/routes/routes.ts';
 
 import { StepperWrapper } from '../common/StepperWrapper';
 

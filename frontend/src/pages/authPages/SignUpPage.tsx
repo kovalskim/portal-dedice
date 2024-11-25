@@ -10,7 +10,7 @@ import { SubmitHandler } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 
 import { SIGN_UP_MUTATION } from '@frontend/gql/user/mutations';
-import { Routes } from '@frontend/routes';
+import { Routes } from '@frontend/routes/routes.ts';
 
 import { FormFields, RegistrationForm } from './components/RegistrationForm';
 
