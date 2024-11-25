@@ -61,9 +61,9 @@ export class GetProceedingsResolver {
 
     return {
       ...proceedings,
-      deceasedDateOfDeath: proceedings.deceasedDateOfDeath.toISOString(),
-      deceasedDateOfBirth: proceedings.deceasedDateOfBirth.toISOString(),
-      startDate: proceedings.startDate.toISOString(),
+      deceasedDateOfDeath: proceedings.deceasedDateOfDeath,
+      deceasedDateOfBirth: proceedings.deceasedDateOfBirth,
+      startDate: proceedings.startDate,
     };
   }
 
@@ -115,9 +115,9 @@ export class GetProceedingsResolver {
     return {
       data: allProceedings.data.map((proceeding) => ({
         ...proceeding,
-        deceasedDateOfDeath: proceeding.deceasedDateOfDeath.toISOString(),
-        deceasedDateOfBirth: proceeding.deceasedDateOfBirth.toISOString(),
-        startDate: proceeding.startDate.toISOString(),
+        deceasedDateOfDeath: proceeding.deceasedDateOfDeath,
+        deceasedDateOfBirth: proceeding.deceasedDateOfBirth,
+        startDate: proceeding.startDate,
       })),
       total: allProceedings.total,
     };

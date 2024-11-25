@@ -3,7 +3,7 @@ import { Arg, Ctx, Mutation, Resolver } from 'type-graphql';
 
 import { parseAndVerifyParticipationInvitationJWT } from '@backend/libs/jwt';
 import { CustomContext } from '@backend/types/types';
-import { participant_states } from '@backend/utils/constants';
+import { PARTICIPANT_STATES } from '@backend/utils/constants';
 
 @Resolver()
 export class AcceptParticipantInvitationResolver {
@@ -58,7 +58,7 @@ export class AcceptParticipantInvitationResolver {
       await participantsRepository.addParticipant({
         userId: registeredUser.id,
         proceedingId: invitation.proceedingId,
-        participantStateId: participant_states.APPROVED,
+        participantStateId: PARTICIPANT_STATES.APPROVED,
       });
       await participantInvitationsRepository.deleteParticipantInvitation(
         invitation.id,

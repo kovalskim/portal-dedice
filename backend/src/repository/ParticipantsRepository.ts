@@ -2,7 +2,7 @@ import { and, eq } from 'drizzle-orm';
 import { MySql2Database } from 'drizzle-orm/mysql2';
 
 import { participants, participantStates, users } from '@backend/db/schema';
-import { participant_states } from '@backend/utils/constants';
+import { PARTICIPANT_STATES } from '@backend/utils/constants';
 
 export interface CreateParticipantDTO {
   userId: number;
@@ -115,7 +115,7 @@ export class ParticipantsRepository {
       userId: data.userId,
       proceedingId: data.proceedingId,
       participantStateId:
-        data.participantStateId ?? participant_states.WAITING_FOR_APPROVAL,
+        data.participantStateId ?? PARTICIPANT_STATES.WAITING_FOR_APPROVAL,
     });
   }
 }

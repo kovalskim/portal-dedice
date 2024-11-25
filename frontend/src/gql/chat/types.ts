@@ -1,8 +1,6 @@
-export interface Sender {
-  id: string;
-  firstname: string;
-  lastname: string;
-}
+import { User } from '@frontend/gql/user/types.ts';
+
+export type Sender = Pick<User, 'id' | 'firstname' | 'lastname'>;
 
 export interface Message {
   id: string;

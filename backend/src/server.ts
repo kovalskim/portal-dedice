@@ -23,6 +23,7 @@ import { MessageResolver } from '@backend/graphql/modules/chat/MessageResolver';
 import { pubSub } from '@backend/graphql/modules/chat/PubSub';
 import { DistrictResolver } from '@backend/graphql/modules/educator/DistrictResolver';
 import { ScheduleResolver } from '@backend/graphql/modules/educator/ScheduleResolver';
+import { FileResolver } from '@backend/graphql/modules/file/fileResolver';
 import { AcceptParticipantInvitationResolver } from '@backend/graphql/modules/participantInvitation/AcceptParticipantInvitationResolver';
 import { CreateProceedingsResolver } from '@backend/graphql/modules/proceedings/create/CreateProceedingsResolver';
 import { DeleteProceedingsResolver } from '@backend/graphql/modules/proceedings/delete/DeleteProceedingsResolver';
@@ -32,11 +33,13 @@ import { UpdateProceedingsResolver } from '@backend/graphql/modules/proceedings/
 import { UserResolver } from '@backend/graphql/modules/user/userResolver';
 import { parseAndVerifyJWT } from '@backend/libs/jwt';
 import { mockResolvers } from '@backend/mocks/mocks';
+import { FilesRepository } from '@backend/repository/FilesRepository';
 import { MessagesRepository } from '@backend/repository/MessagesRepository';
 import { ParticipantInvitationsRepository } from '@backend/repository/ParticipantInvitationsRepository';
 import { ParticipantsRepository } from '@backend/repository/ParticipantsRepository';
 import { ProceedingsRepository } from '@backend/repository/ProceedingsRepository';
 import { UsersRepository } from '@backend/repository/UsersRepository';
+import { ParticipantValidationService } from '@backend/services/ParticipantValidationService/ParticipantValidationService';
 import { CustomContext } from '@backend/types/types';
 
 const init = async () => {
@@ -56,6 +59,7 @@ const init = async () => {
       MessageResolver,
       SendMessageResolver,
       AcceptParticipantInvitationResolver,
+      FileResolver,
     ],
     emitSchemaFile: true,
     pubSub: pubSub,
@@ -103,16 +107,22 @@ const init = async () => {
       drizzle?.connection.end();
     });
 
+    const proceedingRepository = new ProceedingsRepository(drizzle.db);
+
     return {
       db: drizzle.db,
       authUser,
       usersRepository: new UsersRepository(drizzle.db),
-      proceedingsRepository: new ProceedingsRepository(drizzle.db),
+      proceedingsRepository: proceedingRepository,
       messageRepository: new MessagesRepository(drizzle.db),
       participantInvitationsRepository: new ParticipantInvitationsRepository(
         drizzle.db,
       ),
       participantsRepository: new ParticipantsRepository(drizzle.db),
+      filesRepository: new FilesRepository(drizzle.db),
+      participantValidationService: new ParticipantValidationService(
+        proceedingRepository,
+      ),
     };
   };
 

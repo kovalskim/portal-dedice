@@ -66,9 +66,9 @@ export class UpdateProceedingsResolver {
 
     return {
       ...updatedProceedings,
-      deceasedDateOfDeath: updatedProceedings.deceasedDateOfDeath.toISOString(),
-      deceasedDateOfBirth: updatedProceedings.deceasedDateOfBirth.toISOString(),
-      startDate: updatedProceedings.startDate.toISOString(),
+      deceasedDateOfDeath: updatedProceedings.deceasedDateOfDeath,
+      deceasedDateOfBirth: updatedProceedings.deceasedDateOfBirth,
+      startDate: updatedProceedings.startDate,
     };
   }
 }

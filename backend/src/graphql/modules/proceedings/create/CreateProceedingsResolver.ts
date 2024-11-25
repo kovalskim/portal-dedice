@@ -91,9 +91,9 @@ export class CreateProceedingsResolver {
     // Return the created proceedings
     return {
       ...newProceedings,
-      deceasedDateOfDeath: newProceedings.deceasedDateOfDeath.toISOString(),
-      deceasedDateOfBirth: newProceedings.deceasedDateOfBirth.toISOString(),
-      startDate: newProceedings.startDate.toISOString(),
+      deceasedDateOfDeath: newProceedings.deceasedDateOfDeath,
+      deceasedDateOfBirth: newProceedings.deceasedDateOfBirth,
+      startDate: newProceedings.startDate,
     };
   }
 }

@@ -160,15 +160,20 @@ export const meetings = mysqlTable('meetings', {
   }),
 });
 
+const FileType: [string, ...string[]] = ['pdf', 'docx'];
+
 export const files = mysqlTable('files', {
   id: int('id').primaryKey().autoincrement(),
   path: varchar('path', { length: 255 }).notNull(),
   timestamp: timestamp('timestamp').notNull().defaultNow(),
   userId: int('user_id').references(() => users.id),
   alias: varchar('alias', { length: 255 }).notNull(),
-  proceedingId: int('proceeding_id').references(() => proceedings.id, {
-    onDelete: 'cascade',
-  }),
+  type: mysqlEnum('type', FileType).notNull(),
+  proceedingId: int('proceeding_id')
+    .references(() => proceedings.id, {
+      onDelete: 'cascade',
+    })
+    .notNull(),
 });
 
 export const messages = mysqlTable('messages', {

@@ -22,6 +22,7 @@ import { NewPasswordPage } from '@frontend/pages/authPages/NewPasswordPage.tsx';
 import { EducatorPage } from '@frontend/pages/educator/EducatorPages.tsx';
 import { ErrorPage } from '@frontend/pages/errorPages/ErrorPage.tsx';
 import { ProceedingChat } from '@frontend/pages/proceeding/chat/ProceedingChat.tsx';
+import { FilesPage } from '@frontend/pages/proceeding/files/FilesPage.tsx';
 import { ProceedingsParticipants } from '@frontend/pages/proceeding/participants/ProceedingsParticipants.tsx';
 import { ProfilePage } from '@frontend/pages/profile/ProfilePage.tsx';
 import { ProtectedRoute } from '@frontend/routes/ProtectedRoute.tsx';
@@ -54,8 +55,8 @@ export const getRouter = () => {
 
             <Route element={<ProtectedRoute />}>
               <Route path={Routes.profile} element={<ProfilePage />} />
-              <Route path={Routes.proceedings} element={<UserDashboard />} />
 
+              <Route path={Routes.proceedings} element={<UserDashboard />} />
               <Route element={<ProceedingLayout />}>
                 <Route
                   path={Routes.proceedingOverview}
@@ -69,10 +70,7 @@ export const getRouter = () => {
                   path={Routes.proceedingChat}
                   element={<ProceedingChat />}
                 />
-                <Route
-                  path={Routes.proceedingFiles}
-                  element={<NotFoundPage />}
-                />
+                <Route path={Routes.proceedingFiles} element={<FilesPage />} />
                 <Route
                   path={Routes.proceedingAssets}
                   element={<NotFoundPage />}

@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { Flex } from '@chakra-ui/layout';
 import { Input, InputProps, Text } from '@chakra-ui/react';
 
@@ -16,13 +15,6 @@ export const SingleFileUploadField = ({
   label,
   ...inputProps
 }: SingleFileUploadFieldProps) => {
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0] || null;
-    setSelectedFile(file);
-  };
-
   return (
     <FormField
       id={id}
@@ -33,11 +25,14 @@ export const SingleFileUploadField = ({
       {({ value, onChange, ...restField }) => (
         <>
           <Input
+            {...inputProps}
+            {...restField}
             id="file-upload" // unique id for the input
             type="file"
             display="none" // hides the native file input
-            onChange={handleFileChange}
+            onChange={(event) => onChange(event.target.files?.[0] ?? null)}
             colorScheme="goldenYellow"
+            value={value?.fileName}
           />
 
           <Flex
@@ -55,10 +50,10 @@ export const SingleFileUploadField = ({
                 colorScheme="goldenYellow"
                 cursor="pointer"
               >
-                Nahrát soubor
+                Vyberte soubor
               </PrimaryButton>
             </label>
-            {selectedFile && <Text mt={2}>{selectedFile.name}</Text>}
+            {value && value.name && <Text mt={2}>{value.name}</Text>}
           </Flex>
         </>
       )}

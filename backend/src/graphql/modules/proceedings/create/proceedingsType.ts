@@ -11,8 +11,8 @@ export class Proceedings {
   @Field(() => Number)
   notaryId!: number;
 
-  @Field(() => String)
-  startDate!: string;
+  @Field(() => Date)
+  startDate!: Date;
 
   @Field(() => String)
   proceedingsNumber!: string;
@@ -23,11 +23,11 @@ export class Proceedings {
   @Field(() => String)
   deceasedLastName!: string;
 
-  @Field(() => String)
-  deceasedDateOfDeath!: string;
+  @Field(() => Date)
+  deceasedDateOfDeath!: Date;
 
-  @Field(() => String)
-  deceasedDateOfBirth!: string;
+  @Field(() => Date)
+  deceasedDateOfBirth!: Date;
 
   @Field(() => String)
   deceasedStreetWithNumber!: string;

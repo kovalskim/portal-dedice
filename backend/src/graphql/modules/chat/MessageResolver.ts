@@ -10,7 +10,7 @@ import {
   Subscription,
 } from 'type-graphql';
 
-import { serverError } from '@backend/graphql/errors';
+import { serverError, unauthorizedError } from '@backend/graphql/errors';
 import {
   Message,
   NewMessageNotification,
@@ -42,7 +42,11 @@ export class MessageResolver {
   async allMessagesByProceedingId(
     @Arg('proceedingId') proceedingId: number,
     @Ctx()
-    { authUser, proceedingsRepository, messageRepository }: CustomContext,
+    {
+      authUser,
+      participantValidationService,
+      messageRepository,
+    }: CustomContext,
   ): Promise<Message[]> {
     if (!authUser) {
       throw new GraphQLError('Unauthorized', {
@@ -54,22 +58,17 @@ export class MessageResolver {
 
     // Check if user is participant in proceeding to get messages
     if (
-      !proceedingsRepository.isUserParticipantInProceeding(
+      !(await participantValidationService.isUserParticipantOrNotaryOfProceeding(
         authUser.id,
         proceedingId,
-      )
+      ))
     ) {
-      throw new GraphQLError('Unauthorized', {
-        extensions: {
-          code: 'UNAUTHORIZED',
-        },
-      });
+      throw unauthorizedError('User is not a participant in this proceeding');
     }
 
-    const messages =
-      await messageRepository.getMessagesWithUsersByProceedingId(proceedingId);
-
-    return messages;
+    return await messageRepository.getMessagesWithUsersByProceedingId(
+      proceedingId,
+    );
   }
 
   @Mutation(() => Message)
@@ -82,6 +81,7 @@ export class MessageResolver {
       proceedingsRepository,
       messageRepository,
       usersRepository,
+      participantValidationService,
     }: CustomContext,
   ): Promise<Message> {
     if (!authUser) {
@@ -91,17 +91,14 @@ export class MessageResolver {
         },
       });
     }
+
     if (
-      !proceedingsRepository.isUserParticipantInProceeding(
+      !(await participantValidationService.isUserParticipantOrNotaryOfProceeding(
         authUser.id,
         proceedingId,
-      )
+      ))
     ) {
-      throw new GraphQLError('Unauthorized', {
-        extensions: {
-          code: 'UNAUTHORIZED',
-        },
-      });
+      throw unauthorizedError('User is not a participant in this proceeding');
     }
 
     const newMessageId = await messageRepository.createMessage(

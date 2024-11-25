@@ -40,6 +40,16 @@ type District {
   name: String!
 }
 
+type File {
+  alias: String!
+  id: ID!
+  path: String!
+  proceedingId: Float!
+  timestamp: String!
+  type: String!
+  user: User!
+}
+
 type Message {
   id: ID!
   proceedingId: Float
@@ -53,11 +63,14 @@ type Mutation {
   acceptParticipantInvitation(token: String!): Float!
   changePassword(newPassword: String!, oldPassword: String!, userId: String!): AuthInfo!
   createMessage(proceedingId: Float!, text: String!): Message!
+  deleteFile(id: String!): String!
   createProceedings(data: NewProceedingInput!): Proceedings!
   deleteProceedings(id: Float!): Boolean!
+  getSignedUrl(filename: String!, filetype: String!, proceedingId: String!): SignedUrl!
   identifyNotary(data: DeceasedPersonInput!): Schedule!
   newPassword(newPassword: String!, token: String!): String!
   restorePassword(email: String!): String!
+  saveFile(alias: String!, key: String!, proceedingId: String!, type: String!): String!
   sendMessageToParticipants(data: SendEmailRequest!): String!
   signIn(email: String!, password: String!): SignInInfo!
   signUp(email: String!, firstname: String!, lastname: String!, password: String!): AuthInfo!
@@ -101,8 +114,8 @@ type ParticipantState {
 
 type Proceedings {
   deceasedCity: String!
-  deceasedDateOfBirth: String!
-  deceasedDateOfDeath: String!
+  deceasedDateOfBirth: DateTimeISO!
+  deceasedDateOfDeath: DateTimeISO!
   deceasedDistrict: String!
   deceasedFirstName: String!
   deceasedLastName: String!
@@ -118,13 +131,14 @@ type Proceedings {
   phaseId: Float!
   phaseTitle: String
   proceedingsNumber: String!
-  startDate: String!
+  startDate: DateTimeISO!
 }
 
 type Query {
   _empty: String!
   allMessagesByProceedingId(proceedingId: Float!): [Message!]!
   districts: [District!]!
+  filesByProceeding(proceedingId: Float!): [File!]!
   getAllProceedings(currentPage: Float! = 1, filterDeceasedName: String, filterPhaseId: Float, filterProceedingNumber: String, filterStartDate: String, filterStatus: String, pageSize: Float! = 2, sortOrder: String! = "desc"): PaginatedProceedings!
   getProceeding(id: Float!): Proceedings
   proceedingParticipants(id: Float!): [Participant!]!
@@ -159,6 +173,10 @@ type SignInInfo {
   role: Role!
   token: String!
   user: User!
+}
+
+type SignedUrl {
+  url: String!
 }
 
 type Subscription {

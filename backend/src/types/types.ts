@@ -1,10 +1,12 @@
 import { MySql2Database } from 'drizzle-orm/mysql2';
 
+import { FilesRepository } from '@backend/repository/FilesRepository';
 import { MessagesRepository } from '@backend/repository/MessagesRepository';
 import { ParticipantInvitationsRepository } from '@backend/repository/ParticipantInvitationsRepository';
 import { ParticipantsRepository } from '@backend/repository/ParticipantsRepository';
 import { ProceedingsRepository } from '@backend/repository/ProceedingsRepository';
 import { UsersRepository } from '@backend/repository/UsersRepository';
+import { ParticipantValidationService } from '@backend/services/ParticipantValidationService/ParticipantValidationService';
 
 export type CustomContext = {
   db: MySql2Database<Record<string, unknown>>;
@@ -12,8 +14,10 @@ export type CustomContext = {
   usersRepository: UsersRepository;
   proceedingsRepository: ProceedingsRepository;
   messageRepository: MessagesRepository;
+  filesRepository: FilesRepository;
   participantInvitationsRepository: ParticipantInvitationsRepository;
   participantsRepository: ParticipantsRepository;
+  participantValidationService: ParticipantValidationService;
 };
 
 export type JWTPayload = {
