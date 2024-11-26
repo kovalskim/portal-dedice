@@ -12,7 +12,7 @@ export const SidebarProceedingsInfo = ({
   return (
     <Flex direction="column" pt={{ base: 2, md: 8 }} alignItems="flex-start">
       <Text fontSize="xl" fontWeight="bold">
-        Dědické řízení: {proceeding.proceedingsNumber || 'N/A'}
+        Dědické řízení: {proceeding.proceedingNumber || 'N/A'}
       </Text>
       <Flex direction="row" alignItems="center" gap={4}>
         <Text fontWeight="medium" pt={2}>

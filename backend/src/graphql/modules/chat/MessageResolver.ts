@@ -137,7 +137,7 @@ export class MessageResolver {
 
     // notify also notary
     const proceeding =
-      await proceedingsRepository.getProceedingsById(proceedingId);
+      await proceedingsRepository.getProceedingById(proceedingId);
     if (proceeding.notaryId !== authUser.id) {
       const notary = await usersRepository.getUserById(proceeding.notaryId);
       if (notary && notary.emailNotifications) {

@@ -1,7 +1,7 @@
 import { Field, ID, ObjectType } from 'type-graphql';
 
 @ObjectType()
-export class Proceedings {
+export class Proceeding {
   @Field(() => ID)
   id!: number;
 
@@ -15,7 +15,7 @@ export class Proceedings {
   startDate!: Date;
 
   @Field(() => String)
-  proceedingsNumber!: string;
+  proceedingNumber!: string;
 
   @Field(() => String)
   deceasedFirstName!: string;
@@ -59,8 +59,8 @@ export class Proceedings {
 
 @ObjectType()
 export class PaginatedProceedings {
-  @Field(() => [Proceedings])
-  data!: Proceedings[];
+  @Field(() => [Proceeding])
+  data!: Proceeding[];
 
   @Field(() => Number)
   total!: number;

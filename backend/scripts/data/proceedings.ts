@@ -1,7 +1,7 @@
 export const proceedingsData = [
   {
     id: 1,
-    proceedingsNumber: '2024_06_15_KNO',
+    proceedingNumber: '2024_06_15_KNO',
     deceasedDateOfDeath: new Date('2024-06-15'),
     deceasedDateOfBirth: new Date('1948-03-22'),
     deceasedFirstName: 'Karel',
@@ -17,7 +17,7 @@ export const proceedingsData = [
   },
   {
     id: 2,
-    proceedingsNumber: '2023_12_25_JSV',
+    proceedingNumber: '2023_12_25_JSV',
     deceasedDateOfDeath: new Date('2023-12-25'),
     deceasedDateOfBirth: new Date('1955-07-18'),
     deceasedFirstName: 'Jana',
@@ -33,7 +33,7 @@ export const proceedingsData = [
   },
   {
     id: 3,
-    proceedingsNumber: '2023_10_05_PDV',
+    proceedingNumber: '2023_10_05_PDV',
     deceasedDateOfDeath: new Date('2023-10-05'),
     deceasedDateOfBirth: new Date('1960-11-12'),
     deceasedFirstName: 'Petr',
@@ -49,7 +49,7 @@ export const proceedingsData = [
   },
   {
     id: 4,
-    proceedingsNumber: '2022_11_30_ACE',
+    proceedingNumber: '2022_11_30_ACE',
     deceasedDateOfDeath: new Date('2022-11-30'),
     deceasedDateOfBirth: new Date('1950-02-15'),
     deceasedFirstName: 'Alena',

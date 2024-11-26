@@ -98,7 +98,7 @@ type NotaryPaymentCalculation {
 }
 
 type PaginatedProceedings {
-  data: [Proceedings!]!
+  data: [Proceeding!]!
   total: Float!
 }
 
@@ -119,7 +119,7 @@ type ParticipantState {
   title: String!
 }
 
-type Proceedings {
+type Proceeding {
   deceasedCity: String!
   deceasedDateOfBirth: DateTimeISO!
   deceasedDateOfDeath: DateTimeISO!
@@ -146,7 +146,7 @@ type Query {
   districts: [District!]!
   filesByProceeding(proceedingId: Float!): [File!]!
   getAllProceedings(currentPage: Float! = 1, filterDeceasedName: String, filterPhaseId: Float, filterProceedingNumber: String, filterStartDate: String, filterStatus: String, pageSize: Float! = 2, sortOrder: String! = "desc"): PaginatedProceedings!
-  getProceeding(id: Float!): Proceedings
+  getProceeding(id: Float!): Proceeding
   proceedingParticipants(id: Float!): [Participant!]!
   user(id: String!): User
   users: [User!]!

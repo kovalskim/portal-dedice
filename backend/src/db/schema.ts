@@ -83,7 +83,7 @@ export const phases = mysqlTable('phases', {
 
 export const proceedings = mysqlTable('proceedings', {
   id: int('id').primaryKey().autoincrement(),
-  proceedingsNumber: varchar('proceedings_number', { length: 255 }).notNull(),
+  proceedingNumber: varchar('proceedings_number', { length: 255 }).notNull(),
   deceasedDateOfBirth: date('deceased_date_of_birth').notNull(),
   deceasedDateOfDeath: date('deceased_date_of_death').notNull(),
   deceasedFirstName: varchar('deceased_first_name', { length: 255 }).notNull(),

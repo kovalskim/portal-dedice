@@ -242,7 +242,7 @@ export const ProceedingsTable: React.FC<ProceedingsTableProps> = ({
                       bg="white"
                       _hover={{ bg: 'goldenYellow.10' }}
                     >
-                      <Td>{proceeding.proceedingsNumber}</Td>
+                      <Td>{proceeding.proceedingNumber}</Td>
                       <Td>{`${proceeding.deceasedFirstName} ${proceeding.deceasedLastName}`}</Td>
                       <Td>
                         {new Date(proceeding.startDate).toLocaleDateString(

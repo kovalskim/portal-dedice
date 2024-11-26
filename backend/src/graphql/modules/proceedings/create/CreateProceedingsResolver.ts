@@ -2,17 +2,17 @@ import { GraphQLError } from 'graphql';
 import { Arg, Ctx, Mutation, Resolver } from 'type-graphql';
 
 import { NewProceedingInput } from '@backend/graphql/modules/proceedings/create/NewProceedingInput';
-import { Proceedings } from '@backend/graphql/modules/proceedings/create/proceedingsType';
+import { Proceeding } from '@backend/graphql/modules/proceedings/create/proceedingType';
 import { UserRole } from '@backend/graphql/modules/user/roleType';
 import { createToken } from '@backend/libs/jwt';
 import { sendNarratorInvitationEmail } from '@backend/services/emailService/emailService';
 import { CustomContext } from '@backend/types/types';
 import { newProceedingInputSchema } from '@shared/schemas/newProceedingInputSchema';
 
-@Resolver(() => Proceedings)
+@Resolver(() => Proceeding)
 export class CreateProceedingsResolver {
-  @Mutation(() => Proceedings)
-  async createProceedings(
+  @Mutation(() => Proceeding)
+  async createProceeding(
     @Arg('data') input: NewProceedingInput,
     @Ctx()
     {
@@ -21,7 +21,7 @@ export class CreateProceedingsResolver {
       proceedingsRepository,
       participantInvitationsRepository,
     }: CustomContext,
-  ): Promise<Proceedings> {
+  ): Promise<Proceeding> {
     try {
       newProceedingInputSchema.parse(input);
     } catch (error) {
@@ -52,8 +52,8 @@ export class CreateProceedingsResolver {
 
     const proceedingsNumber = `${new Date().getFullYear()}_${new Date().getMonth()}_${new Date().getDate()}_${input.deceasedPersonInfo.firstname[0]}${input.deceasedPersonInfo.lastname.slice(0, 2)}`;
     // Create the proceedings in the database
-    const newProceedingsId = await proceedingsRepository.createProceedings({
-      proceedingsNumber: proceedingsNumber,
+    const newProceedingId = await proceedingsRepository.createProceeding({
+      proceedingNumber: proceedingsNumber,
       notaryId: authUser!.id,
       startDate: new Date(), //TODO: taky jako input
       deceasedFirstName: input.deceasedPersonInfo.firstname,
@@ -70,7 +70,7 @@ export class CreateProceedingsResolver {
     const token = createToken({ email: input.narratorContactInfo.email });
 
     await participantInvitationsRepository.createParticipantInvitation({
-      proceedingId: newProceedingsId,
+      proceedingId: newProceedingId,
       participantEmail: input.narratorContactInfo.email!,
       participantFirstname: input.narratorContactInfo.firstname!,
       participantLastname: input.narratorContactInfo.lastname!,
@@ -85,15 +85,12 @@ export class CreateProceedingsResolver {
       token,
     );
 
-    const newProceedings =
-      await proceedingsRepository.getProceedingsById(newProceedingsId);
+    const newProceeding =
+      await proceedingsRepository.getProceedingById(newProceedingId);
 
     // Return the created proceedings
     return {
-      ...newProceedings,
-      deceasedDateOfDeath: newProceedings.deceasedDateOfDeath,
-      deceasedDateOfBirth: newProceedings.deceasedDateOfBirth,
-      startDate: newProceedings.startDate,
+      ...newProceeding,
     };
   }
 }

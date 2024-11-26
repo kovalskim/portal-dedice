@@ -6,19 +6,19 @@ import {
   participants,
   participantStates,
   phases,
-  proceedings,
+  proceedings as proceeding,
   users,
 } from '@backend/db/schema';
 import { UserRole } from '@backend/graphql/modules/user/roleType';
 
 import { UserDTO } from './UsersRepository';
 
-export interface ProceedingsDTO {
+export interface ProceedingDTO {
   id: number;
   phaseId: number;
   startDate: Date;
   notaryId: number;
-  proceedingsNumber: string;
+  proceedingNumber: string;
   deceasedFirstName: string;
   deceasedLastName: string;
   deceasedDateOfDeath: Date;
@@ -31,8 +31,8 @@ export interface ProceedingsDTO {
   phaseTitle?: string;
 }
 
-export interface CreateProceedingsDTO {
-  proceedingsNumber: string;
+export interface CreateProceedingDTO {
+  proceedingNumber: string;
   deceasedFirstName: string;
   deceasedLastName: string;
   deceasedDateOfDeath: Date;
@@ -65,17 +65,15 @@ export class ProceedingsRepository {
     this.db = db;
   }
 
-  async getProceedingsById(proceedingsId: number): Promise<ProceedingsDTO> {
+  async getProceedingById(proceedingsId: number): Promise<ProceedingDTO> {
     return await this.db
       .select()
-      .from(proceedings)
-      .where(eq(proceedings.id, proceedingsId))
-      .then((proceedings) => proceedings[0] as ProceedingsDTO);
+      .from(proceeding)
+      .where(eq(proceeding.id, proceedingsId))
+      .then((proceedings) => proceedings[0] as ProceedingDTO);
   }
 
-  async createProceedings(
-    proceedingsData: CreateProceedingsDTO,
-  ): Promise<number> {
+  async createProceeding(proceedingData: CreateProceedingDTO): Promise<number> {
     const phase = await this.db
       .select()
       .from(phases)
@@ -85,15 +83,15 @@ export class ProceedingsRepository {
       throw new Error('phase not found');
     }
 
-    const newProceedingsId = await this.db
-      .insert(proceedings)
+    const newProceedingId = await this.db
+      .insert(proceeding)
       .values({
         phaseId: phase[0].id,
-        ...proceedingsData,
+        ...proceedingData,
       })
       .$returningId();
 
-    return newProceedingsId[0].id;
+    return newProceedingId[0].id;
   }
 
   private async fetchProceedings(
@@ -106,45 +104,45 @@ export class ProceedingsRepository {
     filterStartDate?: string,
     filterPhaseId?: number,
     filterStatus?: string,
-  ): Promise<{ data: ProceedingsDTO[]; total: number }> {
+  ): Promise<{ data: ProceedingDTO[]; total: number }> {
     const offset = (currentPage - 1) * pageSize;
 
     let query = this.db
       .select({
-        id: proceedings.id,
-        phaseId: proceedings.phaseId,
-        startDate: proceedings.startDate,
-        notaryId: proceedings.notaryId,
-        proceedingsNumber: proceedings.proceedingsNumber,
-        deceasedFirstName: proceedings.deceasedFirstName,
-        deceasedLastName: proceedings.deceasedLastName,
-        deceasedDateOfDeath: proceedings.deceasedDateOfDeath,
-        deceasedDateOfBirth: proceedings.deceasedDateOfBirth,
-        deceasedStreetWithNumber: proceedings.deceasedStreetWithNumber,
-        deceasedCity: proceedings.deceasedCity,
-        deceasedDistrict: proceedings.deceasedDistrict,
-        deceasedPostalCode: proceedings.deceasedPostalCode,
-        deceasedSex: proceedings.deceasedSex,
+        id: proceeding.id,
+        phaseId: proceeding.phaseId,
+        startDate: proceeding.startDate,
+        notaryId: proceeding.notaryId,
+        proceedingNumber: proceeding.proceedingNumber,
+        deceasedFirstName: proceeding.deceasedFirstName,
+        deceasedLastName: proceeding.deceasedLastName,
+        deceasedDateOfDeath: proceeding.deceasedDateOfDeath,
+        deceasedDateOfBirth: proceeding.deceasedDateOfBirth,
+        deceasedStreetWithNumber: proceeding.deceasedStreetWithNumber,
+        deceasedCity: proceeding.deceasedCity,
+        deceasedDistrict: proceeding.deceasedDistrict,
+        deceasedPostalCode: proceeding.deceasedPostalCode,
+        deceasedSex: proceeding.deceasedSex,
         phaseTitle: phases.title,
       })
-      .from(proceedings)
-      .innerJoin(phases, eq(proceedings.phaseId, phases.id));
+      .from(proceeding)
+      .innerJoin(phases, eq(proceeding.phaseId, phases.id));
 
     const whereConditions = [];
 
     if (identifier.type === UserRole.NOTARY) {
-      whereConditions.push(eq(proceedings.notaryId, identifier.id));
+      whereConditions.push(eq(proceeding.notaryId, identifier.id));
     } else {
       query = query.innerJoin(
         participants,
-        eq(proceedings.id, participants.proceedingId),
+        eq(proceeding.id, participants.proceedingId),
       );
       whereConditions.push(eq(participants.userId, identifier.id));
     }
 
     if (filterProceedingNumber) {
       whereConditions.push(
-        like(proceedings.proceedingsNumber, `%${filterProceedingNumber}%`),
+        like(proceeding.proceedingNumber, `%${filterProceedingNumber}%`),
       );
     }
 
@@ -152,42 +150,42 @@ export class ProceedingsRepository {
       const [deceasedFirstName, deceasedLastName] =
         filterDeceasedName.split(' ');
       whereConditions.push(
-        like(proceedings.deceasedFirstName, `%${deceasedFirstName ?? ''}%`),
-        like(proceedings.deceasedLastName, `%${deceasedLastName ?? ''}%`),
+        like(proceeding.deceasedFirstName, `%${deceasedFirstName ?? ''}%`),
+        like(proceeding.deceasedLastName, `%${deceasedLastName ?? ''}%`),
       );
     }
 
     if (filterStartDate) {
       const normalizedStartDate = new Date(filterStartDate);
       whereConditions.push(
-        gte(proceedings.startDate, startOfDay(normalizedStartDate)),
-        lte(proceedings.startDate, endOfDay(normalizedStartDate)),
+        gte(proceeding.startDate, startOfDay(normalizedStartDate)),
+        lte(proceeding.startDate, endOfDay(normalizedStartDate)),
       );
     }
 
     if (filterPhaseId) {
-      whereConditions.push(eq(proceedings.phaseId, filterPhaseId));
+      whereConditions.push(eq(proceeding.phaseId, filterPhaseId));
     }
 
     if (filterStatus && filterStatus === 'Ukončené') {
-      whereConditions.push(eq(proceedings.phaseId, 4));
+      whereConditions.push(eq(proceeding.phaseId, 4));
     } else if (filterStatus && filterStatus === 'Probíhající') {
-      whereConditions.push(lte(proceedings.phaseId, 3));
+      whereConditions.push(lte(proceeding.phaseId, 3));
     }
 
     query.where(and(...whereConditions));
 
     if (sortOrder === 'desc') {
-      query.orderBy(desc(proceedings.proceedingsNumber));
+      query.orderBy(desc(proceeding.proceedingNumber));
     } else {
-      query.orderBy(asc(proceedings.proceedingsNumber));
+      query.orderBy(asc(proceeding.proceedingNumber));
     }
 
     const allProceedings = await query.execute();
     const limitProceedings = await query.limit(pageSize).offset(offset);
 
     return {
-      data: limitProceedings as ProceedingsDTO[],
+      data: limitProceedings as ProceedingDTO[],
       total: allProceedings.length,
     };
   }
@@ -202,7 +200,7 @@ export class ProceedingsRepository {
     filterStartDate?: string,
     filterPhaseId?: number,
     filterStatus?: string,
-  ): Promise<{ data: ProceedingsDTO[]; total: number }> {
+  ): Promise<{ data: ProceedingDTO[]; total: number }> {
     return this.fetchProceedings(
       { type: 'notary', id: notaryId },
       currentPage,
@@ -226,7 +224,7 @@ export class ProceedingsRepository {
     filterStartDate?: string,
     filterPhaseId?: number,
     filterStatus?: string,
-  ): Promise<{ data: ProceedingsDTO[]; total: number }> {
+  ): Promise<{ data: ProceedingDTO[]; total: number }> {
     return this.fetchProceedings(
       { type: 'participant', id: userId },
       currentPage,
@@ -242,14 +240,14 @@ export class ProceedingsRepository {
 
   async updateProceeding(
     proceedingId: number,
-    data: Partial<CreateProceedingsDTO>,
-  ): Promise<ProceedingsDTO | null> {
+    data: Partial<CreateProceedingDTO>,
+  ): Promise<ProceedingDTO | null> {
     await this.db
-      .update(proceedings)
+      .update(proceeding)
       .set(data)
-      .where(eq(proceedings.id, proceedingId));
+      .where(eq(proceeding.id, proceedingId));
 
-    const updatedProceeding = await this.getProceedingsById(proceedingId);
+    const updatedProceeding = await this.getProceedingById(proceedingId);
 
     if (!updatedProceeding) {
       throw new Error('Proceeding not found or update failed');
@@ -259,9 +257,9 @@ export class ProceedingsRepository {
   }
 
   async deleteProceeding(proceedingId: number): Promise<void> {
-    await this.db.delete(proceedings).where(eq(proceedings.id, proceedingId));
+    await this.db.delete(proceeding).where(eq(proceeding.id, proceedingId));
 
-    const deletedProceeding = await this.getProceedingsById(proceedingId);
+    const deletedProceeding = await this.getProceedingById(proceedingId);
     if (deletedProceeding) {
       throw new Error('Delete failed: proceeding still exists');
     }
@@ -307,9 +305,9 @@ export class ProceedingsRepository {
   async isUserNotaryInProceeding(userId: number, proceedingId: number) {
     return await this.db
       .select()
-      .from(proceedings)
+      .from(proceeding)
       .where(
-        and(eq(proceedings.notaryId, userId), eq(proceedings.id, proceedingId)),
+        and(eq(proceeding.notaryId, userId), eq(proceeding.id, proceedingId)),
       )
       .then((result) => result.length > 0);
   }

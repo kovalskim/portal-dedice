@@ -7,28 +7,28 @@ import {
 } from '@backend/graphql/errors';
 import {
   PaginatedProceedings,
-  Proceedings,
-} from '@backend/graphql/modules/proceedings/create/proceedingsType';
+  Proceeding,
+} from '@backend/graphql/modules/proceedings/create/proceedingType';
 import { Participant } from '@backend/graphql/modules/proceedings/participantType';
 import { UserRole } from '@backend/graphql/modules/user/roleType';
 import { User } from '@backend/graphql/modules/user/userType';
 import { CustomContext } from '@backend/types/types';
 
-@Resolver(() => Proceedings)
+@Resolver(() => Proceeding)
 export class GetProceedingsResolver {
   @FieldResolver(() => User)
   async notary(
-    @Root() proceeding: Proceedings,
+    @Root() proceeding: Proceeding,
     @Ctx() { usersRepository }: CustomContext,
   ): Promise<User> {
     return usersRepository.getUserById(proceeding.notaryId);
   }
 
-  @Query(() => Proceedings, { nullable: true })
+  @Query(() => Proceeding, { nullable: true })
   async getProceeding(
     @Arg('id') id: number,
     @Ctx() { authUser, proceedingsRepository }: CustomContext,
-  ): Promise<Proceedings | null> {
+  ): Promise<Proceeding | null> {
     if (!authUser) {
       throw new GraphQLError('Unauthorized', {
         extensions: {
@@ -49,9 +49,9 @@ export class GetProceedingsResolver {
       throw unauthorizedError('Unauthorized to access the proceeding detail');
     }
 
-    const proceedings = await proceedingsRepository.getProceedingsById(id);
+    const proceeding = await proceedingsRepository.getProceedingById(id);
 
-    if (!proceedings) {
+    if (!proceeding) {
       throw new GraphQLError('Proceedings not found', {
         extensions: {
           code: 'NOT_FOUND',
@@ -60,10 +60,7 @@ export class GetProceedingsResolver {
     }
 
     return {
-      ...proceedings,
-      deceasedDateOfDeath: proceedings.deceasedDateOfDeath,
-      deceasedDateOfBirth: proceedings.deceasedDateOfBirth,
-      startDate: proceedings.startDate,
+      ...proceeding,
     };
   }
 

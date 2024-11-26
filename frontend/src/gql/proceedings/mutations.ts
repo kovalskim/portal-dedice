@@ -3,14 +3,14 @@ import { gql } from '@apollo/client';
 export type CreateProceedingsResponse = {
   createProceedings: {
     id: string;
-    proceedingsNumber: string;
+    proceedingNumber: string;
   };
 };
 
 export type UpdateProceedingsResponse = {
   updateProceedings: {
     id: string;
-    proceedingsNumber: string;
+    proceedingNumber: string;
   };
 };
 
@@ -28,7 +28,7 @@ export const CREATE_PROCEEDING = gql`
   mutation CreateProceedings($data: NewProceedingInput!) {
     createProceedings(data: $data) {
       id
-      proceedingsNumber
+      proceedingNumber
     }
   }
 `;
@@ -37,7 +37,7 @@ export const UPDATE_PROCEEDING = gql`
   mutation Mutation($data: DeceasedPersonInput!, $id: Float!) {
     updateProceedings(data: $data, id: $id) {
       id
-      proceedingsNumber
+      proceedingNumber
     }
   }
 `;

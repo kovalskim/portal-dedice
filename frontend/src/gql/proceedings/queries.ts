@@ -23,7 +23,7 @@ export const GET_ALL_PROCEEDINGS = gql`
     ) {
       data {
         id
-        proceedingsNumber
+        proceedingNumber
         deceasedFirstName
         deceasedLastName
         deceasedDateOfBirth
@@ -43,7 +43,7 @@ export const GET_ALL_PROCEEDINGS = gql`
 
 export type Proceeding = {
   id: number;
-  proceedingsNumber: string;
+  proceedingNumber: string;
   deceasedFirstName: string;
   deceasedLastName: string;
   deceasedDateOfDeath?: string;
@@ -87,7 +87,7 @@ export const GET_PROCEEDING_BY_ID = gql`
         lastname
         afterTitle
       }
-      proceedingsNumber
+      proceedingNumber
       deceasedFirstName
       deceasedLastName
       deceasedDateOfDeath

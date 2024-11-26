@@ -5,12 +5,13 @@ import {
   notFoundError,
   unauthorizedError,
 } from '@backend/graphql/errors';
-import { Proceedings } from '@backend/graphql/modules/proceedings/create/proceedingsType';
-import { SendEmailRequest } from '@backend/graphql/modules/sendBulkEmail/sendBulkEmailType';
+import { Proceeding } from '@backend/graphql/modules/proceedings/create/proceedingType';
 import { sendEmailToParticipant } from '@backend/services/emailService/emailService';
 import { CustomContext } from '@backend/types/types';
 
-@Resolver(() => Proceedings)
+import { SendEmailRequest } from './sendBulkEmailType';
+
+@Resolver(() => Proceeding)
 export class SendBulkEmailResolver {
   @Mutation(() => String)
   async sendMessageToParticipants(
@@ -21,15 +22,15 @@ export class SendBulkEmailResolver {
       throw unauthorizedError('Unauthorized');
     }
 
-    const proceedings = await proceedingsRepository.getProceedingsById(
+    const proceeding = await proceedingsRepository.getProceedingById(
       input.proceedingsId,
     );
-    if (!proceedings) {
+    if (!proceeding) {
       throw notFoundError('Proceedings not found');
     }
 
     // validate that user is in proceeding and has correct rights
-    if (proceedings.notaryId !== authUser.id) {
+    if (proceeding.notaryId !== authUser.id) {
       throw forbiddenError('Forbidden');
     }
 
@@ -52,7 +53,7 @@ export class SendBulkEmailResolver {
       sendEmailToParticipant(
         input.title,
         input.message,
-        proceedings.id,
+        proceeding.id,
         receiver,
       );
     });
