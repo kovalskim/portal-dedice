@@ -63,8 +63,8 @@ type Mutation {
   acceptParticipantInvitation(token: String!): Float!
   changePassword(newPassword: String!, oldPassword: String!, userId: String!): AuthInfo!
   createMessage(proceedingId: Float!, text: String!): Message!
+  createProceeding(data: NewProceedingInput!): Proceeding!
   deleteFile(id: String!): String!
-  createProceedings(data: NewProceedingInput!): Proceedings!
   deleteProceedings(id: Float!): Boolean!
   getSignedUrl(filename: String!, filetype: String!, proceedingId: String!): SignedUrl!
   identifyNotary(data: DeceasedPersonInput!): Schedule!
@@ -75,7 +75,7 @@ type Mutation {
   sendMessageToParticipants(data: SendEmailRequest!): String!
   signIn(email: String!, password: String!): SignInInfo!
   signUp(email: String!, firstname: String!, lastname: String!, password: String!): AuthInfo!
-  updateProceedings(data: DeceasedPersonInput!, id: Float!): Proceedings!
+  updateProceedings(data: DeceasedPersonInput!, id: Float!): Proceeding!
   updateUser(afterTitle: String, beforeTitle: String, firstname: String!, lastname: String!, userId: String!): User!
   updateUserPreferences(emailNotifications: Boolean!, userId: String!): User!
   verifyEmail(token: String!): String!
@@ -137,7 +137,7 @@ type Proceeding {
   notaryId: Float!
   phaseId: Float!
   phaseTitle: String
-  proceedingsNumber: String!
+  proceedingNumber: String!
   startDate: DateTimeISO!
 }
 

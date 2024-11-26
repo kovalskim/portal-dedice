@@ -22,14 +22,15 @@ export const DeceasedPersonForm = ({
   onSubmit,
   loadDefaultFrom,
 }: DeceasedInfoFormProps) => {
-  const { validDistrictNames, error } = useValidDistricts();
+  const { validDistrictNames } = useValidDistricts();
 
   const schemaWithDistrictValidation = deceasedInfoSchema.refine(
     (data) => {
-      return error || validDistrictNames.includes(data.district);
+      return validDistrictNames.includes(data.district);
     },
     {
       message: 'Zadejte platný název okresu či městské části',
+      path: ['district'],
     },
   );
 
