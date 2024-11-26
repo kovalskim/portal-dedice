@@ -1,6 +1,7 @@
 export enum Routes {
   home = '/',
   educator = '/nachytrovadlo',
+  notaryPaymentCalculation = '/notary-payment-calculation',
   logIn = '/auth/login',
   forgottenPassword = '/auth/forgotten-password',
   newPassword = '/auth/new-password',

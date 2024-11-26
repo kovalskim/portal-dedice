@@ -24,6 +24,7 @@ import { pubSub } from '@backend/graphql/modules/chat/PubSub';
 import { DistrictResolver } from '@backend/graphql/modules/educator/DistrictResolver';
 import { ScheduleResolver } from '@backend/graphql/modules/educator/ScheduleResolver';
 import { FileResolver } from '@backend/graphql/modules/file/fileResolver';
+import { NotaryPaymentCalculationResolver } from '@backend/graphql/modules/notaryPaymentCalculation/NotaryPaymentCalculationResolver';
 import { AcceptParticipantInvitationResolver } from '@backend/graphql/modules/participantInvitation/AcceptParticipantInvitationResolver';
 import { CreateProceedingsResolver } from '@backend/graphql/modules/proceedings/create/CreateProceedingsResolver';
 import { DeleteProceedingsResolver } from '@backend/graphql/modules/proceedings/delete/DeleteProceedingsResolver';
@@ -39,6 +40,7 @@ import { ParticipantInvitationsRepository } from '@backend/repository/Participan
 import { ParticipantsRepository } from '@backend/repository/ParticipantsRepository';
 import { ProceedingsRepository } from '@backend/repository/ProceedingsRepository';
 import { UsersRepository } from '@backend/repository/UsersRepository';
+import { NotaryPaymentCalculationService } from '@backend/services/NotaryPaymentCalculationService/NotaryPaymentCalculationService';
 import { ParticipantValidationService } from '@backend/services/ParticipantValidationService/ParticipantValidationService';
 import { CustomContext } from '@backend/types/types';
 
@@ -60,6 +62,7 @@ const init = async () => {
       SendMessageResolver,
       AcceptParticipantInvitationResolver,
       FileResolver,
+      NotaryPaymentCalculationResolver,
     ],
     emitSchemaFile: true,
     pubSub: pubSub,
@@ -123,6 +126,7 @@ const init = async () => {
       participantValidationService: new ParticipantValidationService(
         proceedingRepository,
       ),
+      notaryPaymentCalculationService: new NotaryPaymentCalculationService(),
     };
   };
 

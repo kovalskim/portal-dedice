@@ -21,9 +21,10 @@ import { ForgottenPasswordPage } from '@frontend/pages/authPages/ForgottenPasswo
 import { NewPasswordPage } from '@frontend/pages/authPages/NewPasswordPage.tsx';
 import { EducatorPage } from '@frontend/pages/educator/EducatorPages.tsx';
 import { ErrorPage } from '@frontend/pages/errorPages/ErrorPage.tsx';
+import { NotaryPaymentCalculationPage } from '@frontend/pages/notaryPaymentCalculation/NotaryPaymentCalculationPage.tsx';
 import { ProceedingChat } from '@frontend/pages/proceeding/chat/ProceedingChat.tsx';
 import { FilesPage } from '@frontend/pages/proceeding/files/FilesPage.tsx';
-import { ProceedingsParticipants } from '@frontend/pages/proceeding/participants/ProceedingsParticipants.tsx';
+import { ProceedingsParticipants } from '@frontend/pages/proceeding/participants/ProceedingsParticipants';
 import { ProfilePage } from '@frontend/pages/profile/ProfilePage.tsx';
 import { ProtectedRoute } from '@frontend/routes/ProtectedRoute.tsx';
 import { Routes } from '@frontend/routes/routes.ts';
@@ -35,6 +36,17 @@ export const getRouter = () => {
         <Route element={<MainLayout />}>
           <Route errorElement={<ErrorPage />}>
             <Route path={Routes.home} element={<HomePage />} />
+            <Route path={Routes.logIn} element={<LogInPage />} />
+            <Route path={Routes.educator} element={<EducatorPage />} />
+            <Route
+              path={Routes.notaryPaymentCalculation}
+              element={<NotaryPaymentCalculationPage />}
+            />
+            <Route
+              path={Routes.forgottenPassword}
+              element={<ForgottenPasswordPage />}
+            />
+            <Route path={Routes.newPassword} element={<NewPasswordPage />} />
             <Route path={Routes.signUp} element={<SignUpPage />} />
             <Route
               path={Routes.emailConfirmation}

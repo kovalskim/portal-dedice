@@ -6,6 +6,7 @@ import { ParticipantInvitationsRepository } from '@backend/repository/Participan
 import { ParticipantsRepository } from '@backend/repository/ParticipantsRepository';
 import { ProceedingsRepository } from '@backend/repository/ProceedingsRepository';
 import { UsersRepository } from '@backend/repository/UsersRepository';
+import { NotaryPaymentCalculationService } from '@backend/services/NotaryPaymentCalculationService/NotaryPaymentCalculationService';
 import { ParticipantValidationService } from '@backend/services/ParticipantValidationService/ParticipantValidationService';
 
 export type CustomContext = {
@@ -18,6 +19,7 @@ export type CustomContext = {
   participantInvitationsRepository: ParticipantInvitationsRepository;
   participantsRepository: ParticipantsRepository;
   participantValidationService: ParticipantValidationService;
+  notaryPaymentCalculationService: NotaryPaymentCalculationService;
 };
 
 export type JWTPayload = {

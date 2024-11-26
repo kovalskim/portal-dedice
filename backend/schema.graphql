@@ -69,6 +69,7 @@ type Mutation {
   getSignedUrl(filename: String!, filetype: String!, proceedingId: String!): SignedUrl!
   identifyNotary(data: DeceasedPersonInput!): Schedule!
   newPassword(newPassword: String!, token: String!): String!
+  notaryPaymentCalculation(estateTotalValue: Float!): NotaryPaymentCalculation!
   restorePassword(email: String!): String!
   saveFile(alias: String!, key: String!, proceedingId: String!, type: String!): String!
   sendMessageToParticipants(data: SendEmailRequest!): String!
@@ -88,6 +89,12 @@ type NewMessageNotification {
 input NewProceedingInput {
   deceasedPersonInfo: DeceasedPersonInput!
   narratorContactInfo: ParticipantInput!
+}
+
+type NotaryPaymentCalculation {
+  fee: Float!
+  total: Float!
+  vat: Float!
 }
 
 type PaginatedProceedings {
@@ -135,7 +142,6 @@ type Proceedings {
 }
 
 type Query {
-  _empty: String!
   allMessagesByProceedingId(proceedingId: Float!): [Message!]!
   districts: [District!]!
   filesByProceeding(proceedingId: Float!): [File!]!
