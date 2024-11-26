@@ -75,9 +75,9 @@ export const UploadFileModal = ({
   useEffect(() => {
     if (getSignedUrlError || saveFileError) {
       showToast({
-        title: 'Nepodařilo se načíst účastníky řízení',
+        title: 'Nepodařilo se uložit soubor',
         description:
-          'Při načítání účastníků dědického řízení se vyskytla chyba.',
+          'Při ukládání souboru k dědickému řízení se vyskytla chyba.',
         status: 'error',
       });
     }
