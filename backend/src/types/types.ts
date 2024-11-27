@@ -6,6 +6,9 @@ import { ParticipantInvitationsRepository } from '@backend/repository/Participan
 import { ParticipantsRepository } from '@backend/repository/ParticipantsRepository';
 import { ProceedingsRepository } from '@backend/repository/ProceedingsRepository';
 import { UsersRepository } from '@backend/repository/UsersRepository';
+import { AwsService } from '@backend/services/AwsService/AwsService';
+import { EmailService } from '@backend/services/EmailService/EmailService';
+import { FileService } from '@backend/services/FileService/FileService';
 import { NotaryPaymentCalculationService } from '@backend/services/NotaryPaymentCalculationService/NotaryPaymentCalculationService';
 import { ParticipantValidationService } from '@backend/services/ParticipantValidationService/ParticipantValidationService';
 
@@ -19,7 +22,10 @@ export type CustomContext = {
   participantInvitationsRepository: ParticipantInvitationsRepository;
   participantsRepository: ParticipantsRepository;
   participantValidationService: ParticipantValidationService;
+  awsService: AwsService;
+  emailService: EmailService;
   notaryPaymentCalculationService: NotaryPaymentCalculationService;
+  fileService: FileService;
 };
 
 export type JWTPayload = {

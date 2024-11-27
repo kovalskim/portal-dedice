@@ -10,7 +10,7 @@ import {
 } from 'type-graphql';
 
 import { courts, districts, schedules } from '@backend/db/schema';
-import { courtNotFoundError } from '@backend/graphql/errors';
+import { courtNotFoundError } from '@backend/errors/graphqlErrors';
 import { Court } from '@backend/graphql/modules/educator/CourtType';
 import { DeceasedPersonInput } from '@backend/graphql/modules/educator/DeceasedPersonInput';
 import { Schedule } from '@backend/graphql/modules/educator/ScheduleType';

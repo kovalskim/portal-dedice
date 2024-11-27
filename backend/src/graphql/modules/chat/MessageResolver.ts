@@ -9,7 +9,7 @@ import {
   Subscription,
 } from 'type-graphql';
 
-import { serverError, unauthorizedError } from '@backend/graphql/errors';
+import { serverError, unauthorizedError } from '@backend/errors/graphqlErrors';
 import {
   Message,
   NewMessageNotification,
@@ -19,7 +19,6 @@ import {
   pubSub,
 } from '@backend/graphql/modules/chat/PubSub';
 import { User } from '@backend/graphql/modules/user/userType';
-import { sendNewMessageNotification } from '@backend/services/emailService/emailService';
 import { CustomContext } from '@backend/types/types';
 import {
   Authenticated,
@@ -79,6 +78,7 @@ export class MessageResolver {
       messageRepository,
       usersRepository,
       participantValidationService,
+      emailService,
     }: AuthenticatedContext,
   ): Promise<Message> {
     if (
@@ -115,7 +115,7 @@ export class MessageResolver {
         participant.user.id !== authUser.id &&
         participant.user.emailNotifications
       ) {
-        sendNewMessageNotification(
+        await emailService.sendNewMessageNotification(
           participant.user.email,
           `${newMessage.user.firstname} ${newMessage.user.lastname}`,
           newMessage.text,
@@ -130,7 +130,7 @@ export class MessageResolver {
     if (proceeding.notaryId !== authUser.id) {
       const notary = await usersRepository.getUserById(proceeding.notaryId);
       if (notary && notary.emailNotifications) {
-        sendNewMessageNotification(
+        await emailService.sendNewMessageNotification(
           notary.email,
           `${newMessage.user.firstname} ${newMessage.user.lastname}`,
           newMessage.text,

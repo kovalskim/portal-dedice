@@ -1,14 +1,12 @@
 import { Arg, Ctx, Mutation, Resolver } from 'type-graphql';
 
-import { forbiddenError, notFoundError } from '@backend/graphql/errors';
+import { forbiddenError, notFoundError } from '@backend/errors/graphqlErrors';
 import { Proceeding } from '@backend/graphql/modules/proceedings/create/proceedingType';
-import { sendEmailToParticipant } from '@backend/services/emailService/emailService';
+import { SendEmailRequest } from '@backend/graphql/modules/sendBulkEmail/sendBulkEmailType';
 import {
   Authenticated,
   AuthenticatedContext,
 } from '@backend/utils/decorators/Authenticated';
-
-import { SendEmailRequest } from './sendBulkEmailType';
 
 @Resolver(() => Proceeding)
 export class SendBulkEmailResolver {
@@ -16,7 +14,8 @@ export class SendBulkEmailResolver {
   @Authenticated()
   async sendMessageToParticipants(
     @Arg('data') input: SendEmailRequest,
-    @Ctx() { authUser, proceedingsRepository }: AuthenticatedContext,
+    @Ctx()
+    { authUser, proceedingsRepository, emailService }: AuthenticatedContext,
   ): Promise<string> {
     const proceeding = await proceedingsRepository.getProceedingById(
       input.proceedingsId,
@@ -46,7 +45,7 @@ export class SendBulkEmailResolver {
 
     // send email to all receivers
     input.receivers.forEach((receiver) => {
-      sendEmailToParticipant(
+      emailService.sendEmailToParticipant(
         input.title,
         input.message,
         proceeding.id,

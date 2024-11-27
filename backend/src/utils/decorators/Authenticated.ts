@@ -1,6 +1,6 @@
 import { createMethodMiddlewareDecorator } from 'type-graphql';
 
-import { unauthenticatedError } from '@backend/graphql/errors';
+import { AppError } from '@backend/errors/AppError';
 import { CustomContext } from '@backend/types/types';
 
 export type AuthenticatedContext = Omit<CustomContext, 'authUser'> & {
@@ -11,7 +11,7 @@ export const Authenticated = (): MethodDecorator => {
   return createMethodMiddlewareDecorator<CustomContext>(
     async ({ context }, next) => {
       if (!context.authUser) {
-        throw unauthenticatedError('Unauthenticated');
+        throw new AppError('UNAUTHENTICATED');
       }
 
       (context as AuthenticatedContext).authUser = context.authUser;

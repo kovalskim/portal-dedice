@@ -8,17 +8,21 @@ import {
   expressMiddleware,
 } from '@apollo/server/express4';
 import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer';
+import { S3Client } from '@aws-sdk/client-s3';
 import { addMocksToSchema } from '@graphql-tools/mock';
 import cors from 'cors';
 import express from 'express';
+import { applyMiddleware } from 'graphql-middleware';
 import graphqlUploadExpress from 'graphql-upload/graphqlUploadExpress.js';
 import { useServer } from 'graphql-ws/lib/use/ws';
 import { createServer } from 'http';
+import nodemailer from 'nodemailer';
 import { buildSchema } from 'type-graphql';
 import { WebSocketServer } from 'ws';
 
 import { MOCKS, PORT } from '@backend/config';
 import { getConnection } from '@backend/db/db';
+import { errorMiddleware } from '@backend/errors/errorMiddleware';
 import { MessageResolver } from '@backend/graphql/modules/chat/MessageResolver';
 import { pubSub } from '@backend/graphql/modules/chat/PubSub';
 import { DistrictResolver } from '@backend/graphql/modules/educator/DistrictResolver';
@@ -40,6 +44,9 @@ import { ParticipantInvitationsRepository } from '@backend/repository/Participan
 import { ParticipantsRepository } from '@backend/repository/ParticipantsRepository';
 import { ProceedingsRepository } from '@backend/repository/ProceedingsRepository';
 import { UsersRepository } from '@backend/repository/UsersRepository';
+import { AwsService } from '@backend/services/AwsService/AwsService';
+import { EmailService } from '@backend/services/EmailService/EmailService';
+import { FileService } from '@backend/services/FileService/FileService';
 import { NotaryPaymentCalculationService } from '@backend/services/NotaryPaymentCalculationService/NotaryPaymentCalculationService';
 import { ParticipantValidationService } from '@backend/services/ParticipantValidationService/ParticipantValidationService';
 import { CustomContext } from '@backend/types/types';
@@ -75,13 +82,15 @@ const init = async () => {
 
   const serverCleanup = useServer({ schema }, wsServer);
 
+  const schemaWithMiddleware = applyMiddleware(schema, errorMiddleware);
+
   const server = new ApolloServer({
     schema: MOCKS
       ? addMocksToSchema({
           schema,
           resolvers: mockResolvers,
         })
-      : schema,
+      : schemaWithMiddleware,
     plugins: [
       ApolloServerPluginDrainHttpServer({ httpServer }),
       {
@@ -110,7 +119,22 @@ const init = async () => {
       drizzle?.connection.end();
     });
 
+    const s3Client = new S3Client({ region: process.env.AWS_REGION });
+    const transporter = nodemailer.createTransport({
+      service: 'Gmail',
+      auth: {
+        user: process.env.GMAIL_USER || '',
+        pass: process.env.GMAIL_PASS || '',
+      },
+    });
+
     const proceedingRepository = new ProceedingsRepository(drizzle.db);
+    const filesRepository = new FilesRepository(drizzle.db);
+
+    const participantValidationService = new ParticipantValidationService(
+      proceedingRepository,
+    );
+    const awsService = new AwsService(s3Client);
 
     return {
       db: drizzle.db,
@@ -122,11 +146,17 @@ const init = async () => {
         drizzle.db,
       ),
       participantsRepository: new ParticipantsRepository(drizzle.db),
-      filesRepository: new FilesRepository(drizzle.db),
-      participantValidationService: new ParticipantValidationService(
-        proceedingRepository,
-      ),
+      filesRepository: filesRepository,
+      participantValidationService: participantValidationService,
+      awsService: awsService,
       notaryPaymentCalculationService: new NotaryPaymentCalculationService(),
+      emailService: new EmailService(transporter),
+      fileService: new FileService(
+        authUser,
+        participantValidationService,
+        filesRepository,
+        awsService,
+      ),
     };
   };
 

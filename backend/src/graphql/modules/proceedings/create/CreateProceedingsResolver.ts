@@ -5,7 +5,6 @@ import { NewProceedingInput } from '@backend/graphql/modules/proceedings/create/
 import { Proceeding } from '@backend/graphql/modules/proceedings/create/proceedingType';
 import { UserRole } from '@backend/graphql/modules/user/roleType';
 import { createToken } from '@backend/libs/jwt';
-import { sendNarratorInvitationEmail } from '@backend/services/emailService/emailService';
 import {
   Authenticated,
   AuthenticatedContext,
@@ -24,6 +23,7 @@ export class CreateProceedingsResolver {
       usersRepository,
       proceedingsRepository,
       participantInvitationsRepository,
+      emailService,
     }: AuthenticatedContext,
   ): Promise<Proceeding> {
     try {
@@ -73,7 +73,7 @@ export class CreateProceedingsResolver {
       expiresAt: new Date(),
     });
 
-    await sendNarratorInvitationEmail(
+    await emailService.sendNarratorInvitationEmail(
       input.narratorContactInfo.email!,
       input.narratorContactInfo.firstname!,
       input.narratorContactInfo.lastname!,

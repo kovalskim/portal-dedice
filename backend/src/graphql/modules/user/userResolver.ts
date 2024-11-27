@@ -16,7 +16,7 @@ import {
   unauthorizedError,
   validationError,
   verificationError,
-} from '@backend/graphql/errors';
+} from '@backend/errors/graphqlErrors';
 import { Role, UserRole } from '@backend/graphql/modules/user/roleType';
 import {
   AuthInfo,
@@ -24,10 +24,6 @@ import {
   User,
 } from '@backend/graphql/modules/user/userType';
 import { createToken, parseAndVerifyJWT } from '@backend/libs/jwt';
-import {
-  sendPasswordResetEmail,
-  sendVerificationEmail,
-} from '@backend/services/emailService/emailService';
 import { type CustomContext } from '@backend/types/types';
 import {
   Authenticated,
@@ -191,7 +187,7 @@ export class UserResolver {
     @Arg('password') password: string,
     @Arg('firstname') firstname: string,
     @Arg('lastname') lastname: string,
-    @Ctx() { usersRepository }: CustomContext,
+    @Ctx() { usersRepository, emailService }: CustomContext,
   ): Promise<AuthInfo> {
     /* VALIDATION */
     try {
@@ -243,7 +239,7 @@ export class UserResolver {
     });
 
     /* SEND EMAIL */
-    sendVerificationEmail(email, verificationToken);
+    await emailService.sendVerificationEmail(email, verificationToken);
 
     /* ASSEMBLE MUTATION RESPONSE */
     const token = createToken({ id: userId });
@@ -301,7 +297,7 @@ export class UserResolver {
   @Mutation(() => String)
   async restorePassword(
     @Arg('email') email: string,
-    @Ctx() { usersRepository }: CustomContext,
+    @Ctx() { usersRepository, emailService }: CustomContext,
   ): Promise<string> {
     const user = await usersRepository.getUserByEmail(email);
 
@@ -320,7 +316,7 @@ export class UserResolver {
         reason: 'password_reset',
       });
 
-      sendPasswordResetEmail(email, verificationToken);
+      await emailService.sendPasswordResetEmail(email, verificationToken);
     }
 
     return 'E-mail successfully sent';

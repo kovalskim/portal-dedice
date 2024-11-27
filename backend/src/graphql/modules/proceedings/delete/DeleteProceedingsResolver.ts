@@ -1,7 +1,7 @@
 import { GraphQLError } from 'graphql';
 import { Arg, Ctx, Mutation, Resolver } from 'type-graphql';
 
-import { unauthorizedError } from '@backend/graphql/errors';
+import { unauthorizedError } from '@backend/errors/graphqlErrors';
 import { Proceeding } from '@backend/graphql/modules/proceedings/create/proceedingType';
 import {
   Authenticated,

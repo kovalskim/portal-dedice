@@ -1,7 +1,7 @@
 import { GraphQLError } from 'graphql';
 import { Arg, Ctx, FieldResolver, Query, Resolver, Root } from 'type-graphql';
 
-import { unauthorizedError } from '@backend/graphql/errors';
+import { unauthorizedError } from '@backend/errors/graphqlErrors';
 import {
   PaginatedProceedings,
   Proceeding,
