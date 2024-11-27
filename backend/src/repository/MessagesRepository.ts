@@ -2,8 +2,7 @@ import { eq } from 'drizzle-orm';
 import { MySql2Database } from 'drizzle-orm/mysql2';
 
 import { messages, users } from '@backend/db/schema';
-
-import { UserDTO } from './UsersRepository';
+import { UserDTO } from '@backend/repository/UsersRepository';
 
 interface MessageDTO {
   id: number;

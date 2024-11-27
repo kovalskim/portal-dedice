@@ -10,8 +10,7 @@ import {
   users,
 } from '@backend/db/schema';
 import { UserRole } from '@backend/graphql/modules/user/roleType';
-
-import { UserDTO } from './UsersRepository';
+import { UserDTO } from '@backend/repository/UsersRepository';
 
 export interface ProceedingDTO {
   id: number;
