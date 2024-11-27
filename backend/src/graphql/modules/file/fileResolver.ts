@@ -3,7 +3,6 @@ import { Arg, Ctx, Mutation, Query, Resolver } from 'type-graphql';
 import {
   notFoundError,
   serverError,
-  unauthenticatedError,
   unauthorizedError,
 } from '@backend/graphql/errors';
 import { File } from '@backend/graphql/modules/file/fileType';
@@ -13,20 +12,24 @@ import {
   getFilePath,
   getUploadUrl,
 } from '@backend/services/awsService/awsService';
-import { CustomContext } from '@backend/types/types';
+import {
+  Authenticated,
+  AuthenticatedContext,
+} from '@backend/utils/decorators/Authenticated';
 
 @Resolver(() => File)
 export class FileResolver {
   @Query(() => [File])
+  @Authenticated()
   async filesByProceeding(
     @Arg('proceedingId') proceedingId: number,
     @Ctx()
-    { authUser, filesRepository, participantValidationService }: CustomContext,
+    {
+      authUser,
+      filesRepository,
+      participantValidationService,
+    }: AuthenticatedContext,
   ): Promise<File[]> {
-    if (!authUser) {
-      throw unauthenticatedError('Unauthenticated');
-    }
-
     if (
       !(await participantValidationService.isUserParticipantOrNotaryOfProceeding(
         authUser.id,
@@ -49,15 +52,16 @@ export class FileResolver {
   }
 
   @Mutation(() => String)
+  @Authenticated()
   async deleteFile(
     @Arg('id') stringId: string,
     @Ctx()
-    { authUser, filesRepository, participantValidationService }: CustomContext,
+    {
+      authUser,
+      filesRepository,
+      participantValidationService,
+    }: AuthenticatedContext,
   ): Promise<string> {
-    if (!authUser) {
-      throw unauthenticatedError('Unauthenticated');
-    }
-
     const id = parseInt(stringId, 10);
 
     const file = await filesRepository.getFileById(id);
@@ -91,15 +95,13 @@ export class FileResolver {
   }
 
   @Mutation(() => SignedUrl)
+  @Authenticated()
   async getSignedUrl(
     @Arg('proceedingId') proceedingStringId: string,
     @Arg('filename') filename: string,
     @Arg('filetype') filetype: string,
-    @Ctx() { authUser, participantValidationService }: CustomContext,
+    @Ctx() { authUser, participantValidationService }: AuthenticatedContext,
   ): Promise<SignedUrl> {
-    if (!authUser) {
-      throw unauthenticatedError('Unauthenticated');
-    }
     const proceedingId = parseInt(proceedingStringId, 10);
 
     if (
@@ -118,18 +120,19 @@ export class FileResolver {
   }
 
   @Mutation(() => String)
+  @Authenticated()
   async saveFile(
     @Arg('key') key: string,
     @Arg('alias') alias: string,
     @Arg('proceedingId') proceedingStringId: string,
     @Arg('type') type: string,
     @Ctx()
-    { authUser, filesRepository, participantValidationService }: CustomContext,
+    {
+      authUser,
+      filesRepository,
+      participantValidationService,
+    }: AuthenticatedContext,
   ): Promise<string> {
-    if (!authUser) {
-      throw unauthenticatedError('Unauthenticated');
-    }
-
     const proceedingId = parseInt(proceedingStringId, 10);
 
     if (

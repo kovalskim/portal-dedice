@@ -29,6 +29,10 @@ import {
   sendVerificationEmail,
 } from '@backend/services/emailService/emailService';
 import { type CustomContext } from '@backend/types/types';
+import {
+  Authenticated,
+  AuthenticatedContext,
+} from '@backend/utils/decorators/Authenticated';
 
 import { signUpSchema } from './userSchema';
 
@@ -58,18 +62,15 @@ export class UserResolver {
   }
 
   @Mutation(() => User)
+  @Authenticated()
   async updateUser(
     @Arg('userId') stringId: string,
     @Arg('beforeTitle', { nullable: true }) beforeTitle: string,
     @Arg('firstname') firstname: string,
     @Arg('lastname') lastname: string,
     @Arg('afterTitle', { nullable: true }) afterTitle: string,
-    @Ctx() { authUser, usersRepository }: CustomContext,
+    @Ctx() { authUser, usersRepository }: AuthenticatedContext,
   ): Promise<User> {
-    if (!authUser) {
-      throw unauthenticatedError('Unauthenticated');
-    }
-
     const userId = parseInt(stringId);
     const user = await usersRepository.getUserById(userId);
 
@@ -93,10 +94,11 @@ export class UserResolver {
   }
 
   @Mutation(() => User)
+  @Authenticated()
   async updateUserPreferences(
     @Arg('userId') stringId: string,
     @Arg('emailNotifications') emailNotifications: boolean,
-    @Ctx() { authUser, usersRepository }: CustomContext,
+    @Ctx() { authUser, usersRepository }: AuthenticatedContext,
   ): Promise<User> {
     if (!authUser) {
       throw unauthenticatedError('Unauthenticated');

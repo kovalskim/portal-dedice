@@ -6,12 +6,16 @@ import { Proceeding } from '@backend/graphql/modules/proceedings/create/proceedi
 import { UserRole } from '@backend/graphql/modules/user/roleType';
 import { createToken } from '@backend/libs/jwt';
 import { sendNarratorInvitationEmail } from '@backend/services/emailService/emailService';
-import { CustomContext } from '@backend/types/types';
+import {
+  Authenticated,
+  AuthenticatedContext,
+} from '@backend/utils/decorators/Authenticated';
 import { newProceedingInputSchema } from '@shared/schemas/newProceedingInputSchema';
 
 @Resolver(() => Proceeding)
 export class CreateProceedingsResolver {
   @Mutation(() => Proceeding)
+  @Authenticated()
   async createProceeding(
     @Arg('data') input: NewProceedingInput,
     @Ctx()
@@ -20,7 +24,7 @@ export class CreateProceedingsResolver {
       usersRepository,
       proceedingsRepository,
       participantInvitationsRepository,
-    }: CustomContext,
+    }: AuthenticatedContext,
   ): Promise<Proceeding> {
     try {
       newProceedingInputSchema.parse(input);
@@ -28,15 +32,6 @@ export class CreateProceedingsResolver {
       throw new GraphQLError('Validation error', {
         extensions: {
           code: 'NOT_VALID_INPUT',
-        },
-      });
-    }
-
-    // Check if the user is authorized to create the proceedings (is notary)
-    if (!authUser) {
-      throw new GraphQLError('Unauthorized', {
-        extensions: {
-          code: 'UNAUTHENTICATED',
         },
       });
     }

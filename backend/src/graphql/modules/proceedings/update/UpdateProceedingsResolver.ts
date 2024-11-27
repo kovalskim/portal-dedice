@@ -4,16 +4,20 @@ import { Arg, Ctx, Mutation, Resolver } from 'type-graphql';
 import { unauthorizedError } from '@backend/graphql/errors';
 import { DeceasedPersonInput } from '@backend/graphql/modules/educator/DeceasedPersonInput';
 import { Proceeding } from '@backend/graphql/modules/proceedings/create/proceedingType';
-import { CustomContext } from '@backend/types/types';
+import {
+  Authenticated,
+  AuthenticatedContext,
+} from '@backend/utils/decorators/Authenticated';
 import { deceasedInfoSchema } from '@shared/schemas/deceasedInfoSchema';
 
 @Resolver(() => Proceeding)
 export class UpdateProceedingsResolver {
   @Mutation(() => Proceeding)
+  @Authenticated()
   async updateProceedings(
     @Arg('id') id: number,
     @Arg('data') input: DeceasedPersonInput,
-    @Ctx() { authUser, proceedingsRepository }: CustomContext,
+    @Ctx() { authUser, proceedingsRepository }: AuthenticatedContext,
   ): Promise<Proceeding> {
     try {
       deceasedInfoSchema.parse(input);
@@ -21,14 +25,6 @@ export class UpdateProceedingsResolver {
       throw new GraphQLError('Validation error', {
         extensions: {
           code: 'NOT_VALID_INPUT',
-        },
-      });
-    }
-
-    if (!authUser) {
-      throw new GraphQLError('Unauthorized', {
-        extensions: {
-          code: 'UNAUTHENTICATED',
         },
       });
     }

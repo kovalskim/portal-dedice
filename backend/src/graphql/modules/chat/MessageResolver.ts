@@ -1,4 +1,3 @@
-import { GraphQLError } from 'graphql';
 import {
   Arg,
   Ctx,
@@ -22,6 +21,10 @@ import {
 import { User } from '@backend/graphql/modules/user/userType';
 import { sendNewMessageNotification } from '@backend/services/emailService/emailService';
 import { CustomContext } from '@backend/types/types';
+import {
+  Authenticated,
+  AuthenticatedContext,
+} from '@backend/utils/decorators/Authenticated';
 
 export const CHAT_TOPIC = 'CHAT_TOPIC';
 
@@ -39,6 +42,7 @@ export class MessageResolver {
   }
 
   @Query(() => [Message])
+  @Authenticated()
   async allMessagesByProceedingId(
     @Arg('proceedingId') proceedingId: number,
     @Ctx()
@@ -46,16 +50,8 @@ export class MessageResolver {
       authUser,
       participantValidationService,
       messageRepository,
-    }: CustomContext,
+    }: AuthenticatedContext,
   ): Promise<Message[]> {
-    if (!authUser) {
-      throw new GraphQLError('Unauthorized', {
-        extensions: {
-          code: 'UNAUTHENTICATED',
-        },
-      });
-    }
-
     // Check if user is participant in proceeding to get messages
     if (
       !(await participantValidationService.isUserParticipantOrNotaryOfProceeding(
@@ -72,6 +68,7 @@ export class MessageResolver {
   }
 
   @Mutation(() => Message)
+  @Authenticated()
   async createMessage(
     @Arg('proceedingId') proceedingId: number,
     @Arg('text') text: string,
@@ -82,16 +79,8 @@ export class MessageResolver {
       messageRepository,
       usersRepository,
       participantValidationService,
-    }: CustomContext,
+    }: AuthenticatedContext,
   ): Promise<Message> {
-    if (!authUser) {
-      throw new GraphQLError('Unauthorized', {
-        extensions: {
-          code: 'UNAUTHENTICATED',
-        },
-      });
-    }
-
     if (
       !(await participantValidationService.isUserParticipantOrNotaryOfProceeding(
         authUser.id,

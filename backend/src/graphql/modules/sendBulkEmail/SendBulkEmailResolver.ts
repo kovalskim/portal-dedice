@@ -1,27 +1,23 @@
 import { Arg, Ctx, Mutation, Resolver } from 'type-graphql';
 
-import {
-  forbiddenError,
-  notFoundError,
-  unauthorizedError,
-} from '@backend/graphql/errors';
+import { forbiddenError, notFoundError } from '@backend/graphql/errors';
 import { Proceeding } from '@backend/graphql/modules/proceedings/create/proceedingType';
 import { sendEmailToParticipant } from '@backend/services/emailService/emailService';
-import { CustomContext } from '@backend/types/types';
+import {
+  Authenticated,
+  AuthenticatedContext,
+} from '@backend/utils/decorators/Authenticated';
 
 import { SendEmailRequest } from './sendBulkEmailType';
 
 @Resolver(() => Proceeding)
 export class SendBulkEmailResolver {
   @Mutation(() => String)
+  @Authenticated()
   async sendMessageToParticipants(
     @Arg('data') input: SendEmailRequest,
-    @Ctx() { authUser, proceedingsRepository }: CustomContext,
+    @Ctx() { authUser, proceedingsRepository }: AuthenticatedContext,
   ): Promise<string> {
-    if (!authUser) {
-      throw unauthorizedError('Unauthorized');
-    }
-
     const proceeding = await proceedingsRepository.getProceedingById(
       input.proceedingsId,
     );

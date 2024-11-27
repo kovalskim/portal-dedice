@@ -1,10 +1,7 @@
 import { GraphQLError } from 'graphql';
 import { Arg, Ctx, FieldResolver, Query, Resolver, Root } from 'type-graphql';
 
-import {
-  unauthenticatedError,
-  unauthorizedError,
-} from '@backend/graphql/errors';
+import { unauthorizedError } from '@backend/graphql/errors';
 import {
   PaginatedProceedings,
   Proceeding,
@@ -13,6 +10,10 @@ import { Participant } from '@backend/graphql/modules/proceedings/participantTyp
 import { UserRole } from '@backend/graphql/modules/user/roleType';
 import { User } from '@backend/graphql/modules/user/userType';
 import { CustomContext } from '@backend/types/types';
+import {
+  Authenticated,
+  AuthenticatedContext,
+} from '@backend/utils/decorators/Authenticated';
 
 @Resolver(() => Proceeding)
 export class GetProceedingsResolver {
@@ -25,18 +26,11 @@ export class GetProceedingsResolver {
   }
 
   @Query(() => Proceeding, { nullable: true })
+  @Authenticated()
   async getProceeding(
     @Arg('id') id: number,
-    @Ctx() { authUser, proceedingsRepository }: CustomContext,
+    @Ctx() { authUser, proceedingsRepository }: AuthenticatedContext,
   ): Promise<Proceeding | null> {
-    if (!authUser) {
-      throw new GraphQLError('Unauthorized', {
-        extensions: {
-          code: 'UNAUTHENTICATED',
-        },
-      });
-    }
-
     if (
       !(
         (await proceedingsRepository.isUserParticipantInProceeding(
@@ -65,9 +59,10 @@ export class GetProceedingsResolver {
   }
 
   @Query(() => PaginatedProceedings)
+  @Authenticated()
   async getAllProceedings(
     @Ctx()
-    { authUser, proceedingsRepository, usersRepository }: CustomContext,
+    { authUser, proceedingsRepository, usersRepository }: AuthenticatedContext,
     @Arg('currentPage', { defaultValue: 1 }) currentPage: number,
     @Arg('pageSize', { defaultValue: 2 }) pageSize: number,
     @Arg('sortOrder', { defaultValue: 'desc' }) sortOrder: 'asc' | 'desc',
@@ -79,10 +74,6 @@ export class GetProceedingsResolver {
     @Arg('filterPhaseId', { nullable: true }) filterPhaseId?: number,
     @Arg('filterStatus', { nullable: true }) filterStatus?: string,
   ): Promise<PaginatedProceedings> {
-    if (!authUser) {
-      throw unauthorizedError('Unauthorized to get all proceedings');
-    }
-
     const authUserRole = await usersRepository.getUserRole(authUser.id);
     const allProceedings =
       authUserRole?.name === UserRole.NOTARY
@@ -121,14 +112,11 @@ export class GetProceedingsResolver {
   }
 
   @Query(() => [Participant])
+  @Authenticated()
   async proceedingParticipants(
     @Arg('id') proceedingId: number,
-    @Ctx() { authUser, proceedingsRepository }: CustomContext,
+    @Ctx() { proceedingsRepository }: AuthenticatedContext,
   ): Promise<Participant[]> {
-    if (!authUser) {
-      throw unauthenticatedError('Unauthorized');
-    }
-
     return await proceedingsRepository.getProceedingParticipants(proceedingId);
   }
 }

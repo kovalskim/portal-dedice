@@ -3,24 +3,20 @@ import { Arg, Ctx, Mutation, Resolver } from 'type-graphql';
 
 import { unauthorizedError } from '@backend/graphql/errors';
 import { Proceeding } from '@backend/graphql/modules/proceedings/create/proceedingType';
-import { CustomContext } from '@backend/types/types';
+import {
+  Authenticated,
+  AuthenticatedContext,
+} from '@backend/utils/decorators/Authenticated';
 
 @Resolver(() => Proceeding)
 export class DeleteProceedingsResolver {
   @Mutation(() => Boolean)
+  @Authenticated()
   async deleteProceedings(
     @Arg('id') id: number,
     @Ctx()
-    { authUser, proceedingsRepository }: CustomContext,
+    { authUser, proceedingsRepository }: AuthenticatedContext,
   ): Promise<boolean> {
-    if (!authUser) {
-      throw new GraphQLError('Unauthorized', {
-        extensions: {
-          code: 'UNAUTHENTICATED',
-        },
-      });
-    }
-
     if (
       !(await proceedingsRepository.isUserNotaryInProceeding(authUser.id, id))
     ) {

@@ -2,12 +2,16 @@ import { GraphQLError } from 'graphql';
 import { Arg, Ctx, Mutation, Resolver } from 'type-graphql';
 
 import { parseAndVerifyParticipationInvitationJWT } from '@backend/libs/jwt';
-import { CustomContext } from '@backend/types/types';
 import { PARTICIPANT_STATES } from '@backend/utils/constants';
+import {
+  Authenticated,
+  AuthenticatedContext,
+} from '@backend/utils/decorators/Authenticated';
 
 @Resolver()
 export class AcceptParticipantInvitationResolver {
   @Mutation(() => Number)
+  @Authenticated()
   async acceptParticipantInvitation(
     @Arg('token') token: string,
     @Ctx()
@@ -16,18 +20,12 @@ export class AcceptParticipantInvitationResolver {
       participantInvitationsRepository,
       participantsRepository,
       usersRepository,
-    }: CustomContext,
+    }: AuthenticatedContext,
   ): Promise<number> {
     const payload = parseAndVerifyParticipationInvitationJWT(token);
     if (!payload || !payload.email) {
       throw new GraphQLError('Invalid token', {
         extensions: { code: 'INVALID_TOKEN' },
-      });
-    }
-
-    if (!authUser) {
-      throw new GraphQLError('Unauthorized. Please log in first.', {
-        extensions: { code: 'UNAUTHENTICATED' },
       });
     }
 
