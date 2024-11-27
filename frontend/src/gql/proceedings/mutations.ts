@@ -25,8 +25,8 @@ export const DELETE_PROCEEDING = gql`
 `;
 
 export const CREATE_PROCEEDING = gql`
-  mutation CreateProceedings($data: NewProceedingInput!) {
-    createProceedings(data: $data) {
+  mutation CreateProceeding($data: NewProceedingInput!) {
+    createProceeding(data: $data) {
       id
       proceedingNumber
     }
