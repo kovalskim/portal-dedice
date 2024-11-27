@@ -46,8 +46,8 @@ export const DeleteFileModal: FC<DeleteFileModalProps> = ({
     await deleteFile({ variables: { id: fileId } });
 
     showToast({
-      title: 'Dědické řízení bylo úspěšně smazáno.',
-      description: 'Řízení bylo odstraněno.',
+      title: 'Soubor byl úspěšně smazán.',
+      description: 'Soubor z dědického řízení byl úspěšně smazán.',
       status: 'success',
     });
     onDelete();
