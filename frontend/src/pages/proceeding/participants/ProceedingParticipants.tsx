@@ -25,11 +25,11 @@ import {
   ParticipantsResponse,
 } from '@frontend/gql/proceedings/queries.ts';
 import { useCustomToast } from '@frontend/hooks/useCustomToast.ts';
-import { OutletContextType } from '@frontend/pages/proceeding/overview/ProceedingsOverviewPage';
+import { OutletContextType } from '@frontend/pages/proceeding/overview/ProceedingOverviewPage';
 
 import { SendEmailModal } from './components/sendEmail/SendEmailModal';
 
-export const ProceedingsParticipants = () => {
+export const ProceedingParticipants = () => {
   const showToast = useCustomToast();
   const { role } = useAuth();
   const { proceeding } = useOutletContext<OutletContextType>();

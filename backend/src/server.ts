@@ -30,10 +30,10 @@ import { ScheduleResolver } from '@backend/graphql/modules/educator/ScheduleReso
 import { FileResolver } from '@backend/graphql/modules/file/fileResolver';
 import { NotaryPaymentCalculationResolver } from '@backend/graphql/modules/notaryPaymentCalculation/NotaryPaymentCalculationResolver';
 import { AcceptParticipantInvitationResolver } from '@backend/graphql/modules/participantInvitation/AcceptParticipantInvitationResolver';
-import { CreateProceedingsResolver } from '@backend/graphql/modules/proceedings/create/CreateProceedingsResolver';
-import { DeleteProceedingsResolver } from '@backend/graphql/modules/proceedings/delete/DeleteProceedingsResolver';
+import { CreateProceedingResolver } from '@backend/graphql/modules/proceedings/create/CreateProceedingResolver';
+import { DeleteProceedingResolver } from '@backend/graphql/modules/proceedings/delete/DeleteProceedingResolver';
 import { GetProceedingsResolver } from '@backend/graphql/modules/proceedings/get/GetProceedingsResolver';
-import { UpdateProceedingsResolver } from '@backend/graphql/modules/proceedings/update/UpdateProceedingsResolver';
+import { UpdateProceedingResolver } from '@backend/graphql/modules/proceedings/update/UpdateProceedingResolver';
 import { SendBulkEmailResolver } from '@backend/graphql/modules/sendBulkEmail/SendBulkEmailResolver';
 import { UserResolver } from '@backend/graphql/modules/user/userResolver';
 import { parseAndVerifyJWT } from '@backend/libs/jwt';
@@ -60,10 +60,10 @@ const init = async () => {
     resolvers: [
       UserResolver,
       ScheduleResolver,
-      CreateProceedingsResolver,
+      CreateProceedingResolver,
       GetProceedingsResolver,
-      UpdateProceedingsResolver,
-      DeleteProceedingsResolver,
+      UpdateProceedingResolver,
+      DeleteProceedingResolver,
       DistrictResolver,
       MessageResolver,
       SendBulkEmailResolver,
@@ -128,11 +128,11 @@ const init = async () => {
       },
     });
 
-    const proceedingRepository = new ProceedingsRepository(drizzle.db);
+    const proceedingsRepository = new ProceedingsRepository(drizzle.db);
     const filesRepository = new FilesRepository(drizzle.db);
 
     const participantValidationService = new ParticipantValidationService(
-      proceedingRepository,
+      proceedingsRepository,
     );
     const awsService = new AwsService(s3Client);
 
@@ -140,7 +140,7 @@ const init = async () => {
       db: drizzle.db,
       authUser,
       usersRepository: new UsersRepository(drizzle.db),
-      proceedingsRepository: proceedingRepository,
+      proceedingsRepository: proceedingsRepository,
       messageRepository: new MessagesRepository(drizzle.db),
       participantInvitationsRepository: new ParticipantInvitationsRepository(
         drizzle.db,

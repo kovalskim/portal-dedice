@@ -6,7 +6,7 @@ type SidebarProceedingsInfoProps = {
   proceeding: Proceeding;
 };
 
-export const SidebarProceedingsInfo = ({
+export const SidebarProceedingInfo = ({
   proceeding,
 }: SidebarProceedingsInfoProps) => {
   return (

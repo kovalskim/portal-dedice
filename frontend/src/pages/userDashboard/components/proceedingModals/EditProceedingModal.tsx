@@ -17,19 +17,19 @@ import {
 } from '@frontend/components/forms/deceasedPersonForm/DeceasedPersonForm.tsx';
 import {
   UPDATE_PROCEEDING,
-  UpdateProceedingsResponse,
+  UpdateProceedingResponse,
 } from '@frontend/gql/proceedings/mutations';
 import { useCustomToast } from '@frontend/hooks/useCustomToast.ts';
 import { useProceedings } from '@frontend/pages/userDashboard/hooks/useProceedings.ts';
 
-interface EditProceedingsModalProps {
+interface EditProceedingModalProps {
   isOpen: boolean;
   onClose: () => void;
   proceedingId?: number;
   initialData?: DeceasedPersonFormFields;
 }
 
-export const EditProceedingsModal: FC<EditProceedingsModalProps> = ({
+export const EditProceedingModal: FC<EditProceedingModalProps> = ({
   isOpen,
   onClose,
   proceedingId,
@@ -40,8 +40,8 @@ export const EditProceedingsModal: FC<EditProceedingsModalProps> = ({
 
   const { refetch } = useProceedings();
 
-  const [updateProceedings, { loading, error }] =
-    useMutation<UpdateProceedingsResponse>(UPDATE_PROCEEDING, {
+  const [updateProceeding, { loading, error }] =
+    useMutation<UpdateProceedingResponse>(UPDATE_PROCEEDING, {
       fetchPolicy: 'network-only',
     });
 
@@ -56,7 +56,7 @@ export const EditProceedingsModal: FC<EditProceedingsModalProps> = ({
   }, [error, showToast, isOpen]);
 
   const onSubmit = (data: DeceasedPersonFormFields) => {
-    updateProceedings({
+    updateProceeding({
       variables: {
         id: Number(proceedingId),
         data: data,

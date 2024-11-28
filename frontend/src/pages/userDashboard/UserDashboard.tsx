@@ -6,20 +6,19 @@ import { PrimaryButton } from '@frontend/components/buttons';
 import { DeceasedPersonFormFields } from '@frontend/components/forms/deceasedPersonForm/DeceasedPersonForm.tsx';
 import { Role, useAuth } from '@frontend/context/auth/auth-core';
 import { InvitationModal } from '@frontend/pages/userDashboard/components/InvitationModal.tsx';
-import { DeleteProceedingsModal } from '@frontend/pages/userDashboard/components/proceedingsModals/DeleteProceedingsModal.tsx';
-import { EditProceedingsModal } from '@frontend/pages/userDashboard/components/proceedingsModals/EditProceedingsModal.tsx';
+import { DeleteProceedingModal } from '@frontend/pages/userDashboard/components/proceedingModals/DeleteProceedingModal';
+import { EditProceedingModal } from '@frontend/pages/userDashboard/components/proceedingModals/EditProceedingModal';
 import { useNewProceedingFormStore } from '@frontend/pages/userDashboard/hooks/useNewProceedingFormStore.ts';
 import { firstNameInVokativ } from '@frontend/utils/languageUtils.ts';
 
-import { NewProceedingsModal } from './components/proceedingsModals/NewProceedingsModal';
+import { NewProceedingModal } from './components/proceedingModals/NewProceedingModal';
 import ProceedingsTable from './components/proceedingsTable/ProceedingsTable';
 
 export const UserDashboard = () => {
-  const [newProceedingsModalOpen, setNewProceedingsModalOpen] = useState(false);
+  const [newProceedingModalOpen, setNewProceedingModalOpen] = useState(false);
   const { user, role } = useAuth();
-  const [editProceedingsModalOpen, setEditProceedingsModalOpen] =
-    useState(false);
-  const [deleteProceedingsModalOpen, setDeleteProceedingsModalOpen] =
+  const [editProceedingModalOpen, setEditProceedingModalOpen] = useState(false);
+  const [deleteProceedingModalOpen, setDeleteProceedingModalOpen] =
     useState(false);
   const [selectedProceeding, setSelectedProceeding] = useState<{
     id: number;
@@ -30,31 +29,31 @@ export const UserDashboard = () => {
 
   const handleEditProceeding = (id: number, data: DeceasedPersonFormFields) => {
     setSelectedProceeding({ id, data });
-    setEditProceedingsModalOpen(true);
+    setEditProceedingModalOpen(true);
   };
 
   const handleDeleteProceeding = (id: number) => {
     setSelectedProceeding({ id });
-    setDeleteProceedingsModalOpen(true);
+    setDeleteProceedingModalOpen(true);
   };
 
   // reseting formstore and states on closing modals
   useEffect(() => {
-    if (!newProceedingsModalOpen) {
+    if (!newProceedingModalOpen) {
       resetFormStore();
     }
-    if (!(editProceedingsModalOpen || deleteProceedingsModalOpen)) {
+    if (!(editProceedingModalOpen || deleteProceedingModalOpen)) {
       setSelectedProceeding(null);
     }
   }, [
     resetFormStore,
-    newProceedingsModalOpen,
-    editProceedingsModalOpen,
-    deleteProceedingsModalOpen,
+    newProceedingModalOpen,
+    editProceedingModalOpen,
+    deleteProceedingModalOpen,
   ]);
 
   const handleCloseModal = () => {
-    setNewProceedingsModalOpen(false);
+    setNewProceedingModalOpen(false);
   };
 
   return (
@@ -71,7 +70,7 @@ export const UserDashboard = () => {
         <Flex justifyContent="flex-end" mt={4}>
           <PrimaryButton
             leftIcon={<AddIcon />}
-            onClick={() => setNewProceedingsModalOpen(true)}
+            onClick={() => setNewProceedingModalOpen(true)}
           >
             Nové řízení
           </PrimaryButton>
@@ -85,21 +84,21 @@ export const UserDashboard = () => {
         />
       </Card>
 
-      <NewProceedingsModal
-        isOpen={newProceedingsModalOpen}
+      <NewProceedingModal
+        isOpen={newProceedingModalOpen}
         onClose={handleCloseModal}
       />
       {selectedProceeding !== null && (
         <>
-          <EditProceedingsModal
-            isOpen={editProceedingsModalOpen}
-            onClose={() => setEditProceedingsModalOpen(false)}
+          <EditProceedingModal
+            isOpen={editProceedingModalOpen}
+            onClose={() => setEditProceedingModalOpen(false)}
             proceedingId={selectedProceeding?.id}
             initialData={selectedProceeding?.data}
           />
-          <DeleteProceedingsModal
-            isOpen={deleteProceedingsModalOpen}
-            onClose={() => setDeleteProceedingsModalOpen(false)}
+          <DeleteProceedingModal
+            isOpen={deleteProceedingModalOpen}
+            onClose={() => setDeleteProceedingModalOpen(false)}
             proceedingId={selectedProceeding?.id}
           />
         </>

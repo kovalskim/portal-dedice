@@ -9,10 +9,10 @@ import {
 } from '@backend/utils/decorators/Authenticated';
 
 @Resolver(() => Proceeding)
-export class DeleteProceedingsResolver {
+export class DeleteProceedingResolver {
   @Mutation(() => Boolean)
   @Authenticated()
-  async deleteProceedings(
+  async deleteProceeding(
     @Arg('id') id: number,
     @Ctx()
     { authUser, proceedingsRepository }: AuthenticatedContext,

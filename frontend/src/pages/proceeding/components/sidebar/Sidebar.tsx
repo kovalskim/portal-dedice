@@ -6,7 +6,7 @@ import { Proceeding } from '@frontend/gql/proceedings/queries.ts';
 import { Routes } from '@frontend/routes/routes.ts';
 
 import { SidebarMenu } from './SidebarMenu';
-import { SidebarProceedingsInfo } from './SidebarProceedingsInfo';
+import { SidebarProceedingInfo } from './SidebarProceedingInfo';
 
 type SidebarProps = {
   proceeding: Proceeding;
@@ -24,7 +24,7 @@ export const Sidebar = ({ proceeding }: SidebarProps) => {
         direction={{ base: 'row', md: 'column' }}
         justifyContent={{ base: 'space-between', md: 'inherit' }}
       >
-        <SidebarProceedingsInfo proceeding={proceeding} />
+        <SidebarProceedingInfo proceeding={proceeding} />
         <SidebarMenu id={Number(id) ?? ''} />
       </Flex>
     </Box>

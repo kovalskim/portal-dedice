@@ -3,7 +3,7 @@ import { Field, InputType } from 'type-graphql';
 @InputType()
 export class SendEmailRequest {
   @Field()
-  proceedingsId!: number;
+  proceedingId!: number;
 
   @Field()
   title!: string;

@@ -18,7 +18,7 @@ export class SendBulkEmailResolver {
     { authUser, proceedingsRepository, emailService }: AuthenticatedContext,
   ): Promise<string> {
     const proceeding = await proceedingsRepository.getProceedingById(
-      input.proceedingsId,
+      input.proceedingId,
     );
     if (!proceeding) {
       throw notFoundError('Proceedings not found');
@@ -31,7 +31,7 @@ export class SendBulkEmailResolver {
 
     // validate that all receivers are in proceeding
     const participants = await proceedingsRepository.getProceedingParticipants(
-      input.proceedingsId,
+      input.proceedingId,
     );
 
     if (

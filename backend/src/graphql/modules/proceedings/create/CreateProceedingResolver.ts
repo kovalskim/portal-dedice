@@ -12,7 +12,7 @@ import {
 import { newProceedingInputSchema } from '@shared/schemas/newProceedingInputSchema';
 
 @Resolver(() => Proceeding)
-export class CreateProceedingsResolver {
+export class CreateProceedingResolver {
   @Mutation(() => Proceeding)
   @Authenticated()
   async createProceeding(
@@ -45,10 +45,10 @@ export class CreateProceedingsResolver {
       });
     }
 
-    const proceedingsNumber = `${new Date().getFullYear()}_${new Date().getMonth()}_${new Date().getDate()}_${input.deceasedPersonInfo.firstname[0]}${input.deceasedPersonInfo.lastname.slice(0, 2)}`;
+    const proceedingNumber = `${new Date().getFullYear()}_${new Date().getMonth()}_${new Date().getDate()}_${input.deceasedPersonInfo.firstname[0]}${input.deceasedPersonInfo.lastname.slice(0, 2)}`;
     // Create the proceedings in the database
     const newProceedingId = await proceedingsRepository.createProceeding({
-      proceedingNumber: proceedingsNumber,
+      proceedingNumber: proceedingNumber,
       notaryId: authUser!.id,
       startDate: new Date(), //TODO: taky jako input
       deceasedFirstName: input.deceasedPersonInfo.firstname,

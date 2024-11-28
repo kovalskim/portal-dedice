@@ -58,7 +58,7 @@ export const SendEmailModal = ({
   );
 
   const onSubmit = (data: SendEmailFields) => {
-    const proceedingsId =
+    const proceedingId =
       receivers && receivers?.length > 0
         ? receivers[0].proceedingId
         : undefined;
@@ -84,7 +84,7 @@ export const SendEmailModal = ({
         data: {
           ...data,
           receivers: receiversEmails,
-          proceedingsId,
+          proceedingId,
         },
       },
     }).then(() => {

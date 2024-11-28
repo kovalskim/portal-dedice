@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 
-import { NewProceedingFormFields } from '@frontend/pages/userDashboard/components/proceedingsModals/NewProceedingForm.tsx';
+import { NewProceedingFormFields } from '@frontend/pages/userDashboard/components/proceedingModals/NewProceedingForm';
 
 interface MultiStepFormStore {
   step: number;

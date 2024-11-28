@@ -8,7 +8,7 @@ import {
 import {
   AddParticipantForm,
   ParticipantFormFields,
-} from '@frontend/pages/userDashboard/components/proceedingsModals/AddParticipantForm.tsx';
+} from '@frontend/pages/userDashboard/components/proceedingModals/AddParticipantForm';
 import { useNewProceedingFormStore } from '@frontend/pages/userDashboard/hooks/useNewProceedingFormStore.ts';
 import { newProceedingInputSchema } from '@shared/schemas/newProceedingInputSchema';
 

@@ -19,8 +19,8 @@ import { HomePage } from '@frontend/pages/home/HomePage';
 import { NotaryPaymentCalculationPage } from '@frontend/pages/notaryPaymentCalculation/NotaryPaymentCalculationPage.tsx';
 import { ProceedingChat } from '@frontend/pages/proceeding/chat/ProceedingChat.tsx';
 import { FilesPage } from '@frontend/pages/proceeding/files/FilesPage.tsx';
-import { ProceedingsOverviewPage } from '@frontend/pages/proceeding/overview/ProceedingsOverviewPage';
-import { ProceedingsParticipants } from '@frontend/pages/proceeding/participants/ProceedingsParticipants';
+import { ProceedingOverviewPage } from '@frontend/pages/proceeding/overview/ProceedingOverviewPage';
+import { ProceedingParticipants } from '@frontend/pages/proceeding/participants/ProceedingParticipants';
 import { ProceedingLayout } from '@frontend/pages/proceeding/ProceedingLayout';
 import { ProfilePage } from '@frontend/pages/profile/ProfilePage.tsx';
 import { UserDashboard } from '@frontend/pages/userDashboard/UserDashboard';
@@ -70,11 +70,11 @@ export const getRouter = () => {
               <Route element={<ProceedingLayout />}>
                 <Route
                   path={Routes.proceedingOverview}
-                  element={<ProceedingsOverviewPage />}
+                  element={<ProceedingOverviewPage />}
                 />
                 <Route
                   path={Routes.proceedingParticipants}
-                  element={<ProceedingsParticipants />}
+                  element={<ProceedingParticipants />}
                 />
                 <Route
                   path={Routes.proceedingChat}

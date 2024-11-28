@@ -1,26 +1,26 @@
 import { gql } from '@apollo/client';
 
-export type CreateProceedingsResponse = {
-  createProceedings: {
+export type CreateProceedingResponse = {
+  createProceeding: {
     id: string;
     proceedingNumber: string;
   };
 };
 
-export type UpdateProceedingsResponse = {
-  updateProceedings: {
+export type UpdateProceedingResponse = {
+  updateProceeding: {
     id: string;
     proceedingNumber: string;
   };
 };
 
-export type DeleteProceedingsResponse = {
-  deleteProceedings: boolean;
+export type DeleteProceedingResponse = {
+  deleteProceeding: boolean;
 };
 
 export const DELETE_PROCEEDING = gql`
   mutation Mutation($id: Float!) {
-    deleteProceedings(id: $id)
+    deleteProceeding(id: $id)
   }
 `;
 
@@ -35,7 +35,7 @@ export const CREATE_PROCEEDING = gql`
 
 export const UPDATE_PROCEEDING = gql`
   mutation Mutation($data: DeceasedPersonInput!, $id: Float!) {
-    updateProceedings(data: $data, id: $id) {
+    updateProceeding(data: $data, id: $id) {
       id
       proceedingNumber
     }

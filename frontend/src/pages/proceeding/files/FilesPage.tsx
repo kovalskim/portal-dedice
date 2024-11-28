@@ -23,7 +23,7 @@ import { FileList } from '@frontend/pages/proceeding/files/FileList.tsx';
 import { UploadFileModal } from '@frontend/pages/proceeding/files/UploadFileModal.tsx';
 import { MAX_FILES } from '@frontend/utils/constants';
 
-import { OutletContextType } from '../overview/ProceedingsOverviewPage';
+import { OutletContextType } from '../overview/ProceedingOverviewPage';
 
 interface FilesData {
   filesByProceeding: File[];

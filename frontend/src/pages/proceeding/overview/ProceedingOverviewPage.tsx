@@ -23,7 +23,7 @@ import { Proceeding } from '@frontend/gql/proceedings/queries.ts';
 
 export type OutletContextType = { proceeding: Proceeding };
 
-export const ProceedingsOverviewPage = () => {
+export const ProceedingOverviewPage = () => {
   const { proceeding } = useOutletContext<OutletContextType>();
 
   if (!proceeding || proceeding.phaseId === undefined) return null;

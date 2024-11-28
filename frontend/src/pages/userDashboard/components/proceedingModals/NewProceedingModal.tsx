@@ -17,23 +17,23 @@ import { PrimaryButton, SecondaryButton } from '@frontend/components/buttons';
 import { DeceasedPersonFormFields } from '@frontend/components/forms/deceasedPersonForm/DeceasedPersonForm.tsx';
 import {
   CREATE_PROCEEDING,
-  CreateProceedingsResponse,
+  CreateProceedingResponse,
 } from '@frontend/gql/proceedings/mutations';
 import { useCustomToast } from '@frontend/hooks/useCustomToast.ts';
-import { ParticipantFormFields } from '@frontend/pages/userDashboard/components/proceedingsModals/AddParticipantForm.tsx';
+import { ParticipantFormFields } from '@frontend/pages/userDashboard/components/proceedingModals/AddParticipantForm';
 import {
   NewProceedingForm,
   NewProceedingFormFields,
-} from '@frontend/pages/userDashboard/components/proceedingsModals/NewProceedingForm.tsx';
+} from '@frontend/pages/userDashboard/components/proceedingModals/NewProceedingForm';
 import { useNewProceedingFormStore } from '@frontend/pages/userDashboard/hooks/useNewProceedingFormStore.ts';
 import { useProceedings } from '@frontend/pages/userDashboard/hooks/useProceedings.ts';
 
-interface NewProceedingsModalProps {
+interface NewProceedingModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-export const NewProceedingsModal: FC<NewProceedingsModalProps> = ({
+export const NewProceedingModal: FC<NewProceedingModalProps> = ({
   isOpen,
   onClose,
 }) => {
@@ -43,8 +43,8 @@ export const NewProceedingsModal: FC<NewProceedingsModalProps> = ({
 
   const { refetch } = useProceedings();
 
-  const [createProceedings, { loading, error }] =
-    useMutation<CreateProceedingsResponse>(CREATE_PROCEEDING);
+  const [createProceeding, { loading, error }] =
+    useMutation<CreateProceedingResponse>(CREATE_PROCEEDING);
 
   useEffect(() => {
     if (error && isOpen) {
@@ -57,7 +57,7 @@ export const NewProceedingsModal: FC<NewProceedingsModalProps> = ({
   }, [error, showToast, isOpen]);
 
   const onSubmit = async (data: NewProceedingFormFields) => {
-    createProceedings({
+    createProceeding({
       variables: {
         data: data,
       },

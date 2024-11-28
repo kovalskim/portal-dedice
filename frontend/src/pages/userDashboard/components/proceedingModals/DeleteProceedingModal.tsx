@@ -14,19 +14,19 @@ import {
 import { PrimaryButton, SecondaryButton } from '@frontend/components/buttons';
 import {
   DELETE_PROCEEDING,
-  DeleteProceedingsResponse,
+  DeleteProceedingResponse,
 } from '@frontend/gql/proceedings/mutations';
 import { GET_ALL_PROCEEDINGS } from '@frontend/gql/proceedings/queries';
 import { useCustomToast } from '@frontend/hooks/useCustomToast.ts';
 import { useProceedings } from '@frontend/pages/userDashboard/hooks/useProceedings.ts';
 
-interface DeleteProceedingsModalProps {
+interface DeleteProceedingModalProps {
   isOpen: boolean;
   onClose: () => void;
   proceedingId?: number;
 }
 
-export const DeleteProceedingsModal: FC<DeleteProceedingsModalProps> = ({
+export const DeleteProceedingModal: FC<DeleteProceedingModalProps> = ({
   isOpen,
   onClose,
   proceedingId,
@@ -36,7 +36,7 @@ export const DeleteProceedingsModal: FC<DeleteProceedingsModalProps> = ({
   const { refetch } = useProceedings();
 
   const [deleteProceeding, { loading, error }] =
-    useMutation<DeleteProceedingsResponse>(DELETE_PROCEEDING, {
+    useMutation<DeleteProceedingResponse>(DELETE_PROCEEDING, {
       refetchQueries: [{ query: GET_ALL_PROCEEDINGS }],
       fetchPolicy: 'network-only',
     });

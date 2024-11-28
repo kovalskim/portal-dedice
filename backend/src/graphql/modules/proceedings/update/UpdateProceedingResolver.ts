@@ -11,10 +11,10 @@ import {
 import { deceasedInfoSchema } from '@shared/schemas/deceasedInfoSchema';
 
 @Resolver(() => Proceeding)
-export class UpdateProceedingsResolver {
+export class UpdateProceedingResolver {
   @Mutation(() => Proceeding)
   @Authenticated()
-  async updateProceedings(
+  async updateProceeding(
     @Arg('id') id: number,
     @Arg('data') input: DeceasedPersonInput,
     @Ctx() { authUser, proceedingsRepository }: AuthenticatedContext,
