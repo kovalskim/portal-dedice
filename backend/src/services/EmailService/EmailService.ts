@@ -8,6 +8,7 @@ import {
   buildText,
   getEmailBody,
 } from '@backend/services/EmailService/templateBuilder';
+import { toVocative } from '@shared/utils/languageUtils';
 
 export class EmailService {
   private transporter: Transporter;
@@ -65,14 +66,16 @@ export class EmailService {
 
   async sendNewMessageNotification(
     email: string,
+    firstname: string,
     sender: string,
     text: string,
     proceedingId: number,
+    proceedingNumber: string,
   ) {
-    const subject: string = 'Nová zpráva';
+    const subject: string = `Nová zpráva v chatu - dědické řízení ${proceedingNumber}`;
 
     const bodies = await Promise.all([
-      buildHeading('Nová zpráva'),
+      buildHeading(`Dobrý den, ${toVocative(firstname)},`),
       buildText(`Máte novou zprávu od uživatele ${sender}:`),
       buildText(text),
       buildButton(
@@ -91,15 +94,16 @@ export class EmailService {
     title: string,
     message: string,
     proceedingId: number,
+    proceedingNumber: string,
     email: string,
   ) {
-    const subject: string = `Zpráva z Portálu dědice - řízení ${proceedingId}`;
-    const portalLink = `${process.env.APP_URL}/logIn`;
+    const subject: string = `Hromadná zpráva z Portálu dědice - dědické řízení ${proceedingNumber}`;
+    const portalLink = `${process.env.APP_URL}/proceedings/${proceedingId}/overview`;
 
     const bodies = await Promise.all([
       buildHeading(title),
       buildText(message),
-      buildText('Do Portálu dědice se můžete níže:'),
+      buildText('Do Portálu dědice se můžete přihlásit níže:'),
       buildButton('Přihlásit se do Portálu dědice', encodeURI(portalLink)),
     ]);
 
@@ -120,7 +124,7 @@ export class EmailService {
     const invitationLink = `${process.env.APP_URL}/proceedings?invitation_token=${token}`;
 
     const bodies = await Promise.all([
-      buildHeading(`Dobrý den, ${firstname} ${lastname}`),
+      buildHeading(`Dobrý den, ${toVocative(firstname)}`),
       buildText('Byl/a jste pozván/a k účasti v dědickém řízení.'),
       buildButton('Přijmout pozvánku', encodeURI(invitationLink)),
       buildText('Nebo zkopírujte a vložte tuto URL do svého prohlížeče:'),

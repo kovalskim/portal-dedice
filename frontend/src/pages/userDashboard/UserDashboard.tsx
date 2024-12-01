@@ -9,7 +9,7 @@ import { InvitationModal } from '@frontend/pages/userDashboard/components/Invita
 import { DeleteProceedingModal } from '@frontend/pages/userDashboard/components/proceedingModals/DeleteProceedingModal';
 import { EditProceedingModal } from '@frontend/pages/userDashboard/components/proceedingModals/EditProceedingModal';
 import { useNewProceedingFormStore } from '@frontend/pages/userDashboard/hooks/useNewProceedingFormStore.ts';
-import { firstNameInVokativ } from '@frontend/utils/languageUtils.ts';
+import { toVocative } from '@shared/utils/languageUtils.ts';
 
 import { NewProceedingModal } from './components/proceedingModals/NewProceedingModal';
 import ProceedingsTable from './components/proceedingsTable/ProceedingsTable';
@@ -59,7 +59,7 @@ export const UserDashboard = () => {
   return (
     <Flex direction="column" gap={4} py={{ sm: 2, lg: 4 }}>
       <Heading as="h2" size="lg">
-        Vítejte na Portálu dědice, {firstNameInVokativ(user?.firstname)}!
+        Vítejte na Portálu dědice, {toVocative(user?.firstname)}!
       </Heading>
       <Text>
         Portál dědice je vaším průvodcem dědickým řízením, který slouží jako

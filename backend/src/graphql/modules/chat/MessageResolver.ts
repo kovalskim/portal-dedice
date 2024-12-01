@@ -90,6 +90,9 @@ export class MessageResolver {
       throw unauthorizedError('User is not a participant in this proceeding');
     }
 
+    const proceeding =
+      await proceedingsRepository.getProceedingById(proceedingId);
+
     const newMessageId = await messageRepository.createMessage(
       authUser.id,
       proceedingId,
@@ -115,26 +118,28 @@ export class MessageResolver {
         participant.user.id !== authUser.id &&
         participant.user.emailNotifications
       ) {
-        await emailService.sendNewMessageNotification(
+        emailService.sendNewMessageNotification(
           participant.user.email,
+          participant.user.firstname,
           `${newMessage.user.firstname} ${newMessage.user.lastname}`,
           newMessage.text,
           proceedingId,
+          proceeding.proceedingNumber,
         );
       }
     }
 
     // notify also notary
-    const proceeding =
-      await proceedingsRepository.getProceedingById(proceedingId);
     if (proceeding.notaryId !== authUser.id) {
       const notary = await usersRepository.getUserById(proceeding.notaryId);
       if (notary && notary.emailNotifications) {
-        await emailService.sendNewMessageNotification(
+        emailService.sendNewMessageNotification(
           notary.email,
+          notary.firstname,
           `${newMessage.user.firstname} ${newMessage.user.lastname}`,
           newMessage.text,
           proceedingId,
+          proceeding.proceedingNumber,
         );
       }
     }

@@ -18,7 +18,7 @@ import {
 } from '@frontend/pages/authPages/components/LogInForm.tsx';
 import { Routes } from '@frontend/routes/routes.ts';
 import { useProtectedRouteStore } from '@frontend/routes/useProtectedRouteStore.ts';
-import { firstNameInVokativ } from '@frontend/utils/languageUtils.ts';
+import { toVocative } from '@shared/utils/languageUtils.ts';
 
 export const LogInPage = () => {
   const navigate = useNavigate();
@@ -45,7 +45,7 @@ export const LogInPage = () => {
 
       showToast({
         title: 'Přihlášení proběhlo úspěšně',
-        description: `Vítejte zpět, ${firstNameInVokativ(user.firstname)}!`,
+        description: `Vítejte zpět, ${toVocative(user.firstname)}!`,
         status: 'success',
       });
 

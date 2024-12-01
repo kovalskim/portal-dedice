@@ -49,6 +49,7 @@ export class SendBulkEmailResolver {
         input.title,
         input.message,
         proceeding.id,
+        proceeding.proceedingNumber,
         receiver,
       );
     });
