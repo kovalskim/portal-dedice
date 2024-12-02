@@ -113,7 +113,7 @@ export class EmailService {
     await this.sendEmail(email, subject, htmlContent);
   }
 
-  async sendNarratorInvitationEmail(
+  async sendParticipantInvitationEmail(
     email: string,
     firstname: string,
     lastname: string,

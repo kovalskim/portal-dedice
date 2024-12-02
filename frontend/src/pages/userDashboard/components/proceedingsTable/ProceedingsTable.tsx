@@ -9,6 +9,7 @@ import {
   WarningIcon,
 } from '@chakra-ui/icons';
 import {
+  Badge,
   Box,
   Center,
   Flex,
@@ -256,15 +257,26 @@ export const ProceedingsTable: React.FC<ProceedingsTableProps> = ({
                       <Td>{proceeding.phaseTitle ?? ''}</Td>
                       <Td>
                         <Flex direction="row" gap={2}>
-                          <RouterNavButton
-                            to={insertIdToUrl(
-                              Routes.proceedingOverview,
-                              proceeding.id,
-                            )}
-                            size="sm"
-                          >
-                            Detail
-                          </RouterNavButton>
+                          {proceeding.isLoggedUserApprovedParticipantOrNotary ? (
+                            <RouterNavButton
+                              to={insertIdToUrl(
+                                Routes.proceedingOverview,
+                                proceeding.id,
+                              )}
+                              size="sm"
+                            >
+                              Detail
+                            </RouterNavButton>
+                          ) : (
+                            <Badge
+                              variant="subtle"
+                              colorScheme="goldenYellow"
+                              px={4}
+                              borderRadius="xl"
+                            >
+                              Vyčkejte na schválení žádosti
+                            </Badge>
+                          )}
 
                           {role === Role.NOTARY && (
                             <>

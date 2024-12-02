@@ -1,7 +1,10 @@
 import { GraphQLError } from 'graphql';
 import { Arg, Ctx, FieldResolver, Query, Resolver, Root } from 'type-graphql';
 
-import { unauthorizedError } from '@backend/errors/graphqlErrors';
+import {
+  unauthenticatedError,
+  unauthorizedError,
+} from '@backend/errors/graphqlErrors';
 import {
   PaginatedProceedings,
   Proceeding,
@@ -109,6 +112,21 @@ export class GetProceedingsResolver {
       })),
       total: allProceedings.total,
     };
+  }
+
+  @FieldResolver(() => Boolean)
+  async isLoggedUserApprovedParticipantOrNotary(
+    @Root() proceeding: Proceeding,
+    @Ctx() { authUser, participantValidationService }: CustomContext,
+  ): Promise<boolean> {
+    if (!authUser) {
+      throw unauthenticatedError('Unauthorized');
+    }
+
+    return await participantValidationService.isUserParticipantOrNotaryOfProceeding(
+      authUser.id,
+      proceeding.id,
+    );
   }
 
   @Query(() => [Participant])

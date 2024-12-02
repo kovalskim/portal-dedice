@@ -35,6 +35,7 @@ export const GET_ALL_PROCEEDINGS = gql`
         deceasedSex
         startDate
         phaseTitle
+        isLoggedUserApprovedParticipantOrNotary
       }
       total
     }
@@ -63,6 +64,7 @@ export type Proceeding = {
     lastname: string;
     afterTitle: string;
   };
+  isLoggedUserApprovedParticipantOrNotary: boolean;
 };
 
 export type ProceedingsResponse = {
@@ -99,6 +101,7 @@ export const GET_PROCEEDING_BY_ID = gql`
 
 export type Participant = {
   proceedingId: number;
+  participantId: number;
   user: {
     id: number;
     email: string;
@@ -121,6 +124,7 @@ export const GET_PROCEEDING_PARTICIPANTS = gql`
   query ProceedingParticipants($proceedingId: Float!) {
     proceedingParticipants(id: $proceedingId) {
       proceedingId
+      participantId
       user {
         id
         beforeTitle

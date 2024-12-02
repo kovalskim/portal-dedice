@@ -1,5 +1,5 @@
 import { endOfDay, startOfDay } from 'date-fns';
-import { and, asc, desc, eq, gte, like, lte } from 'drizzle-orm';
+import { and, asc, desc, eq, gte, inArray, like, lte } from 'drizzle-orm';
 import { MySql2Database } from 'drizzle-orm/mysql2';
 
 import {
@@ -11,6 +11,7 @@ import {
 } from '@backend/db/schema';
 import { UserRole } from '@backend/graphql/modules/user/roleType';
 import { UserDTO } from '@backend/repository/UsersRepository';
+import { PARTICIPANT_STATES } from '@backend/utils/constants';
 
 export interface ProceedingDTO {
   id: number;
@@ -49,6 +50,7 @@ export interface CreateProceedingDTO {
 }
 
 interface ParticipantDTO {
+  participantId: number;
   proceedingId: number;
   participantState: {
     id: number;
@@ -136,7 +138,15 @@ export class ProceedingsRepository {
         participants,
         eq(proceeding.id, participants.proceedingId),
       );
-      whereConditions.push(eq(participants.userId, identifier.id));
+      whereConditions.push(
+        and(
+          eq(participants.userId, identifier.id),
+          inArray(participants.participantStateId, [
+            PARTICIPANT_STATES.WAITING_FOR_APPROVAL,
+            PARTICIPANT_STATES.APPROVED,
+          ]),
+        ),
+      );
     }
 
     if (filterProceedingNumber) {
@@ -278,6 +288,7 @@ export class ProceedingsRepository {
       .where(eq(participants.proceedingId, proceedingId))
       .then((rows) =>
         rows.map((row) => ({
+          participantId: row.participants.id,
           proceedingId: row.participants.proceedingId,
           user: row.users,
           participantState: {
@@ -296,6 +307,7 @@ export class ProceedingsRepository {
         and(
           eq(participants.userId, userId),
           eq(participants.proceedingId, proceedingId),
+          eq(participants.participantStateId, PARTICIPANT_STATES.APPROVED),
         ),
       )
       .then((result) => result.length > 0);

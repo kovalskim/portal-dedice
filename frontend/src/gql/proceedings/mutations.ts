@@ -53,3 +53,31 @@ export const SEND_MESSAGE_TO_PARTICIPANTS = gql`
     sendMessageToParticipants(data: $data)
   }
 `;
+
+export const INVITE_PARTICIPANTS_TO_PROCEEDING = gql`
+  mutation InviteParticipantToProceeding($data: ParticipantsInput!) {
+    inviteParticipantToProceeding(data: $data)
+  }
+`;
+
+export const APPROVE_PARTICIPANT = gql`
+  mutation ApproveParticipant($data: UpdateParticipantStateInput!) {
+    approveParticipant(data: $data) {
+      participantId
+    }
+  }
+`;
+
+export const REJECT_PARTICIPANT = gql`
+  mutation RejectParticipant($data: UpdateParticipantStateInput!) {
+    rejectParticipant(data: $data) {
+      participantId
+    }
+  }
+`;
+
+export const DELETE_PARTICIPANT = gql`
+  mutation DeleteParticipantById($data: DeleteParticipantInput!) {
+    deleteParticipantById(data: $data)
+  }
+`;

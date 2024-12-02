@@ -20,7 +20,7 @@ import {
   CreateProceedingResponse,
 } from '@frontend/gql/proceedings/mutations';
 import { useCustomToast } from '@frontend/hooks/useCustomToast.ts';
-import { ParticipantFormFields } from '@frontend/pages/userDashboard/components/proceedingModals/AddParticipantForm';
+import { ParticipantFormFields } from '@frontend/pages/proceeding/participants/components/addParticipants/AddParticipantsForm.tsx';
 import {
   NewProceedingForm,
   NewProceedingFormFields,
@@ -85,7 +85,7 @@ export const NewProceedingModal: FC<NewProceedingModalProps> = ({
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} size="xl">
+    <Modal isOpen={isOpen} onClose={onClose} size="3xl">
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>Nové dědické řízení</ModalHeader>

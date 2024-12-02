@@ -3,7 +3,10 @@ type ErrorCode =
   | 'UNAUTHORIZED'
   | 'NOT_PROCEEDING_PARTICIPANT'
   | 'FILE_NOT_FOUND'
-  | 'SERVER_ERROR';
+  | 'SERVER_ERROR'
+  | 'NOT_FOUND'
+  | 'DELETE_PARTICIPANT_ERROR'
+  | 'INVALID_TOKEN';
 
 const defaultErrorMessages: Record<ErrorCode, string> = {
   UNAUTHENTICATED: 'You must be authenticated to access this resource.',
@@ -12,6 +15,9 @@ const defaultErrorMessages: Record<ErrorCode, string> = {
   FILE_NOT_FOUND: 'The specified file was not found.',
   SERVER_ERROR:
     'An unexpected error occurred on the server. Please try again later.',
+  NOT_FOUND: 'Not found.',
+  DELETE_PARTICIPANT_ERROR: 'Participant was not deleted',
+  INVALID_TOKEN: 'Invalid token',
 };
 
 export class AppError extends Error {

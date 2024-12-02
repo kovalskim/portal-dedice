@@ -73,7 +73,7 @@ export class CreateProceedingResolver {
       expiresAt: new Date(),
     });
 
-    await emailService.sendNarratorInvitationEmail(
+    await emailService.sendParticipantInvitationEmail(
       input.narratorContactInfo.email!,
       input.narratorContactInfo.firstname!,
       input.narratorContactInfo.lastname!,

@@ -14,6 +14,9 @@ export class ParticipantState {
 @ObjectType()
 export class Participant {
   @Field(() => Number)
+  participantId!: number;
+
+  @Field(() => Number)
   proceedingId!: number;
 
   @Field(() => ParticipantState)

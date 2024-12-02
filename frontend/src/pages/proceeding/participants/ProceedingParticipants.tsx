@@ -1,6 +1,12 @@
 import { useEffect, useState } from 'react';
-import { useQuery } from '@apollo/client';
-import { AddIcon, EmailIcon } from '@chakra-ui/icons';
+import { useMutation, useQuery } from '@apollo/client';
+import {
+  AddIcon,
+  CheckIcon,
+  CloseIcon,
+  EmailIcon,
+  NotAllowedIcon,
+} from '@chakra-ui/icons';
 import {
   Box,
   Button,
@@ -19,13 +25,20 @@ import {
 import { useOutletContext } from 'react-router-dom';
 
 import { PrimaryButton } from '@frontend/components/buttons';
+import { PARTICIPANT_STATES } from '@frontend/constants.ts';
 import { Role, useAuth } from '@frontend/context/auth/auth-core';
+import {
+  APPROVE_PARTICIPANT,
+  REJECT_PARTICIPANT,
+} from '@frontend/gql/proceedings/mutations.ts';
 import {
   GET_PROCEEDING_PARTICIPANTS,
   ParticipantsResponse,
 } from '@frontend/gql/proceedings/queries.ts';
 import { useCustomToast } from '@frontend/hooks/useCustomToast.ts';
-import { OutletContextType } from '@frontend/pages/proceeding/overview/ProceedingOverviewPage';
+import { OutletContextType } from '@frontend/pages/proceeding/overview/ProceedingOverviewPage.tsx';
+import { AddParticipantsModal } from '@frontend/pages/proceeding/participants/components/addParticipants/AddParticipantsModal.tsx';
+import { DeleteParticipantModal } from '@frontend/pages/proceeding/participants/components/DeleteParticipantModal.tsx';
 
 import { SendEmailModal } from './components/sendEmail/SendEmailModal';
 
@@ -34,8 +47,15 @@ export const ProceedingParticipants = () => {
   const { role } = useAuth();
   const { proceeding } = useOutletContext<OutletContextType>();
   const [openSendEmailModal, setOpenSendEmailModal] = useState(false);
+  const [openAddParticipantsModal, setOpenAddParticipantsModal] =
+    useState(false);
+  const [selectedParticipant, setSelectedParticipant] = useState<{
+    id: number;
+  } | null>(null);
+  const [deleteParticipantModalOpen, setDeleteParticipantModalOpen] =
+    useState(false);
 
-  const { data, loading, error } = useQuery<ParticipantsResponse>(
+  const { data, loading, error, refetch } = useQuery<ParticipantsResponse>(
     GET_PROCEEDING_PARTICIPANTS,
     {
       variables: {
@@ -43,6 +63,10 @@ export const ProceedingParticipants = () => {
       },
     },
   );
+
+  const [approveParticipant] = useMutation(APPROVE_PARTICIPANT);
+
+  const [rejectParticipant] = useMutation(REJECT_PARTICIPANT);
 
   useEffect(() => {
     if (error) {
@@ -55,6 +79,63 @@ export const ProceedingParticipants = () => {
     }
   }, [error, showToast]);
 
+  const handleApproveParticipant = (participantId: number) => {
+    approveParticipant({
+      variables: {
+        data: {
+          proceedingId: Number(proceeding.id),
+          participantId: Number(participantId),
+        },
+      },
+    })
+      .then(() => {
+        showToast({
+          title: 'Schválení účastníka řízení proběhlo úspěšně.',
+          description: `Žádost uživatele o účast v dědickém řízení byla schválena!`,
+          status: 'success',
+        });
+        refetch();
+      })
+      .catch(() => {
+        showToast({
+          title: 'Schválení účastníka řízení proběhlo neúspěšně.',
+          description: `Žádost uživatele o účast v dědickém řízení nebyla schválena!`,
+          status: 'error',
+        });
+      });
+  };
+
+  const handleRejectParticipant = (id: number) => {
+    rejectParticipant({
+      variables: {
+        data: {
+          proceedingId: Number(proceeding.id),
+          participantId: Number(id),
+        },
+      },
+    })
+      .then(() => {
+        showToast({
+          title: 'Zamítnutí účastníka řízení proběhlo úspěšně.',
+          description: `Žádost uživatele o účast v dědickém řízení byla zamítnuta!`,
+          status: 'success',
+        });
+        refetch();
+      })
+      .catch(() => {
+        showToast({
+          title: 'Zamítnutí účastníka řízení proběhlo neúspěšně.',
+          description: `Žádost uživatele o účast v dědickém řízení nebyla zamítnuta!`,
+          status: 'error',
+        });
+      });
+  };
+
+  const handleDeleteParticipant = (id: number) => {
+    setDeleteParticipantModalOpen(true);
+    setSelectedParticipant({ id });
+  };
+
   return (
     <Box mt={2}>
       <Flex
@@ -64,7 +145,7 @@ export const ProceedingParticipants = () => {
         mb={4}
       >
         <Heading size="md" mb={{ base: 2, md: 0 }}>
-          Seznam účastníků
+          Seznam účastníků řízení
         </Heading>{' '}
         <Flex gap={4} direction={{ base: 'column', md: 'row' }}>
           {role === Role.NOTARY && (
@@ -76,8 +157,12 @@ export const ProceedingParticipants = () => {
             </PrimaryButton>
           )}
           {role === Role.NOTARY && (
-            <PrimaryButton variant="outline" leftIcon={<AddIcon />}>
-              Přidat účastníka
+            <PrimaryButton
+              variant="outline"
+              leftIcon={<AddIcon />}
+              onClick={() => setOpenAddParticipantsModal(true)}
+            >
+              Přidat účastníky
             </PrimaryButton>
           )}
         </Flex>
@@ -122,13 +207,47 @@ export const ProceedingParticipants = () => {
                   <Td>{participant.participantState.title}</Td>
                   {role === Role.NOTARY && (
                     <Td>
-                      {/* TODO zobrazit akce Schválit/Zamítnout/Odstranit */}
-                      <Button size="sm" mr={2} colorScheme="green">
-                        Schválit
-                      </Button>
-                      <Button size="sm" colorScheme="red">
-                        Zamítnout
-                      </Button>
+                      {participant.participantState.id ===
+                      PARTICIPANT_STATES.WAITING_FOR_APPROVAL ? (
+                        <>
+                          <Button
+                            size="sm"
+                            mr={2}
+                            colorScheme="green"
+                            onClick={() =>
+                              handleApproveParticipant(
+                                participant.participantId,
+                              )
+                            }
+                          >
+                            <CheckIcon mr={2} />
+                            Schválit
+                          </Button>
+                          <Button
+                            size="sm"
+                            colorScheme="red"
+                            onClick={() =>
+                              handleRejectParticipant(participant.participantId)
+                            }
+                          >
+                            <NotAllowedIcon mr={2} />
+                            Zamítnout
+                          </Button>
+                        </>
+                      ) : (
+                        <Button
+                          size="sm"
+                          mr={2}
+                          colorScheme="red"
+                          variant="outline"
+                          onClick={() =>
+                            handleDeleteParticipant(participant.participantId)
+                          }
+                        >
+                          <CloseIcon fontSize="xs" mr={2} />
+                          Odebrat účastníka
+                        </Button>
+                      )}
                     </Td>
                   )}
                 </Tr>
@@ -142,6 +261,21 @@ export const ProceedingParticipants = () => {
         isOpen={openSendEmailModal}
         onClose={() => setOpenSendEmailModal(false)}
       />
+
+      <AddParticipantsModal
+        proceedingId={proceeding.id}
+        isOpen={openAddParticipantsModal}
+        onClose={() => setOpenAddParticipantsModal(false)}
+      />
+
+      {selectedParticipant !== null && (
+        <DeleteParticipantModal
+          isOpen={deleteParticipantModalOpen}
+          proceedingId={proceeding.id}
+          participantId={selectedParticipant.id}
+          onClose={() => setDeleteParticipantModalOpen(false)}
+        />
+      )}
     </Box>
   );
 };

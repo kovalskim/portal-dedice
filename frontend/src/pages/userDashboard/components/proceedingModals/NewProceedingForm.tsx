@@ -1,20 +1,22 @@
 import { Heading } from '@chakra-ui/react';
-import * as zod from 'zod';
+import { z } from 'zod';
 
 import {
   DeceasedPersonForm,
   DeceasedPersonFormFields,
 } from '@frontend/components/forms/deceasedPersonForm/DeceasedPersonForm.tsx';
-import {
-  AddParticipantForm,
-  ParticipantFormFields,
-} from '@frontend/pages/userDashboard/components/proceedingModals/AddParticipantForm';
+import { ParticipantFormFields } from '@frontend/pages/proceeding/participants/components/addParticipants/AddParticipantsForm.tsx';
+import { AddNarratorForm } from '@frontend/pages/userDashboard/components/proceedingModals/AddNarratorForm.tsx';
 import { useNewProceedingFormStore } from '@frontend/pages/userDashboard/hooks/useNewProceedingFormStore.ts';
-import { newProceedingInputSchema } from '@shared/schemas/newProceedingInputSchema';
+import { deceasedInfoSchema } from '@shared/schemas/deceasedInfoSchema.ts';
+import { participantSchema } from '@shared/schemas/participantSchema.ts';
 
-export type NewProceedingFormFields = zod.infer<
-  typeof newProceedingInputSchema
->;
+const NewProceedingFormSchema = z.object({
+  deceasedPersonInfo: deceasedInfoSchema,
+  narratorContactInfo: participantSchema,
+});
+
+export type NewProceedingFormFields = z.infer<typeof NewProceedingFormSchema>;
 
 type NewProceedingFormProps = {
   onSubmitStep1: (data: DeceasedPersonFormFields) => void;
@@ -47,7 +49,7 @@ export const NewProceedingForm = ({
           <Heading size="sm" mb={6} textAlign="center">
             Krok2: Přidání účastníka (vypravitele)
           </Heading>
-          <AddParticipantForm id="narratorInfo" onSubmit={onSubmitStep2} />
+          <AddNarratorForm id="narratorInfo" onSubmit={onSubmitStep2} />
         </>
       )}
     </>

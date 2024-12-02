@@ -10,6 +10,7 @@ import { AwsService } from '@backend/services/AwsService/AwsService';
 import { EmailService } from '@backend/services/EmailService/EmailService';
 import { FileService } from '@backend/services/FileService/FileService';
 import { NotaryPaymentCalculationService } from '@backend/services/NotaryPaymentCalculationService/NotaryPaymentCalculationService';
+import { ParticipantsService } from '@backend/services/ParticipantsService/ParticipantsService';
 import { ParticipantValidationService } from '@backend/services/ParticipantValidationService/ParticipantValidationService';
 
 export type CustomContext = {
@@ -26,6 +27,7 @@ export type CustomContext = {
   emailService: EmailService;
   notaryPaymentCalculationService: NotaryPaymentCalculationService;
   fileService: FileService;
+  participantsService: ParticipantsService;
 };
 
 export type JWTPayload = {

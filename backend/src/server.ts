@@ -29,7 +29,7 @@ import { DistrictResolver } from '@backend/graphql/modules/educator/DistrictReso
 import { ScheduleResolver } from '@backend/graphql/modules/educator/ScheduleResolver';
 import { FileResolver } from '@backend/graphql/modules/file/fileResolver';
 import { NotaryPaymentCalculationResolver } from '@backend/graphql/modules/notaryPaymentCalculation/NotaryPaymentCalculationResolver';
-import { AcceptParticipantInvitationResolver } from '@backend/graphql/modules/participantInvitation/AcceptParticipantInvitationResolver';
+import { ParticipantsResolver } from '@backend/graphql/modules/participants/ParticipantsResolver';
 import { CreateProceedingResolver } from '@backend/graphql/modules/proceedings/create/CreateProceedingResolver';
 import { DeleteProceedingResolver } from '@backend/graphql/modules/proceedings/delete/DeleteProceedingResolver';
 import { GetProceedingsResolver } from '@backend/graphql/modules/proceedings/get/GetProceedingsResolver';
@@ -48,6 +48,7 @@ import { AwsService } from '@backend/services/AwsService/AwsService';
 import { EmailService } from '@backend/services/EmailService/EmailService';
 import { FileService } from '@backend/services/FileService/FileService';
 import { NotaryPaymentCalculationService } from '@backend/services/NotaryPaymentCalculationService/NotaryPaymentCalculationService';
+import { ParticipantsService } from '@backend/services/ParticipantsService/ParticipantsService';
 import { ParticipantValidationService } from '@backend/services/ParticipantValidationService/ParticipantValidationService';
 import { CustomContext } from '@backend/types/types';
 
@@ -67,8 +68,8 @@ const init = async () => {
       DistrictResolver,
       MessageResolver,
       SendBulkEmailResolver,
-      AcceptParticipantInvitationResolver,
       FileResolver,
+      ParticipantsResolver,
       NotaryPaymentCalculationResolver,
     ],
     emitSchemaFile: true,
@@ -135,27 +136,37 @@ const init = async () => {
       proceedingsRepository,
     );
     const awsService = new AwsService(s3Client);
+    const usersRepository = new UsersRepository(drizzle.db);
+    const participantInvitationsRepository =
+      new ParticipantInvitationsRepository(drizzle.db);
+    const participantsRepository = new ParticipantsRepository(drizzle.db);
+    const emailService = new EmailService(transporter);
 
     return {
       db: drizzle.db,
       authUser,
-      usersRepository: new UsersRepository(drizzle.db),
+      usersRepository: usersRepository,
       proceedingsRepository: proceedingsRepository,
       messageRepository: new MessagesRepository(drizzle.db),
-      participantInvitationsRepository: new ParticipantInvitationsRepository(
-        drizzle.db,
-      ),
+      participantInvitationsRepository: participantInvitationsRepository,
       participantsRepository: new ParticipantsRepository(drizzle.db),
       filesRepository: filesRepository,
       participantValidationService: participantValidationService,
       awsService: awsService,
       notaryPaymentCalculationService: new NotaryPaymentCalculationService(),
-      emailService: new EmailService(transporter),
+      emailService: emailService,
       fileService: new FileService(
         authUser,
         participantValidationService,
         filesRepository,
         awsService,
+      ),
+      participantsService: new ParticipantsService(
+        authUser,
+        participantsRepository,
+        participantInvitationsRepository,
+        usersRepository,
+        emailService,
       ),
     };
   };

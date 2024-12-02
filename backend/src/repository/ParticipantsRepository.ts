@@ -11,7 +11,7 @@ export interface CreateParticipantDTO {
 }
 
 export interface ParticipantDTO {
-  id: number;
+  participantId: number;
   user: {
     id: number;
     firstname: string;
@@ -67,7 +67,7 @@ export class ParticipantsRepository {
       .where(eq(participants.proceedingId, proceedingId));
 
     return result.map((row) => ({
-      id: row.id,
+      participantId: row.id,
       proceedingId: row.proceedingId,
       user: {
         id: row.userId,
@@ -117,5 +117,59 @@ export class ParticipantsRepository {
       participantStateId:
         data.participantStateId ?? PARTICIPANT_STATES.WAITING_FOR_APPROVAL,
     });
+  }
+
+  async getParticipantById(participantId: number): Promise<ParticipantDTO> {
+    const result = await this.db
+      .select({
+        id: participants.id,
+        proceedingId: participants.proceedingId,
+        userId: users.id,
+        firstname: users.firstname,
+        lastname: users.lastname,
+        email: users.email,
+        beforeTitle: users.beforeTitle,
+        afterTitle: users.afterTitle,
+        isVerified: users.isVerified,
+        stateId: participantStates.id,
+        stateTitle: participantStates.title,
+      })
+      .from(participants)
+      .innerJoin(users, eq(users.id, participants.userId))
+      .leftJoin(
+        participantStates,
+        eq(participantStates.id, participants.participantStateId),
+      )
+      .where(eq(participants.id, participantId));
+
+    return result.map((row) => ({
+      participantId: row.id,
+      proceedingId: row.proceedingId,
+      user: {
+        id: row.userId,
+        firstname: row.firstname,
+        lastname: row.lastname,
+        email: row.email,
+        beforeTitle: row.beforeTitle,
+        afterTitle: row.afterTitle,
+        isVerified: row.isVerified,
+      },
+      participantState: row.stateId
+        ? {
+            id: row.stateId,
+            title: row.stateTitle || '',
+          }
+        : undefined,
+    }))[0] as ParticipantDTO;
+  }
+
+  async updateParticipantStatus(
+    participantId: number,
+    stateId: number,
+  ): Promise<void> {
+    await this.db
+      .update(participants)
+      .set({ participantStateId: stateId })
+      .where(eq(participants.id, participantId));
   }
 }
