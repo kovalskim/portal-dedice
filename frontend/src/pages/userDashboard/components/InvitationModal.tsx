@@ -58,8 +58,8 @@ export const InvitationModal = () => {
     try {
       await acceptInvitation({ variables: { token: invitationToken } });
       showToast({
-        title: 'Úspěšně jste přijal(a) účast.',
-        description: 'Nyní jste členem dědického řízení.',
+        title: 'Úspěšně jste přijal(a) pozvánku.',
+        description: 'Vyčkejte na schválení vaší účasti v dědickém řízení.',
         status: 'success',
       });
     } catch (err) {
