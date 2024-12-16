@@ -4,6 +4,7 @@
 # -----------------------------------------------
 
 type AuthInfo {
+  role: Role!
   token: String!
   user: User!
 }
@@ -26,12 +27,14 @@ input DeceasedPersonInput {
   district: String!
   firstname: String!
   lastname: String!
-  narratorEmail: String
-  narratorFirstname: String
-  narratorLastname: String
   postalCode: String!
   sex: String!
   streetWithNumber: String!
+}
+
+input DeleteParticipantInput {
+  participantId: Float!
+  proceedingId: Float!
 }
 
 type District {
@@ -61,22 +64,25 @@ type Message {
 
 type Mutation {
   acceptParticipantInvitation(token: String!): Float!
+  approveParticipant(data: UpdateParticipantStateInput!): Participant!
   changePassword(newPassword: String!, oldPassword: String!, userId: String!): AuthInfo!
   createMessage(proceedingId: Float!, text: String!): Message!
-  deleteFile(id: String!): Boolean!
   createProceeding(data: NewProceedingInput!): Proceeding!
-  deleteFile(id: String!): String!
-  deleteProceedings(id: Float!): Boolean!
+  deleteFile(id: String!): Boolean!
+  deleteParticipantById(data: DeleteParticipantInput!): Boolean!
+  deleteProceeding(id: Float!): Boolean!
   getSignedUrl(filename: String!, filetype: String!, proceedingId: String!): SignedUrl!
   identifyNotary(data: DeceasedPersonInput!): Schedule!
+  inviteParticipantToProceeding(data: ParticipantsInput!): [Float!]!
   newPassword(newPassword: String!, token: String!): String!
   notaryPaymentCalculation(estateTotalValue: Float!): NotaryPaymentCalculation!
+  rejectParticipant(data: UpdateParticipantStateInput!): Participant!
   restorePassword(email: String!): String!
   saveFile(alias: String!, key: String!, proceedingId: String!, type: String!): Boolean!
   sendMessageToParticipants(data: SendEmailRequest!): String!
-  signIn(email: String!, password: String!): SignInInfo!
+  signIn(email: String!, password: String!): AuthInfo!
   signUp(email: String!, firstname: String!, lastname: String!, password: String!): AuthInfo!
-  updateProceedings(data: DeceasedPersonInput!, id: Float!): Proceeding!
+  updateProceeding(data: DeceasedPersonInput!, id: Float!): Proceeding!
   updateUser(afterTitle: String, beforeTitle: String, firstname: String!, lastname: String!, userId: String!): User!
   updateUserPreferences(emailNotifications: Boolean!, userId: String!): User!
   verifyEmail(token: String!): String!
@@ -104,6 +110,7 @@ type PaginatedProceedings {
 }
 
 type Participant {
+  participantId: Float!
   participantState: ParticipantState!
   proceedingId: Float!
   user: User!
@@ -120,6 +127,11 @@ type ParticipantState {
   title: String!
 }
 
+input ParticipantsInput {
+  participants: [ParticipantInput!]!
+  proceedingId: Float!
+}
+
 type Proceeding {
   deceasedCity: String!
   deceasedDateOfBirth: DateTimeISO!
@@ -131,6 +143,7 @@ type Proceeding {
   deceasedSex: String
   deceasedStreetWithNumber: String!
   id: ID!
+  isLoggedUserApprovedParticipantOrNotary: Boolean!
   narratorEmail: String
   narratorFirstname: String
   narratorLastname: String
@@ -171,15 +184,9 @@ type Schedule {
 
 input SendEmailRequest {
   message: String!
-  proceedingsId: Float!
+  proceedingId: Float!
   receivers: [String!]!
   title: String!
-}
-
-type SignInInfo {
-  role: Role!
-  token: String!
-  user: User!
 }
 
 type SignedUrl {
@@ -188,6 +195,11 @@ type SignedUrl {
 
 type Subscription {
   subscribeChat(proceedingId: Float!): NewMessageNotification!
+}
+
+input UpdateParticipantStateInput {
+  participantId: Float!
+  proceedingId: Float!
 }
 
 type User {

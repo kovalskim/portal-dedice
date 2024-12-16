@@ -23,33 +23,38 @@ import { WebSocketServer } from 'ws';
 import { MOCKS, PORT } from '@backend/config';
 import { getConnection } from '@backend/db/db';
 import { errorMiddleware } from '@backend/errors/errorMiddleware';
-import { MessageResolver } from '@backend/graphql/modules/chat/MessageResolver';
+import { ChatResolver } from '@backend/graphql/modules/chat/ChatResolver';
 import { pubSub } from '@backend/graphql/modules/chat/PubSub';
-import { DistrictResolver } from '@backend/graphql/modules/educator/DistrictResolver';
-import { ScheduleResolver } from '@backend/graphql/modules/educator/ScheduleResolver';
-import { FileResolver } from '@backend/graphql/modules/file/fileResolver';
+import { FileResolver } from '@backend/graphql/modules/file/FileResolver';
 import { NotaryPaymentCalculationResolver } from '@backend/graphql/modules/notaryPaymentCalculation/NotaryPaymentCalculationResolver';
 import { ParticipantsResolver } from '@backend/graphql/modules/participants/ParticipantsResolver';
-import { CreateProceedingResolver } from '@backend/graphql/modules/proceedings/create/CreateProceedingResolver';
-import { DeleteProceedingResolver } from '@backend/graphql/modules/proceedings/delete/DeleteProceedingResolver';
-import { GetProceedingsResolver } from '@backend/graphql/modules/proceedings/get/GetProceedingsResolver';
-import { UpdateProceedingResolver } from '@backend/graphql/modules/proceedings/update/UpdateProceedingResolver';
+import { ProceedingResolver } from '@backend/graphql/modules/proceedings/ProceedingResolver';
+import { DistrictResolver } from '@backend/graphql/modules/schedules/DistrictResolver';
+import { ScheduleResolver } from '@backend/graphql/modules/schedules/ScheduleResolver';
 import { SendBulkEmailResolver } from '@backend/graphql/modules/sendBulkEmail/SendBulkEmailResolver';
-import { UserResolver } from '@backend/graphql/modules/user/userResolver';
+import { UserResolver } from '@backend/graphql/modules/user/UserResolver';
 import { parseAndVerifyJWT } from '@backend/libs/jwt';
 import { mockResolvers } from '@backend/mocks/mocks';
-import { FilesRepository } from '@backend/repository/FilesRepository';
-import { MessagesRepository } from '@backend/repository/MessagesRepository';
-import { ParticipantInvitationsRepository } from '@backend/repository/ParticipantInvitationsRepository';
-import { ParticipantsRepository } from '@backend/repository/ParticipantsRepository';
-import { ProceedingsRepository } from '@backend/repository/ProceedingsRepository';
-import { UsersRepository } from '@backend/repository/UsersRepository';
+import { CourtRepository } from '@backend/repositories/CourtRepository';
+import { FileRepository } from '@backend/repositories/FileRepository';
+import { MessageRepository } from '@backend/repositories/MessageRepository';
+import { ParticipantInvitationRepository } from '@backend/repositories/ParticipantInvitationRepository';
+import { ParticipantRepository } from '@backend/repositories/ParticipantRepository';
+import { ProceedingRepository } from '@backend/repositories/ProceedingRepository';
+import { ScheduleRepository } from '@backend/repositories/ScheduleRepository';
+import { UserRepository } from '@backend/repositories/UserRepository';
+import { AuthenticationService } from '@backend/services/AuthenticationService/AuthenticationService';
 import { AwsService } from '@backend/services/AwsService/AwsService';
+import { BulkEmailService } from '@backend/services/BulkEmailService/BulkEmailService';
+import { ChatService } from '@backend/services/ChatService/ChatService';
 import { EmailService } from '@backend/services/EmailService/EmailService';
 import { FileService } from '@backend/services/FileService/FileService';
 import { NotaryPaymentCalculationService } from '@backend/services/NotaryPaymentCalculationService/NotaryPaymentCalculationService';
-import { ParticipantsService } from '@backend/services/ParticipantsService/ParticipantsService';
+import { ParticipantService } from '@backend/services/ParticipantService/ParticipantService';
 import { ParticipantValidationService } from '@backend/services/ParticipantValidationService/ParticipantValidationService';
+import { ProceedingService } from '@backend/services/ProceedingService/ProceedingService';
+import { ScheduleService } from '@backend/services/ScheduleService/ScheduleService';
+import { UserService } from '@backend/services/UserService/UserService';
 import { CustomContext } from '@backend/types/types';
 
 const init = async () => {
@@ -61,12 +66,9 @@ const init = async () => {
     resolvers: [
       UserResolver,
       ScheduleResolver,
-      CreateProceedingResolver,
-      GetProceedingsResolver,
-      UpdateProceedingResolver,
-      DeleteProceedingResolver,
+      ProceedingResolver,
       DistrictResolver,
-      MessageResolver,
+      ChatResolver,
       SendBulkEmailResolver,
       FileResolver,
       ParticipantsResolver,
@@ -129,28 +131,49 @@ const init = async () => {
       },
     });
 
-    const proceedingsRepository = new ProceedingsRepository(drizzle.db);
-    const filesRepository = new FilesRepository(drizzle.db);
+    const proceedingRepository = new ProceedingRepository(drizzle.db);
+    const fileRepository = new FileRepository(drizzle.db);
 
     const participantValidationService = new ParticipantValidationService(
-      proceedingsRepository,
+      proceedingRepository,
     );
     const awsService = new AwsService(s3Client);
-    const usersRepository = new UsersRepository(drizzle.db);
-    const participantInvitationsRepository =
-      new ParticipantInvitationsRepository(drizzle.db);
-    const participantsRepository = new ParticipantsRepository(drizzle.db);
+    const userRepository = new UserRepository(drizzle.db);
+    const participantInvitationRepository = new ParticipantInvitationRepository(
+      drizzle.db,
+    );
     const emailService = new EmailService(transporter);
+    const participantRepository = new ParticipantRepository(drizzle.db);
+    const participantService = new ParticipantService(
+      authUser,
+      participantRepository,
+      participantInvitationRepository,
+      participantValidationService,
+      userRepository,
+      emailService,
+    );
+    const messageRepository = new MessageRepository(drizzle.db);
+    const userService = new UserService(authUser, userRepository);
+    const courtRepository = new CourtRepository(drizzle.db);
+    const scheduleRepository = new ScheduleRepository(drizzle.db);
+    const proceedingService = new ProceedingService(
+      authUser,
+      proceedingRepository,
+      participantInvitationRepository,
+      emailService,
+      participantValidationService,
+      userService,
+    );
 
     return {
       db: drizzle.db,
       authUser,
-      usersRepository: usersRepository,
-      proceedingsRepository: proceedingsRepository,
-      messageRepository: new MessagesRepository(drizzle.db),
-      participantInvitationsRepository: participantInvitationsRepository,
-      participantsRepository: new ParticipantsRepository(drizzle.db),
-      filesRepository: filesRepository,
+      usersRepository: userRepository,
+      proceedingsRepository: proceedingRepository,
+      messageRepository: messageRepository,
+      participantInvitationsRepository: participantInvitationRepository,
+      participantRepository: new ParticipantRepository(drizzle.db),
+      fileRepository: fileRepository,
       participantValidationService: participantValidationService,
       awsService: awsService,
       notaryPaymentCalculationService: new NotaryPaymentCalculationService(),
@@ -158,14 +181,31 @@ const init = async () => {
       fileService: new FileService(
         authUser,
         participantValidationService,
-        filesRepository,
+        fileRepository,
         awsService,
       ),
-      participantsService: new ParticipantsService(
+      participantsService: participantService,
+      userService: userService,
+      chatService: new ChatService(
         authUser,
-        participantsRepository,
-        participantInvitationsRepository,
-        usersRepository,
+        participantValidationService,
+        messageRepository,
+        proceedingService,
+        participantService,
+        emailService,
+        userService,
+      ),
+      authenticationService: new AuthenticationService(
+        userService,
+        emailService,
+      ),
+      proceedingService: proceedingService,
+      scheduleService: new ScheduleService(courtRepository, scheduleRepository),
+      bulkEmailService: new BulkEmailService(
+        authUser,
+        participantValidationService,
+        proceedingService,
+        participantService,
         emailService,
       ),
     };

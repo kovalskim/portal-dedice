@@ -1,9 +1,9 @@
-import { ProceedingsRepository } from '@backend/repository/ProceedingsRepository';
+import { ProceedingRepository } from '@backend/repositories/ProceedingRepository';
 
 export class ParticipantValidationService {
-  proceedingRepository: ProceedingsRepository;
+  proceedingRepository: ProceedingRepository;
 
-  constructor(proceedingRepository: ProceedingsRepository) {
+  constructor(proceedingRepository: ProceedingRepository) {
     this.proceedingRepository = proceedingRepository;
   }
 

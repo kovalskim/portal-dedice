@@ -166,7 +166,9 @@ export const files = mysqlTable('files', {
   id: int('id').primaryKey().autoincrement(),
   path: varchar('path', { length: 255 }).notNull(),
   timestamp: timestamp('timestamp').notNull().defaultNow(),
-  userId: int('user_id').references(() => users.id),
+  userId: int('user_id')
+    .references(() => users.id)
+    .notNull(),
   alias: varchar('alias', { length: 255 }).notNull(),
   type: mysqlEnum('type', FileType).notNull(),
   proceedingId: int('proceeding_id')
@@ -178,10 +180,14 @@ export const files = mysqlTable('files', {
 
 export const messages = mysqlTable('messages', {
   id: int('id').primaryKey().autoincrement(),
-  userId: int('user_id').references(() => users.id),
-  proceedingId: int('proceeding_id').references(() => proceedings.id, {
-    onDelete: 'cascade',
-  }),
+  userId: int('user_id')
+    .references(() => users.id)
+    .notNull(),
+  proceedingId: int('proceeding_id')
+    .references(() => proceedings.id, {
+      onDelete: 'cascade',
+    })
+    .notNull(),
   text: varchar('text', { length: 4096 }).notNull(),
   timestamp: timestamp('timestamp').notNull().defaultNow(),
 });

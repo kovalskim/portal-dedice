@@ -36,10 +36,7 @@ export class AuthInfo {
 
   @Field()
   token!: string;
-}
 
-@ObjectType()
-export class SignInInfo extends AuthInfo {
   @Field(() => Role)
   role!: Role;
 }

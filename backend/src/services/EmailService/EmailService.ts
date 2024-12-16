@@ -140,6 +140,25 @@ export class EmailService {
     await this.sendEmail(email, subject, htmlContent);
   }
 
+  async sendBulkEmail(
+    title: string,
+    message: string,
+    proceedingId: number,
+    proceedingNumber: string,
+    receivers: string[],
+  ) {
+    // send email to all receivers
+    for (const receiver of receivers) {
+      await this.sendEmailToParticipant(
+        title,
+        message,
+        proceedingId,
+        proceedingNumber,
+        receiver,
+      );
+    }
+  }
+
   private async sendEmail(to: string, subject: string, htmlContent: string) {
     const mailOptions = {
       from: `Portál dědice <${process.env.GMAIL_USER}>`,

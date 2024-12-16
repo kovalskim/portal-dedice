@@ -1,36 +1,41 @@
-import { Arg, Ctx, Mutation, Resolver } from 'type-graphql';
+import { Arg, Ctx, Mutation, Query, Resolver } from 'type-graphql';
 
-import { AppError } from '@backend/errors/AppError';
 import { DeleteParticipantInput } from '@backend/graphql/modules/participants/DeleteParticipantInput';
 import { ParticipantsInput } from '@backend/graphql/modules/participants/ParticipantsInput';
+import { Participant } from '@backend/graphql/modules/participants/participantType';
 import { UpdateParticipantStateInput } from '@backend/graphql/modules/participants/UpdateParticipantStateInput';
-import { Participant } from '@backend/graphql/modules/proceedings/participantType';
 import { CustomContext } from '@backend/types/types';
-import { Authenticated } from '@backend/utils/decorators/Authenticated';
+import {
+  Authenticated,
+  AuthenticatedContext,
+} from '@backend/utils/decorators/Authenticated';
 
 @Resolver()
 export class ParticipantsResolver {
+  @Query(() => [Participant])
+  @Authenticated()
+  async proceedingParticipants(
+    @Arg('id') proceedingId: number,
+    @Ctx() { authUser, participantsService }: AuthenticatedContext,
+  ): Promise<Participant[]> {
+    return await participantsService.findParticipantsInProceeding(
+      authUser!.id,
+      proceedingId,
+    );
+  }
+
   @Mutation(() => [Number])
   @Authenticated()
   async inviteParticipantToProceeding(
     @Arg('data')
     input: ParticipantsInput,
     @Ctx()
-    {
-      authUser,
-      participantValidationService,
-      participantsService,
-    }: CustomContext,
+    { authUser, participantsService }: CustomContext,
   ) {
-    if (
-      !(await participantValidationService.isUserNotaryInProceeding(
-        authUser!.id,
-        input.proceedingId,
-      ))
-    ) {
-      throw new AppError('UNAUTHORIZED');
-    }
-    return participantsService.inviteParticipantToProceeding(input);
+    return participantsService.inviteParticipantToProceeding(
+      authUser!.id,
+      input,
+    );
   }
 
   @Mutation(() => Number)
@@ -49,22 +54,13 @@ export class ParticipantsResolver {
     @Arg('data')
     input: UpdateParticipantStateInput,
     @Ctx()
-    {
-      authUser,
-      participantsService,
-      participantValidationService,
-    }: CustomContext,
+    { authUser, participantsService }: CustomContext,
   ) {
-    if (
-      !(await participantValidationService.isUserNotaryInProceeding(
-        authUser!.id,
-        input.proceedingId,
-      ))
-    ) {
-      throw new AppError('UNAUTHORIZED');
-    }
-
-    return await participantsService.approveParticipant(input.participantId);
+    return await participantsService.approveParticipant(
+      authUser!.id,
+      input.proceedingId,
+      input.participantId,
+    );
   }
 
   @Mutation(() => Participant)
@@ -73,45 +69,27 @@ export class ParticipantsResolver {
     @Arg('data')
     input: UpdateParticipantStateInput,
     @Ctx()
-    {
-      authUser,
-      participantsService,
-      participantValidationService,
-    }: CustomContext,
+    { authUser, participantsService }: CustomContext,
   ) {
-    if (
-      !(await participantValidationService.isUserNotaryInProceeding(
-        authUser!.id,
-        input.proceedingId,
-      ))
-    ) {
-      throw new AppError('UNAUTHORIZED');
-    }
-
-    return await participantsService.rejectParticipant(input.participantId);
+    return await participantsService.rejectParticipant(
+      authUser!.id,
+      input.proceedingId,
+      input.participantId,
+    );
   }
 
   @Mutation(() => Boolean)
   @Authenticated()
   async deleteParticipantById(
-    @Arg('data') data: DeleteParticipantInput,
+    @Arg('data') input: DeleteParticipantInput,
     @Ctx()
-    {
-      authUser,
-      participantValidationService,
-      participantsService,
-    }: CustomContext,
+    { authUser, participantsService }: CustomContext,
   ) {
-    if (
-      !(await participantValidationService.isUserNotaryInProceeding(
-        authUser!.id,
-        data.proceedingId,
-      ))
-    ) {
-      throw new AppError('UNAUTHORIZED');
-    }
-
-    await participantsService.deleteParticipantById(data.participantId);
+    await participantsService.deleteParticipantById(
+      authUser!.id,
+      input.proceedingId,
+      input.participantId,
+    );
     return true;
   }
 }

@@ -1,6 +1,6 @@
 import { Field, InputType } from 'type-graphql';
 
-import { ParticipantInput } from '@backend/graphql/modules/proceedings/create/ParticipantInput';
+import { ParticipantInput } from '@backend/graphql/modules/proceedings/ParticipantInput';
 
 @InputType()
 export class ParticipantsInput {

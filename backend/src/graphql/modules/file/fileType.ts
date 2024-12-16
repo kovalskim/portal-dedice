@@ -1,7 +1,5 @@
 import { Field, ID, ObjectType } from 'type-graphql';
 
-import { User } from '@backend/graphql/modules/user/userType';
-
 @ObjectType()
 export class File {
   @Field(() => ID)
@@ -13,8 +11,8 @@ export class File {
   @Field()
   timestamp!: string;
 
-  @Field(() => User)
-  user!: User;
+  @Field()
+  userId!: number;
 
   @Field()
   alias!: string;

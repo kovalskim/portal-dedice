@@ -1,10 +1,6 @@
 import { Field, ID, ObjectType } from 'type-graphql';
 
-export enum UserRole {
-  ADMIN = 'admin',
-  USER = 'user',
-  NOTARY = 'notary',
-}
+import { UserRole } from '@backend/dtos/RoleDTO';
 
 @ObjectType()
 export class Role {

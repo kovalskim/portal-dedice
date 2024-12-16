@@ -1,6 +1,6 @@
+import { FileDTO } from '@backend/dtos/FileDTO';
 import { AppError } from '@backend/errors/AppError';
-import { File } from '@backend/graphql/modules/file/fileType';
-import { FilesRepository } from '@backend/repository/FilesRepository';
+import { FileRepository } from '@backend/repositories/FileRepository';
 import { AwsService } from '@backend/services/AwsService/AwsService';
 import { ParticipantValidationService } from '@backend/services/ParticipantValidationService/ParticipantValidationService';
 import { JWTPayload } from '@backend/types/types';
@@ -8,22 +8,22 @@ import { JWTPayload } from '@backend/types/types';
 export class FileService {
   private readonly authUser: JWTPayload | null;
   private participantValidationService: ParticipantValidationService;
-  private filesRepository: FilesRepository;
+  private fileRepository: FileRepository;
   private awsService: AwsService;
 
   constructor(
     authUser: JWTPayload | null,
     participantValidationService: ParticipantValidationService,
-    filesRepository: FilesRepository,
+    filesRepository: FileRepository,
     awsService: AwsService,
   ) {
     this.authUser = authUser;
     this.participantValidationService = participantValidationService;
-    this.filesRepository = filesRepository;
+    this.fileRepository = filesRepository;
     this.awsService = awsService;
   }
 
-  async findFilesByProceeding(proceedingId: number): Promise<File[]> {
+  async findFilesByProceeding(proceedingId: number): Promise<FileDTO[]> {
     if (
       !(await this.participantValidationService.isUserParticipantOrNotaryOfProceeding(
         this.authUser!.id,
@@ -34,7 +34,7 @@ export class FileService {
     }
 
     const files =
-      await this.filesRepository.findFilesByProceedingId(proceedingId);
+      await this.fileRepository.findFilesByProceedingId(proceedingId);
 
     return Promise.all(
       files.map((f) =>
@@ -51,7 +51,7 @@ export class FileService {
   async deleteFile(fileId: string): Promise<void> {
     const id = parseInt(fileId, 10);
 
-    const file = await this.filesRepository.getFileById(id);
+    const file = await this.fileRepository.getFileById(id);
 
     if (
       !(await this.participantValidationService.isUserParticipantOrNotaryOfProceeding(
@@ -67,7 +67,7 @@ export class FileService {
     }
 
     try {
-      await this.filesRepository.deleteFile(id);
+      await this.fileRepository.deleteFile(id);
     } catch (error) {
       throw new AppError('SERVER_ERROR', 'Failed to delete file');
     }
@@ -117,7 +117,7 @@ export class FileService {
       throw new AppError('NOT_PROCEEDING_PARTICIPANT');
     }
 
-    await this.filesRepository.saveFile(
+    await this.fileRepository.saveFile(
       proceedingId,
       alias,
       type,

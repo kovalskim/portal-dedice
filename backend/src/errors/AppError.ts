@@ -6,7 +6,12 @@ type ErrorCode =
   | 'SERVER_ERROR'
   | 'NOT_FOUND'
   | 'DELETE_PARTICIPANT_ERROR'
-  | 'INVALID_TOKEN';
+  | 'INVALID_TOKEN'
+  | 'VERIFICATION_ERROR'
+  | 'VALIDATION_ERROR'
+  | 'ALREADY_EXISTING'
+  | 'DELETE_ERROR'
+  | 'NOT_SUPPORTED';
 
 const defaultErrorMessages: Record<ErrorCode, string> = {
   UNAUTHENTICATED: 'You must be authenticated to access this resource.',
@@ -18,6 +23,11 @@ const defaultErrorMessages: Record<ErrorCode, string> = {
   NOT_FOUND: 'Not found.',
   DELETE_PARTICIPANT_ERROR: 'Participant was not deleted',
   INVALID_TOKEN: 'Invalid token',
+  VERIFICATION_ERROR: 'Not verified',
+  VALIDATION_ERROR: 'Invalid input',
+  ALREADY_EXISTING: 'Already existing',
+  DELETE_ERROR: 'Error during deletion process occurred',
+  NOT_SUPPORTED: 'Not supported',
 };
 
 export class AppError extends Error {

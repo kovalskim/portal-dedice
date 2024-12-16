@@ -1,0 +1,145 @@
+import { MessageDTO } from '@backend/dtos/MessageDTO';
+import { ProceedingDTO } from '@backend/dtos/ProceedingDTO';
+import { AppError } from '@backend/errors/AppError';
+import { CHAT_TOPIC } from '@backend/graphql/modules/chat/ChatResolver';
+import { pubSub } from '@backend/graphql/modules/chat/PubSub';
+import { MessageRepository } from '@backend/repositories/MessageRepository';
+import { EmailService } from '@backend/services/EmailService/EmailService';
+import { ParticipantService } from '@backend/services/ParticipantService/ParticipantService';
+import { ParticipantValidationService } from '@backend/services/ParticipantValidationService/ParticipantValidationService';
+import { ProceedingService } from '@backend/services/ProceedingService/ProceedingService';
+import { UserService } from '@backend/services/UserService/UserService';
+import { JWTPayload } from '@backend/types/types';
+
+export class ChatService {
+  private readonly authUser: JWTPayload | null;
+  private readonly participantValidationService: ParticipantValidationService;
+  private readonly messageRepository: MessageRepository;
+  private readonly proceedingService: ProceedingService;
+  private readonly participantService: ParticipantService;
+  private readonly emailService: EmailService;
+  private readonly userService: UserService;
+
+  constructor(
+    authUser: JWTPayload | null,
+    participantValidationService: ParticipantValidationService,
+    messageRepository: MessageRepository,
+    proceedingService: ProceedingService,
+    participantService: ParticipantService,
+    emailService: EmailService,
+    userService: UserService,
+  ) {
+    this.authUser = authUser;
+    this.participantValidationService = participantValidationService;
+    this.messageRepository = messageRepository;
+    this.proceedingService = proceedingService;
+    this.participantService = participantService;
+    this.emailService = emailService;
+    this.userService = userService;
+  }
+
+  async findAllMessagesByProceedingId(proceedingId: number) {
+    // Check if user is participant in proceeding to get messages
+    if (
+      !(await this.participantValidationService.isUserParticipantOrNotaryOfProceeding(
+        this.authUser!.id,
+        proceedingId,
+      ))
+    ) {
+      throw new AppError(
+        'UNAUTHORIZED',
+        'User is not a participant in this proceeding',
+      );
+    }
+
+    return await this.messageRepository.findMessagesByProceedingId(
+      proceedingId,
+    );
+  }
+
+  async createMessage(proceedingId: number, text: string) {
+    if (
+      !(await this.participantValidationService.isUserParticipantOrNotaryOfProceeding(
+        this.authUser!.id,
+        proceedingId,
+      ))
+    ) {
+      throw new AppError(
+        'UNAUTHORIZED',
+        'User is not a participant in this proceeding',
+      );
+    }
+
+    const proceeding = await this.proceedingService.getProceeding(
+      this.authUser!.id,
+      proceedingId,
+    );
+    if (!proceeding) {
+      throw new AppError('NOT_FOUND', 'Proceeding with given id was not found');
+    }
+
+    const newMessageId = await this.messageRepository.createMessage(
+      this.authUser!.id,
+      proceedingId,
+      text,
+    );
+
+    const newMessage =
+      await this.messageRepository.getMessageById(newMessageId);
+    if (!newMessage) {
+      throw new AppError('SERVER_ERROR', 'Something went wrong');
+    }
+
+    pubSub.publish(CHAT_TOPIC, {
+      newMessageId: newMessage.id,
+      proceedingId: proceeding.id,
+    });
+
+    await this.notifyParticipantsAndNotary(newMessage, proceeding);
+
+    return newMessage;
+  }
+
+  private async notifyParticipantsAndNotary(
+    newMessage: MessageDTO,
+    proceeding: ProceedingDTO,
+  ) {
+    // notify participants about new message
+    const participants =
+      await this.participantService.findParticipantsInProceeding(
+        this.authUser!.id,
+        proceeding.id,
+      );
+    const sender = await this.userService.getUserById(newMessage.userId);
+    for (const participant of participants) {
+      if (
+        participant.user.id !== this.authUser!.id &&
+        participant.user.emailNotifications
+      ) {
+        this.emailService.sendNewMessageNotification(
+          participant.user.email,
+          participant.user.firstname,
+          `${sender.firstname} ${sender.lastname}`,
+          newMessage.text,
+          proceeding.id,
+          proceeding.proceedingNumber,
+        );
+      }
+    }
+
+    // notify also notary
+    if (proceeding.notaryId !== this.authUser!.id) {
+      const notary = await this.userService.getUserById(proceeding.notaryId);
+      if (notary && notary.emailNotifications) {
+        this.emailService.sendNewMessageNotification(
+          notary.email,
+          notary.firstname,
+          `${sender.firstname} ${sender.lastname}`,
+          newMessage.text,
+          proceeding.id,
+          proceeding.proceedingNumber,
+        );
+      }
+    }
+  }
+}

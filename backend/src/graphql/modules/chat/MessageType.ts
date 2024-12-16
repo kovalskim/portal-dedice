@@ -1,19 +1,14 @@
 import { Field, ID, ObjectType } from 'type-graphql';
 
-import { User } from '@backend/graphql/modules/user/userType';
-
 @ObjectType()
 export class Message {
   @Field(() => ID)
   id!: number;
 
-  @Field(() => Number, { nullable: true })
-  userId!: number | null;
+  @Field(() => Number)
+  userId!: number;
 
-  @Field(() => User || null, { nullable: true })
-  user!: User | null;
-
-  @Field(() => Number, { nullable: true })
+  @Field(() => Number)
   proceedingId!: number;
 
   @Field()
