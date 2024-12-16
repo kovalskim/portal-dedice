@@ -23,17 +23,17 @@ export class ParticipantService {
 
   constructor(
     authUser: JWTPayload | null,
-    participantsRepository: ParticipantRepository,
-    participantInvitationsRepository: ParticipantInvitationRepository,
+    participantRepository: ParticipantRepository,
+    participantInvitationRepository: ParticipantInvitationRepository,
     participantValidationService: ParticipantValidationService,
-    usersRepository: UserRepository,
+    userRepository: UserRepository,
     emailService: EmailService,
   ) {
     this.authUser = authUser;
-    this.participantRepository = participantsRepository;
-    this.participantInvitationRepository = participantInvitationsRepository;
+    this.participantRepository = participantRepository;
+    this.participantInvitationRepository = participantInvitationRepository;
     this.participantValidationService = participantValidationService;
-    this.userRepository = usersRepository;
+    this.userRepository = userRepository;
     this.emailService = emailService;
   }
 

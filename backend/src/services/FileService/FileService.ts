@@ -14,12 +14,12 @@ export class FileService {
   constructor(
     authUser: JWTPayload | null,
     participantValidationService: ParticipantValidationService,
-    filesRepository: FileRepository,
+    fileRepository: FileRepository,
     awsService: AwsService,
   ) {
     this.authUser = authUser;
     this.participantValidationService = participantValidationService;
-    this.fileRepository = filesRepository;
+    this.fileRepository = fileRepository;
     this.awsService = awsService;
   }
 

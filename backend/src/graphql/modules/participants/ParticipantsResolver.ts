@@ -16,9 +16,9 @@ export class ParticipantsResolver {
   @Authenticated()
   async proceedingParticipants(
     @Arg('id') proceedingId: number,
-    @Ctx() { authUser, participantsService }: AuthenticatedContext,
+    @Ctx() { authUser, participantService }: AuthenticatedContext,
   ): Promise<Participant[]> {
-    return await participantsService.findParticipantsInProceeding(
+    return await participantService.findParticipantsInProceeding(
       authUser!.id,
       proceedingId,
     );
@@ -30,9 +30,9 @@ export class ParticipantsResolver {
     @Arg('data')
     input: ParticipantsInput,
     @Ctx()
-    { authUser, participantsService }: CustomContext,
+    { authUser, participantService }: CustomContext,
   ) {
-    return participantsService.inviteParticipantToProceeding(
+    return participantService.inviteParticipantToProceeding(
       authUser!.id,
       input,
     );
@@ -43,9 +43,9 @@ export class ParticipantsResolver {
   async acceptParticipantInvitation(
     @Arg('token') token: string,
     @Ctx()
-    { participantsService }: CustomContext,
+    { participantService }: CustomContext,
   ): Promise<number> {
-    return await participantsService.acceptParticipantInvitation(token);
+    return await participantService.acceptParticipantInvitation(token);
   }
 
   @Mutation(() => Participant)
@@ -54,9 +54,9 @@ export class ParticipantsResolver {
     @Arg('data')
     input: UpdateParticipantStateInput,
     @Ctx()
-    { authUser, participantsService }: CustomContext,
+    { authUser, participantService }: CustomContext,
   ) {
-    return await participantsService.approveParticipant(
+    return await participantService.approveParticipant(
       authUser!.id,
       input.proceedingId,
       input.participantId,
@@ -69,9 +69,9 @@ export class ParticipantsResolver {
     @Arg('data')
     input: UpdateParticipantStateInput,
     @Ctx()
-    { authUser, participantsService }: CustomContext,
+    { authUser, participantService }: CustomContext,
   ) {
-    return await participantsService.rejectParticipant(
+    return await participantService.rejectParticipant(
       authUser!.id,
       input.proceedingId,
       input.participantId,
@@ -83,9 +83,9 @@ export class ParticipantsResolver {
   async deleteParticipantById(
     @Arg('data') input: DeleteParticipantInput,
     @Ctx()
-    { authUser, participantsService }: CustomContext,
+    { authUser, participantService }: CustomContext,
   ) {
-    await participantsService.deleteParticipantById(
+    await participantService.deleteParticipantById(
       authUser!.id,
       input.proceedingId,
       input.participantId,

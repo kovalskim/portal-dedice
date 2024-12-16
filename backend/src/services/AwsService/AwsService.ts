@@ -7,10 +7,10 @@ import {
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 
 export class AwsService {
-  private readonly s3: S3Client;
+  private readonly s3Client: S3Client;
 
-  constructor(s3: S3Client) {
-    this.s3 = s3;
+  constructor(s3Client: S3Client) {
+    this.s3Client = s3Client;
   }
 
   async getFilePath(key: string): Promise<string> {
@@ -19,7 +19,7 @@ export class AwsService {
       Key: key,
     });
 
-    return await getSignedUrl(this.s3, command, { expiresIn: 3600 });
+    return await getSignedUrl(this.s3Client, command, { expiresIn: 3600 });
   }
 
   async deleteFile(key: string): Promise<void> {
@@ -27,7 +27,7 @@ export class AwsService {
       Bucket: process.env.AWS_S3_BUCKET_NAME,
       Key: key,
     });
-    await this.s3.send(command);
+    await this.s3Client.send(command);
   }
 
   async getUploadUrl(key: string, filetype: string): Promise<string> {
@@ -36,6 +36,6 @@ export class AwsService {
       Key: key,
       ContentType: filetype,
     });
-    return await getSignedUrl(this.s3, command, { expiresIn: 300 });
+    return await getSignedUrl(this.s3Client, command, { expiresIn: 300 });
   }
 }

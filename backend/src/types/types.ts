@@ -1,11 +1,5 @@
 import { MySql2Database } from 'drizzle-orm/mysql2';
 
-import { FileRepository } from '@backend/repositories/FileRepository';
-import { MessageRepository } from '@backend/repositories/MessageRepository';
-import { ParticipantInvitationRepository } from '@backend/repositories/ParticipantInvitationRepository';
-import { ParticipantRepository } from '@backend/repositories/ParticipantRepository';
-import { ProceedingRepository } from '@backend/repositories/ProceedingRepository';
-import { UserRepository } from '@backend/repositories/UserRepository';
 import { AuthenticationService } from '@backend/services/AuthenticationService/AuthenticationService';
 import { AwsService } from '@backend/services/AwsService/AwsService';
 import { BulkEmailService } from '@backend/services/BulkEmailService/BulkEmailService';
@@ -22,18 +16,12 @@ import { UserService } from '@backend/services/UserService/UserService';
 export type CustomContext = {
   db: MySql2Database<Record<string, unknown>>;
   authUser: JWTPayload | null;
-  usersRepository: UserRepository;
-  proceedingsRepository: ProceedingRepository;
-  messageRepository: MessageRepository;
-  fileRepository: FileRepository;
-  participantInvitationsRepository: ParticipantInvitationRepository;
-  participantRepository: ParticipantRepository;
   participantValidationService: ParticipantValidationService;
   awsService: AwsService;
   emailService: EmailService;
   notaryPaymentCalculationService: NotaryPaymentCalculationService;
   fileService: FileService;
-  participantsService: ParticipantService;
+  participantService: ParticipantService;
   userService: UserService;
   chatService: ChatService;
   authenticationService: AuthenticationService;
