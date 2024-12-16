@@ -10,6 +10,7 @@ import { SubmitHandler } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 
 import { SIGN_UP_MUTATION } from '@frontend/gql/user/mutations';
+import { useCustomToast } from '@frontend/hooks/useCustomToast.ts';
 import { Routes } from '@frontend/routes/routes.ts';
 
 import { FormFields, RegistrationForm } from './components/RegistrationForm';
@@ -18,22 +19,30 @@ export const SignUpPage = () => {
   const navigate = useNavigate();
   const isMobile = useBreakpointValue({ base: true, md: false });
 
-  const [signUp, { loading, error }] = useMutation(SIGN_UP_MUTATION);
+  const showToast = useCustomToast();
+
+  const [signUp, { loading }] = useMutation(SIGN_UP_MUTATION, {
+    onError: () => {
+      showToast({
+        title: 'Registrace se nezdařila.',
+        description: 'Uživatel se zadanou emailovou adresou již existuje.',
+        status: 'error',
+      });
+    },
+    onCompleted: () => {
+      navigate(Routes.emailConfirmation);
+    },
+  });
 
   const onSubmit: SubmitHandler<FormFields> = async (data) => {
-    try {
-      await signUp({
-        variables: {
-          firstname: data.firstname,
-          lastname: data.lastname,
-          email: data.email,
-          password: data.password,
-        },
-      });
-      navigate(Routes.emailConfirmation);
-    } catch (err) {
-      console.error(err);
-    }
+    await signUp({
+      variables: {
+        firstname: data.firstname,
+        lastname: data.lastname,
+        email: data.email,
+        password: data.password,
+      },
+    });
   };
 
   return (
@@ -52,11 +61,7 @@ export const SignUpPage = () => {
             boxShadow="lg"
             borderRadius="lg"
           >
-            <RegistrationForm
-              onSubmit={onSubmit}
-              loading={loading}
-              error={error}
-            />
+            <RegistrationForm onSubmit={onSubmit} loading={loading} />
           </Box>
         </Flex>
       ) : (
@@ -84,11 +89,7 @@ export const SignUpPage = () => {
               alignItems="center"
               borderLeftRadius="lg"
             >
-              <RegistrationForm
-                onSubmit={onSubmit}
-                loading={loading}
-                error={error}
-              />
+              <RegistrationForm onSubmit={onSubmit} loading={loading} />
             </Box>
             <Box
               w="45%"

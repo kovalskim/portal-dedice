@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useMutation, useQuery } from '@apollo/client';
 import {
   AddIcon,
@@ -55,80 +55,79 @@ export const ProceedingParticipants = () => {
   const [deleteParticipantModalOpen, setDeleteParticipantModalOpen] =
     useState(false);
 
-  const { data, loading, error, refetch } = useQuery<ParticipantsResponse>(
+  const { data, loading } = useQuery<ParticipantsResponse>(
     GET_PROCEEDING_PARTICIPANTS,
     {
       variables: {
         proceedingId: Number(proceeding.id),
       },
+      onError: () => {
+        showToast({
+          title: 'Nepodařilo se načíst účastníky řízení',
+          description:
+            'Při načítání účastníků dědického řízení se vyskytla chyba.',
+          status: 'error',
+        });
+      },
     },
   );
 
-  const [approveParticipant] = useMutation(APPROVE_PARTICIPANT);
-
-  const [rejectParticipant] = useMutation(REJECT_PARTICIPANT);
-
-  useEffect(() => {
-    if (error) {
+  const [approveParticipant] = useMutation(APPROVE_PARTICIPANT, {
+    onError: () => {
       showToast({
-        title: 'Nepodařilo se načíst účastníky řízení',
-        description:
-          'Při načítání účastníků dědického řízení se vyskytla chyba.',
+        title: 'Schválení účastníka řízení proběhlo neúspěšně.',
+        description: `Žádost uživatele o účast v dědickém řízení nebyla schválena!`,
         status: 'error',
       });
-    }
-  }, [error, showToast]);
+    },
+    onCompleted: () => {
+      showToast({
+        title: 'Schválení účastníka řízení proběhlo úspěšně.',
+        description: `Žádost uživatele o účast v dědickém řízení byla schválena!`,
+        status: 'success',
+      });
+    },
+    refetchQueries: [GET_PROCEEDING_PARTICIPANTS],
+  });
 
-  const handleApproveParticipant = (participantId: number) => {
-    approveParticipant({
+  const [rejectParticipant] = useMutation(REJECT_PARTICIPANT, {
+    onError: () => {
+      showToast({
+        title: 'Zamítnutí účastníka řízení proběhlo neúspěšně.',
+        description: `Žádost uživatele o účast v dědickém řízení nebyla zamítnuta!`,
+        status: 'error',
+      });
+    },
+    onCompleted: () => {
+      showToast({
+        title: 'Zamítnutí účastníka řízení proběhlo úspěšně.',
+        description: `Žádost uživatele o účast v dědickém řízení byla zamítnuta!`,
+        status: 'success',
+      });
+    },
+    refetchQueries: [GET_PROCEEDING_PARTICIPANTS],
+  });
+
+  const handleApproveParticipant = async (participantId: number) => {
+    await approveParticipant({
       variables: {
         data: {
           proceedingId: Number(proceeding.id),
           participantId: Number(participantId),
         },
       },
-    })
-      .then(() => {
-        showToast({
-          title: 'Schválení účastníka řízení proběhlo úspěšně.',
-          description: `Žádost uživatele o účast v dědickém řízení byla schválena!`,
-          status: 'success',
-        });
-        refetch();
-      })
-      .catch(() => {
-        showToast({
-          title: 'Schválení účastníka řízení proběhlo neúspěšně.',
-          description: `Žádost uživatele o účast v dědickém řízení nebyla schválena!`,
-          status: 'error',
-        });
-      });
+    });
   };
 
-  const handleRejectParticipant = (id: number) => {
-    rejectParticipant({
+  const handleRejectParticipant = async (id: number) => {
+    await rejectParticipant({
       variables: {
         data: {
           proceedingId: Number(proceeding.id),
           participantId: Number(id),
         },
       },
-    })
-      .then(() => {
-        showToast({
-          title: 'Zamítnutí účastníka řízení proběhlo úspěšně.',
-          description: `Žádost uživatele o účast v dědickém řízení byla zamítnuta!`,
-          status: 'success',
-        });
-        refetch();
-      })
-      .catch(() => {
-        showToast({
-          title: 'Zamítnutí účastníka řízení proběhlo neúspěšně.',
-          description: `Žádost uživatele o účast v dědickém řízení nebyla zamítnuta!`,
-          status: 'error',
-        });
-      });
+    });
   };
 
   const handleDeleteParticipant = (id: number) => {

@@ -1,4 +1,4 @@
-import { FC, useEffect } from 'react';
+import { FC } from 'react';
 import { useMutation } from '@apollo/client';
 import {
   Modal,
@@ -18,7 +18,6 @@ import {
 } from '@frontend/gql/proceedings/mutations';
 import { GET_ALL_PROCEEDINGS } from '@frontend/gql/proceedings/queries';
 import { useCustomToast } from '@frontend/hooks/useCustomToast.ts';
-import { useProceedings } from '@frontend/pages/userDashboard/hooks/useProceedings.ts';
 
 interface DeleteProceedingModalProps {
   isOpen: boolean;
@@ -33,36 +32,31 @@ export const DeleteProceedingModal: FC<DeleteProceedingModalProps> = ({
 }) => {
   const showToast = useCustomToast();
 
-  const { refetch } = useProceedings();
+  const [deleteProceeding, { loading }] = useMutation<DeleteProceedingResponse>(
+    DELETE_PROCEEDING,
+    {
+      onError: () => {
+        showToast({
+          title: 'Smazání dědického řízení se nezdařilo',
+          description: 'Při mazání dědického řízení došlo k problémům.',
+          status: 'error',
+        });
+      },
+      onCompleted: () => {
+        showToast({
+          title: 'Dědické řízení bylo úspěšně smazáno.',
+          description: 'Řízení bylo odstraněno.',
+          status: 'success',
+        });
+        onClose();
+      },
+      refetchQueries: [GET_ALL_PROCEEDINGS],
+    },
+  );
 
-  const [deleteProceeding, { loading, error }] =
-    useMutation<DeleteProceedingResponse>(DELETE_PROCEEDING, {
-      refetchQueries: [{ query: GET_ALL_PROCEEDINGS }],
-      fetchPolicy: 'network-only',
-    });
-
-  useEffect(() => {
-    if (error && isOpen) {
-      showToast({
-        title: 'Smazání dědického řízení se nezdařilo',
-        description: 'Při mazání dědického řízení došlo k problémům.',
-        status: 'error',
-      });
-    }
-  }, [error, showToast, isOpen]);
-
-  const handleDelete = () => {
-    deleteProceeding({
+  const handleDelete = async () => {
+    await deleteProceeding({
       variables: { id: Number(proceedingId) },
-    }).then(() => {
-      refetch();
-
-      showToast({
-        title: 'Dědické řízení bylo úspěšně smazáno.',
-        description: 'Řízení bylo odstraněno.',
-        status: 'success',
-      });
-      onClose();
     });
   };
 

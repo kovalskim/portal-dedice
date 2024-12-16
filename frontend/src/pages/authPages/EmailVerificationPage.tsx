@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useMutation } from '@apollo/client';
 import { Box, Center, Flex, Heading, Spinner, Text } from '@chakra-ui/react';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -10,57 +10,49 @@ import { Routes } from '@frontend/routes/routes.ts';
 export const EmailVerificationPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const [verifyEmail, { data, loading, error }] = useMutation(
-    VERIFY_EMAIL_MUTATION,
-  );
   const showToast = useCustomToast();
 
-  // Extract token from the URL query parameters
   const searchParams = new URLSearchParams(location.search);
   const token = searchParams.get('token');
 
-  useEffect(() => {
-    if (error && error.message.includes('expired')) {
-      showToast({
-        title: 'Vypadá to, že verifikační odkaz expiroval.',
-        description: 'Přihlaste se a požádejte o nový.',
-        status: 'error',
-      });
-      navigate(Routes.home);
-    } else if (error) {
-      showToast({
-        title: 'Odkaz není validní',
-        description: 'Zadejte prosím validní odkaz.',
-        status: 'error',
-      });
-      navigate(Routes.home);
-    }
-  }, [error, navigate, showToast]);
+  const hasVerified = useRef(false);
 
-  useEffect(() => {
-    if (token) {
-      const verify = async () => {
-        try {
-          await verifyEmail({ variables: { token } });
-        } catch (err) {
-          console.error('Error verifying email:', err);
-        }
-      };
-
-      verify();
-    }
-  }, [token, verifyEmail]);
-
-  useEffect(() => {
-    if (data) {
+  const [verifyEmail, { loading }] = useMutation(VERIFY_EMAIL_MUTATION, {
+    onError: (error) => {
+      if (error.message.includes('expired')) {
+        showToast({
+          title: 'Vypadá to, že verifikační odkaz expiroval.',
+          description: 'Přihlaste se a požádejte o nový.',
+          status: 'error',
+        });
+        navigate(Routes.home);
+      } else {
+        showToast({
+          title: 'Odkaz není validní',
+          description: 'Zadejte prosím validní odkaz.',
+          status: 'error',
+        });
+        navigate(Routes.home);
+      }
+    },
+    onCompleted: () => {
       showToast({
         title: 'E-mailová adresa ověřena',
         description: 'Pro pokračování se, prosím, přihlaste.',
         status: 'success',
       });
       navigate(Routes.logIn);
-    }
-  }, [data, showToast, navigate]);
+    },
+  });
+
+  useEffect(() => {
+    (async () => {
+      if (token && !hasVerified.current) {
+        hasVerified.current = true;
+        await verifyEmail({ variables: { token } });
+      }
+    })();
+  }, [token, hasVerified, verifyEmail]);
 
   return (
     <Flex

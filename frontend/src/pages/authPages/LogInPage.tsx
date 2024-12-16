@@ -27,20 +27,26 @@ export const LogInPage = () => {
   const isMobile = useBreakpointValue({ base: true, md: false });
   const { backlink, removeBacklink } = useProtectedRouteStore();
 
-  const [signIn, { loading, error }] = useMutation(SIGN_IN_MUTATION);
-
-  const onSubmit: SubmitHandler<FormFields> = async (data) => {
-    try {
-      const userData = await signIn({
-        variables: {
-          email: data.email,
-          password: data.password,
-        },
-      });
-
-      const token = userData.data.signIn.token;
-      const user = userData.data.signIn.user;
-      const role = userData.data.signIn.role.name;
+  const [signIn, { loading }] = useMutation(SIGN_IN_MUTATION, {
+    onError: (error) => {
+      if (error?.graphQLErrors[0]?.extensions?.code === 'NOT_VERIFIED') {
+        showToast({
+          title: 'Účet nebyl ověřen.',
+          description: 'Zkontrolujte si email a dokončete registraci.',
+          status: 'error',
+        });
+      } else {
+        showToast({
+          title: 'Zadali jste neplatné přihlašovací údaje.',
+          description: 'Zkuste to prosím znovu.',
+          status: 'error',
+        });
+      }
+    },
+    onCompleted: (data) => {
+      const token = data.signIn.token;
+      const user = data.signIn.user;
+      const role = data.signIn.role.name;
       auth.signIn({ token, user, role });
 
       showToast({
@@ -51,9 +57,16 @@ export const LogInPage = () => {
 
       removeBacklink();
       navigate(backlink ?? Routes.proceedings, { replace: true });
-    } catch (err) {
-      console.error(err);
-    }
+    },
+  });
+
+  const onSubmit: SubmitHandler<FormFields> = async (data) => {
+    await signIn({
+      variables: {
+        email: data.email,
+        password: data.password,
+      },
+    });
   };
 
   return (
@@ -71,7 +84,7 @@ export const LogInPage = () => {
             boxShadow="lg"
             borderRadius="lg"
           >
-            <LogInForm onSubmit={onSubmit} loading={loading} error={error} />
+            <LogInForm onSubmit={onSubmit} loading={loading} />
           </Box>
         </Flex>
       ) : (
@@ -115,7 +128,7 @@ export const LogInPage = () => {
               justifyContent="center"
               borderRightRadius="lg"
             >
-              <LogInForm onSubmit={onSubmit} loading={loading} error={error} />
+              <LogInForm onSubmit={onSubmit} loading={loading} />
             </Box>
           </Flex>
         </Flex>

@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useMutation } from '@apollo/client';
 import {
   Box,
@@ -25,70 +25,64 @@ export const NewPasswordPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const [
-    changePassword,
-    { loading: changePasswordLoading, error: changePasswordError },
-  ] = useMutation(NEW_PASSWORD_MUTATION);
-
-  const [verifyToken, { error: verifyTokenError }] = useMutation(
-    VERIFY_TOKEN_MUTATION,
-  );
-
-  const isMobile = useBreakpointValue({ base: true, md: false });
-
   const showToast = useCustomToast();
+  const isMobile = useBreakpointValue({ base: true, md: false });
 
   const searchParams = new URLSearchParams(location.search);
   const token = searchParams.get('token');
 
-  useEffect(() => {
-    if (token) {
-      const verify = async () => {
-        try {
-          await verifyToken({ variables: { token } });
-        } catch (err) {
-          console.error('Error verifying email:', err);
-        }
-      };
+  const hasVerified = useRef(false);
 
-      verify();
-    }
-  }, [token, verifyToken]);
+  const [changePassword, { loading: changePasswordLoading }] = useMutation(
+    NEW_PASSWORD_MUTATION,
+    {
+      onError: () => {
+        showToast({
+          title: 'Heslo se nepodařilo změnit',
+          description: 'Nastala chyba při změně hesla, zkuste to znovu.',
+          status: 'error',
+        });
+        navigate(Routes.logIn);
+      },
+      onCompleted: () => {
+        showToast({
+          title: 'Heslo bylo změněno',
+          description:
+            'Vaše heslo bylo úspěšně změněno, nyní se můžete přihlásit',
+          status: 'success',
+        });
+        navigate(Routes.logIn);
+      },
+    },
+  );
 
-  useEffect(() => {
-    if (verifyTokenError) {
+  const [verifyToken] = useMutation(VERIFY_TOKEN_MUTATION, {
+    onError: () => {
       showToast({
         title: 'Neplatný token',
         description: 'Zadaný token je neplatný, zkuste ověření znovu.',
         status: 'error',
       });
       navigate(Routes.forgottenPassword);
-    }
-  }, [verifyTokenError, showToast, navigate]);
+    },
+  });
+
+  useEffect(() => {
+    (async () => {
+      if (token && !hasVerified.current) {
+        hasVerified.current = true;
+        await verifyToken({ variables: { token } });
+      }
+    })();
+  }, [token, hasVerified, verifyToken]);
 
   const onSubmit: SubmitHandler<FormFields> = async (data) => {
-    try {
-      const searchParams = new URLSearchParams(location.search);
-      const token = searchParams.get('token');
-
-      await changePassword({
-        variables: {
-          newPassword: data.password,
-          token: token,
-        },
-      });
-
-      showToast({
-        title: 'Heslo bylo změněno',
-        description:
-          'Vaše heslo bylo úspěšně změněno, nyní se můžete přihlásit',
-        status: 'success',
-      });
-
-      navigate(Routes.logIn);
-    } catch (err) {
-      console.error(err);
-    }
+    await changePassword({
+      variables: {
+        newPassword: data.password,
+        token: token,
+      },
+    });
   };
 
   return (
@@ -109,7 +103,6 @@ export const NewPasswordPage = () => {
             <NewPasswordForm
               onSubmit={onSubmit}
               loading={changePasswordLoading}
-              error={changePasswordError}
             />
           </Box>
         </Flex>
@@ -157,7 +150,6 @@ export const NewPasswordPage = () => {
               <NewPasswordForm
                 onSubmit={onSubmit}
                 loading={changePasswordLoading}
-                error={changePasswordError}
               />
             </Box>
           </Flex>

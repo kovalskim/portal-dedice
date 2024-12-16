@@ -37,7 +37,6 @@ export const UserDashboard = () => {
     setDeleteProceedingModalOpen(true);
   };
 
-  // reseting formstore and states on closing modals
   useEffect(() => {
     if (!newProceedingModalOpen) {
       resetFormStore();

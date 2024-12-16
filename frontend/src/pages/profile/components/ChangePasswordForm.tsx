@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { ApolloError } from '@apollo/client';
 import { Box } from '@chakra-ui/layout';
 import { Center, Flex, Stack, Text } from '@chakra-ui/react';
@@ -9,7 +9,6 @@ import * as z from 'zod';
 import { PrimaryButton } from '@frontend/components/buttons';
 import { InputField } from '@frontend/components/forms/fields/InputField';
 import { Form } from '@frontend/components/forms/Form';
-import { useCustomToast } from '@frontend/hooks/useCustomToast.ts';
 
 export type FormFields = z.infer<typeof schema>;
 
@@ -37,18 +36,6 @@ export const ChangePasswordForm: React.FC<ChangePasswordFormProps> = ({
   loading,
   error,
 }) => {
-  const showToast = useCustomToast();
-
-  useEffect(() => {
-    if (error) {
-      showToast({
-        title: 'Chybné heslo.',
-        description: 'Zadejte, prosím, správné heslo.',
-        status: 'error',
-      });
-    }
-  }, [error, showToast]);
-
   return (
     <Box mt={4}>
       <Form

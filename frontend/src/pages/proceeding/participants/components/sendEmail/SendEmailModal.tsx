@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import { useMutation } from '@apollo/client';
 import {
   Flex,
@@ -53,11 +52,28 @@ export const SendEmailModal = ({
 }: SendEmailModalProps) => {
   const { user } = useAuth();
   const showToast = useCustomToast();
-  const [sendMessageToParticipants, { loading, error }] = useMutation<void>(
+  const [sendMessageToParticipants, { loading }] = useMutation<void>(
     SEND_MESSAGE_TO_PARTICIPANTS,
+    {
+      onError: () => {
+        showToast({
+          title: 'Odeslání zprávy se nezdařilo',
+          description: 'Při odesílání zprávy došlo k problémům.',
+          status: 'error',
+        });
+      },
+      onCompleted: () => {
+        onClose();
+        showToast({
+          title: 'Odeslání zprávy proběhlo úspěšně.',
+          description: `Zpráva byla odeslána!`,
+          status: 'success',
+        });
+      },
+    },
   );
 
-  const onSubmit = (data: SendEmailFields) => {
+  const onSubmit = async (data: SendEmailFields) => {
     const proceedingId =
       receivers && receivers?.length > 0
         ? receivers[0].proceedingId
@@ -79,7 +95,7 @@ export const SendEmailModal = ({
       return;
     }
 
-    sendMessageToParticipants({
+    await sendMessageToParticipants({
       variables: {
         data: {
           ...data,
@@ -87,25 +103,8 @@ export const SendEmailModal = ({
           proceedingId,
         },
       },
-    }).then(() => {
-      onClose();
-      showToast({
-        title: 'Odeslání zprávy proběhlo úspěšně.',
-        description: `Zpráva byla odeslána!`,
-        status: 'success',
-      });
     });
   };
-
-  useEffect(() => {
-    if (error) {
-      showToast({
-        title: 'Odeslání zprávy se nezdařilo',
-        description: 'Při odesílání zprávy došlo k problémům.',
-        status: 'error',
-      });
-    }
-  }, [error, showToast]);
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} size="xl">

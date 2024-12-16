@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import React from 'react';
 import { Box } from '@chakra-ui/layout';
 import { Center, Flex, Heading, Stack, Text, Tooltip } from '@chakra-ui/react';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -9,7 +9,6 @@ import { PrimaryButton } from '@frontend/components/buttons';
 import { InputField } from '@frontend/components/forms/fields/InputField';
 import { Form } from '@frontend/components/forms/Form';
 import { RouterLink } from '@frontend/components/navigation/atoms';
-import { useCustomToast } from '@frontend/hooks/useCustomToast.ts';
 import { Routes } from '@frontend/routes/routes.ts';
 
 export type FormFields = z.infer<typeof schema>;
@@ -17,7 +16,6 @@ export type FormFields = z.infer<typeof schema>;
 type RegistrationFormProps = {
   onSubmit: SubmitHandler<FormFields>;
   loading: boolean;
-  error: Error | undefined;
 };
 
 const schema = z
@@ -36,20 +34,7 @@ const schema = z
 export const RegistrationForm: React.FC<RegistrationFormProps> = ({
   onSubmit,
   loading,
-  error,
 }) => {
-  const showToast = useCustomToast();
-
-  useEffect(() => {
-    if (error) {
-      showToast({
-        title: 'Registrace se nezdařila.',
-        description: 'Uživatel se zadanou emailovou adresou již existuje.',
-        status: 'error',
-      });
-    }
-  }, [error, showToast]);
-
   return (
     <Box>
       <Heading size="md" mb={8} textAlign="center">

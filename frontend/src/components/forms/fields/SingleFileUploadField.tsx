@@ -49,6 +49,7 @@ export const SingleFileUploadField = ({
                 as="span" // little hack (there cannot be a button in a label)
                 colorScheme="goldenYellow"
                 cursor="pointer"
+                variant="outline"
               >
                 Vyberte soubor
               </PrimaryButton>

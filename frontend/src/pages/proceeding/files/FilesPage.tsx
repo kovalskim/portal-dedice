@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useQuery } from '@apollo/client';
 import { Box } from '@chakra-ui/layout';
 import {
@@ -37,35 +37,19 @@ export const FilesPage = () => {
 
   const [openUploadFileModal, setOpenUploadFileModal] = useState(false);
 
-  const { data, loading, error, refetch } = useQuery<FilesData>(
-    FILES_BY_PROCEEDING_ID,
-    {
-      variables: { proceedingId: Number(proceedingId) },
-    },
-  );
-
-  const fileCount = data?.filesByProceeding.length || 0;
-  const isUploadDisabled = fileCount >= MAX_FILES;
-
-  useEffect(() => {
-    if (error) {
+  const { data, loading } = useQuery<FilesData>(FILES_BY_PROCEEDING_ID, {
+    variables: { proceedingId: Number(proceedingId) },
+    onError: () => {
       showToast({
         title: 'Nepodařilo se načíst soubory',
         description: 'Při načítání souborů dědického řízení se vyskytla chyba.',
         status: 'error',
       });
-    }
-  }, [error, showToast]);
+    },
+  });
 
-  const handleFileUploadSuccess = () => {
-    refetch();
-    setOpenUploadFileModal(false);
-    showToast({
-      title: 'Soubor nahrán',
-      description: 'Soubor byl úspěšně nahrán.',
-      status: 'success',
-    });
-  };
+  const fileCount = data?.filesByProceeding.length || 0;
+  const isUploadDisabled = fileCount >= MAX_FILES;
 
   return (
     <Box mt={2}>
@@ -117,14 +101,11 @@ export const FilesPage = () => {
         </Flex>
       )}
 
-      {data && (
-        <FileList files={data?.filesByProceeding ?? []} onDelete={refetch} />
-      )}
+      {data && <FileList files={data?.filesByProceeding ?? []} />}
 
       <UploadFileModal
         isOpen={openUploadFileModal}
         onClose={() => setOpenUploadFileModal(false)}
-        onSuccess={handleFileUploadSuccess}
         proceedingId={proceedingId}
       />
     </Box>

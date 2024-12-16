@@ -1,4 +1,4 @@
-import { FC, useEffect } from 'react';
+import { FC } from 'react';
 import { useMutation } from '@apollo/client';
 import {
   Modal,
@@ -19,8 +19,8 @@ import {
   UPDATE_PROCEEDING,
   UpdateProceedingResponse,
 } from '@frontend/gql/proceedings/mutations';
+import { GET_ALL_PROCEEDINGS } from '@frontend/gql/proceedings/queries.ts';
 import { useCustomToast } from '@frontend/hooks/useCustomToast.ts';
-import { useProceedings } from '@frontend/pages/userDashboard/hooks/useProceedings.ts';
 
 interface EditProceedingModalProps {
   isOpen: boolean;
@@ -38,37 +38,34 @@ export const EditProceedingModal: FC<EditProceedingModalProps> = ({
   const formId = 'edit-proceedings-form';
   const showToast = useCustomToast();
 
-  const { refetch } = useProceedings();
+  const [updateProceeding, { loading }] = useMutation<UpdateProceedingResponse>(
+    UPDATE_PROCEEDING,
+    {
+      onError: () => {
+        showToast({
+          title: 'Aktualizace dědického řízení se nezdařila',
+          description: 'Při aktualizaci dědického řízení došlo k problémům.',
+          status: 'error',
+        });
+      },
+      onCompleted: () => {
+        onClose();
+        showToast({
+          title: 'Aktualizace dědického řízení proběhla úspěšně.',
+          description: `Dědické řízení bylo úspěšně aktualizováno!`,
+          status: 'success',
+        });
+      },
+      refetchQueries: [GET_ALL_PROCEEDINGS],
+    },
+  );
 
-  const [updateProceeding, { loading, error }] =
-    useMutation<UpdateProceedingResponse>(UPDATE_PROCEEDING, {
-      fetchPolicy: 'network-only',
-    });
-
-  useEffect(() => {
-    if (error && isOpen) {
-      showToast({
-        title: 'Aktualizace dědického řízení se nezdařila',
-        description: 'Při aktualizaci dědického řízení došlo k problémům.',
-        status: 'error',
-      });
-    }
-  }, [error, showToast, isOpen]);
-
-  const onSubmit = (data: DeceasedPersonFormFields) => {
-    updateProceeding({
+  const onSubmit = async (data: DeceasedPersonFormFields) => {
+    await updateProceeding({
       variables: {
         id: Number(proceedingId),
         data: data,
       },
-    }).then(() => {
-      onClose();
-      showToast({
-        title: 'Aktualizace dědického řízení proběhla úspěšně.',
-        description: `Dědické řízení bylo úspěšně aktualizováno!`,
-        status: 'success',
-      });
-      refetch();
     });
   };
 

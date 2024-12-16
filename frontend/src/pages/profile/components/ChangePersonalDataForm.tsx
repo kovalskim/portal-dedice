@@ -1,5 +1,4 @@
-import React, { FC, useEffect } from 'react';
-import { ApolloError } from '@apollo/client';
+import React, { FC } from 'react';
 import { Box } from '@chakra-ui/layout';
 import { Center, Flex, Stack } from '@chakra-ui/react';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -10,14 +9,12 @@ import { PrimaryButton } from '@frontend/components/buttons';
 import { InputField } from '@frontend/components/forms/fields/InputField';
 import { Form } from '@frontend/components/forms/Form';
 import { useAuth } from '@frontend/context/auth/auth-core';
-import { useCustomToast } from '@frontend/hooks/useCustomToast.ts';
 
 export type FormFields = z.infer<typeof schema>;
 
 type ChangePersonalDataFormProps = {
   onSubmit: SubmitHandler<FormFields>;
   loading: boolean;
-  error: ApolloError | undefined;
 };
 
 const schema = z.object({
@@ -30,22 +27,8 @@ const schema = z.object({
 export const ChangePersonalDataForm: FC<ChangePersonalDataFormProps> = ({
   onSubmit,
   loading,
-  error,
 }) => {
-  const showToast = useCustomToast();
-
   const { user } = useAuth();
-
-  useEffect(() => {
-    if (error) {
-      showToast({
-        title: 'Něco se pokazilo',
-        description:
-          'Nepodařilo se uložit osobní údaje. Zkuste to prosím znovu.',
-        status: 'error',
-      });
-    }
-  }, [error, showToast]);
 
   return (
     <Box mt={4}>

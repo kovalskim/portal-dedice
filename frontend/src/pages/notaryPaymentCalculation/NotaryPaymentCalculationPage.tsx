@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import { useMutation } from '@apollo/client';
 import { Divider, OrderedList } from '@chakra-ui/icons';
 import { Box } from '@chakra-ui/layout';
@@ -27,24 +26,24 @@ import {
   FormFields as NotaryPaymentCalculationFormFields,
   NotaryPaymentCalculationForm,
 } from '@frontend/pages/notaryPaymentCalculation/NotaryPaymentCalculationForm.tsx';
+import { formatPrice } from '@frontend/utils/util.tsx';
 
 export const NotaryPaymentCalculationPage = () => {
-  const [notaryPaymentCalculation, { data, loading, error }] = useMutation(
-    NOTARY_PAYMENT_CALCULATION,
-  );
-
   const showToast = useCustomToast();
 
-  useEffect(() => {
-    if (error) {
-      showToast({
-        title: 'Výpočet se nezdařil',
-        description:
-          'Výpočet odměny notáře se nezdařil, zkuste to znovu později.',
-        status: 'error',
-      });
-    }
-  }, [error, showToast]);
+  const [notaryPaymentCalculation, { data, loading }] = useMutation(
+    NOTARY_PAYMENT_CALCULATION,
+    {
+      onError: () => {
+        showToast({
+          title: 'Výpočet se nezdařil',
+          description:
+            'Výpočet odměny notáře se nezdařil, zkuste to znovu později.',
+          status: 'error',
+        });
+      },
+    },
+  );
 
   const onSubmit: SubmitHandler<NotaryPaymentCalculationFormFields> = async (
     data,
@@ -91,10 +90,7 @@ export const NotaryPaymentCalculationPage = () => {
                     fontWeight="bold"
                     color="goldenYellow.700"
                   >
-                    {new Intl.NumberFormat('cs-CZ').format(
-                      data?.notaryPaymentCalculation.total,
-                    )}{' '}
-                    Kč
+                    {formatPrice(data?.notaryPaymentCalculation.total)}
                   </Text>
 
                   <Divider />
@@ -111,10 +107,7 @@ export const NotaryPaymentCalculationPage = () => {
                         Odměna notáře
                       </Text>
                       <Text fontSize="xl" color="goldenYellow.500">
-                        {new Intl.NumberFormat('cs-CZ').format(
-                          data?.notaryPaymentCalculation.fee,
-                        )}{' '}
-                        Kč
+                        {formatPrice(data?.notaryPaymentCalculation.fee)}
                       </Text>
                     </Box>
 
@@ -123,10 +116,7 @@ export const NotaryPaymentCalculationPage = () => {
                         DPH (21%)
                       </Text>
                       <Text fontSize="xl" color="goldenYellow.500">
-                        {new Intl.NumberFormat('cs-CZ').format(
-                          data?.notaryPaymentCalculation.vat,
-                        )}{' '}
-                        Kč
+                        {formatPrice(data?.notaryPaymentCalculation.vat)}
                       </Text>
                     </Box>
                   </Stack>

@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import { useQuery } from '@apollo/client';
 import { Card, Flex, Spinner, Text } from '@chakra-ui/react';
 import { Outlet, useNavigate, useParams } from 'react-router-dom';
@@ -17,26 +16,20 @@ export const ProceedingLayout = () => {
   const showToast = useCustomToast();
 
   const { id } = useParams();
-  const { loading, error, data } = useQuery<ProceedingResponse>(
-    GET_PROCEEDING_BY_ID,
-    {
-      variables: {
-        id: Number(id),
-      },
-      fetchPolicy: 'cache-first',
+  const { loading, data } = useQuery<ProceedingResponse>(GET_PROCEEDING_BY_ID, {
+    variables: {
+      id: Number(id),
     },
-  );
-
-  useEffect(() => {
-    if (error) {
+    fetchPolicy: 'cache-first',
+    onError: () => {
       showToast({
         title: 'Nepodařilo se načíst dědické řízení.',
-        description: '',
+        description: 'Dědické řízení se nepodařilo načíst nebo neexistuje',
         status: 'error',
       });
       navigate(Routes.proceedings);
-    }
-  }, [error, showToast, navigate]);
+    },
+  });
 
   if (loading) {
     return (

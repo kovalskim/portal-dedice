@@ -1,4 +1,4 @@
-import { FC, useEffect } from 'react';
+import { FC } from 'react';
 import { useMutation } from '@apollo/client';
 import {
   Modal,
@@ -13,45 +13,43 @@ import {
 
 import { PrimaryButton, SecondaryButton } from '@frontend/components/buttons';
 import { DELETE_FILE_MUTATION } from '@frontend/gql/file/mutations.ts';
+import { FILES_BY_PROCEEDING_ID } from '@frontend/gql/file/queries.ts';
 import { useCustomToast } from '@frontend/hooks/useCustomToast.ts';
 
 interface DeleteFileModalProps {
   isOpen: boolean;
   onClose: () => void;
   fileId?: number;
-  onDelete: () => void;
 }
 
 export const DeleteFileModal: FC<DeleteFileModalProps> = ({
   isOpen,
   onClose,
   fileId,
-  onDelete,
 }) => {
   const showToast = useCustomToast();
 
-  const [deleteFile, { loading, error }] = useMutation(DELETE_FILE_MUTATION);
-
-  useEffect(() => {
-    if (error && isOpen) {
+  const [deleteFile, { loading }] = useMutation(DELETE_FILE_MUTATION, {
+    onError: () => {
       showToast({
         title: 'Nepodařilo se smazat soubor',
         description: 'Při mazání souboru dědického řízení se vyskytla chyba.',
         status: 'error',
       });
-    }
-  }, [error, showToast, isOpen]);
+    },
+    onCompleted: () => {
+      showToast({
+        title: 'Soubor byl úspěšně smazán.',
+        description: 'Soubor z dědického řízení byl úspěšně smazán.',
+        status: 'success',
+      });
+      onClose();
+    },
+    refetchQueries: [FILES_BY_PROCEEDING_ID],
+  });
 
   const handleDelete = async () => {
     await deleteFile({ variables: { id: fileId } });
-
-    showToast({
-      title: 'Soubor byl úspěšně smazán.',
-      description: 'Soubor z dědického řízení byl úspěšně smazán.',
-      status: 'success',
-    });
-    onDelete();
-    onClose();
   };
 
   return (

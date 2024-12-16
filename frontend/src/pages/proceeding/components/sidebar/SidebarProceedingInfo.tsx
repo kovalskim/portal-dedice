@@ -1,6 +1,7 @@
 import { Badge, Flex, Text } from '@chakra-ui/react';
 
 import { Proceeding } from '@frontend/gql/proceedings/queries.ts';
+import { formatDate } from '@frontend/utils/util';
 
 type SidebarProceedingsInfoProps = {
   proceeding: Proceeding;
@@ -39,8 +40,7 @@ export const SidebarProceedingInfo = ({
         {`${proceeding.deceasedFirstName} ${proceeding.deceasedLastName}`}
       </Text>
       <Text fontWeight="medium" pt={2}>
-        Zahájení řízení:{' '}
-        {new Date(proceeding.startDate || '').toLocaleDateString()}
+        Zahájení řízení: {formatDate(proceeding.startDate)}
       </Text>
     </Flex>
   );

@@ -6,16 +6,13 @@ import { FileListItem } from '@frontend/pages/proceeding/files/FileListItem.tsx'
 
 interface FileListProps {
   files: File[];
-  onDelete: () => void;
 }
 
-export const FileList: FC<FileListProps> = ({ files, onDelete }) => {
+export const FileList: FC<FileListProps> = ({ files }) => {
   return (
     <Box mt={4}>
       {files?.length > 0 ? (
-        files.map((file) => (
-          <FileListItem key={file.id} file={file} onDelete={onDelete} />
-        ))
+        files.map((file) => <FileListItem key={file.id} file={file} />)
       ) : (
         <Text color="gray.500">Žádné soubory zatím nebyly nahrány</Text>
       )}

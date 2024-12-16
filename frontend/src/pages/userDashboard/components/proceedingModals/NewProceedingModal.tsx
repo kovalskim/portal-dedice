@@ -1,4 +1,4 @@
-import { FC, useEffect } from 'react';
+import { FC } from 'react';
 import { useMutation } from '@apollo/client';
 import {
   Flex,
@@ -19,6 +19,7 @@ import {
   CREATE_PROCEEDING,
   CreateProceedingResponse,
 } from '@frontend/gql/proceedings/mutations';
+import { GET_ALL_PROCEEDINGS } from '@frontend/gql/proceedings/queries.ts';
 import { useCustomToast } from '@frontend/hooks/useCustomToast.ts';
 import { ParticipantFormFields } from '@frontend/pages/proceeding/participants/components/addParticipants/AddParticipantsForm.tsx';
 import {
@@ -26,7 +27,6 @@ import {
   NewProceedingFormFields,
 } from '@frontend/pages/userDashboard/components/proceedingModals/NewProceedingForm';
 import { useNewProceedingFormStore } from '@frontend/pages/userDashboard/hooks/useNewProceedingFormStore.ts';
-import { useProceedings } from '@frontend/pages/userDashboard/hooks/useProceedings.ts';
 
 interface NewProceedingModalProps {
   isOpen: boolean;
@@ -41,34 +41,33 @@ export const NewProceedingModal: FC<NewProceedingModalProps> = ({
 
   const { step, setStep, formData, setFormData } = useNewProceedingFormStore();
 
-  const { refetch } = useProceedings();
-
-  const [createProceeding, { loading, error }] =
-    useMutation<CreateProceedingResponse>(CREATE_PROCEEDING);
-
-  useEffect(() => {
-    if (error && isOpen) {
-      showToast({
-        title: 'Založení nového dědického řízení se nezdařilo',
-        description: 'Při vytváření dědického řízení došlo k problémům.',
-        status: 'error',
-      });
-    }
-  }, [error, showToast, isOpen]);
+  const [createProceeding, { loading }] = useMutation<CreateProceedingResponse>(
+    CREATE_PROCEEDING,
+    {
+      onError: () => {
+        showToast({
+          title: 'Založení nového dědického řízení se nezdařilo',
+          description: 'Při vytváření dědického řízení došlo k problémům.',
+          status: 'error',
+        });
+      },
+      onCompleted: () => {
+        showToast({
+          title: 'Založení nového dědického řízení proběhlo úspěšně.',
+          description: `Bylo vytvořeno nové dědické řízení!`,
+          status: 'success',
+        });
+        onClose();
+      },
+      refetchQueries: [GET_ALL_PROCEEDINGS],
+    },
+  );
 
   const onSubmit = async (data: NewProceedingFormFields) => {
-    createProceeding({
+    await createProceeding({
       variables: {
         data: data,
       },
-    }).then(() => {
-      showToast({
-        title: 'Založení nového dědického řízení proběhlo úspěšně.',
-        description: `Bylo vytvořeno nové dědické řízení!`,
-        status: 'success',
-      });
-      onClose();
-      refetch();
     });
   };
 

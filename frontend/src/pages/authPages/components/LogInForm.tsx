@@ -1,5 +1,4 @@
-import React, { FC, useEffect } from 'react';
-import { ApolloError } from '@apollo/client';
+import React, { FC } from 'react';
 import { Box, Center, Heading, Stack, Text } from '@chakra-ui/react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { SubmitHandler } from 'react-hook-form';
@@ -9,7 +8,6 @@ import { PrimaryButton } from '@frontend/components/buttons';
 import { InputField } from '@frontend/components/forms/fields/InputField';
 import { Form } from '@frontend/components/forms/Form';
 import { RouterLink } from '@frontend/components/navigation/atoms';
-import { useCustomToast } from '@frontend/hooks/useCustomToast.ts';
 import { Routes } from '@frontend/routes/routes.ts';
 
 export type FormFields = z.infer<typeof schema>;
@@ -17,7 +15,6 @@ export type FormFields = z.infer<typeof schema>;
 type LogInFormProps = {
   onSubmit: SubmitHandler<FormFields>;
   loading: boolean;
-  error: ApolloError | undefined;
 };
 
 const schema = z.object({
@@ -25,28 +22,7 @@ const schema = z.object({
   password: z.string().min(1, { message: 'Heslo nesmí být prázdné' }),
 });
 
-export const LogInForm: FC<LogInFormProps> = ({ onSubmit, loading, error }) => {
-  const showToast = useCustomToast();
-
-  useEffect(() => {
-    if (error && error?.graphQLErrors[0]?.extensions?.code === 'NOT_VERIFIED') {
-      showToast({
-        title: 'Účet nebyl ověřen.',
-        description: 'Zkontrolujte si email a dokončete registraci.',
-        status: 'error',
-      });
-    } else if (
-      error &&
-      error?.graphQLErrors[0]?.extensions?.code !== 'NOT_VERIFIED'
-    ) {
-      showToast({
-        title: 'Zadali jste neplatné přihlašovací údaje.',
-        description: 'Zkuste to prosím znovu.',
-        status: 'error',
-      });
-    }
-  }, [error, showToast]);
-
+export const LogInForm: FC<LogInFormProps> = ({ onSubmit, loading }) => {
   return (
     <Box>
       <Heading size="md" mb={12} textAlign="center">

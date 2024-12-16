@@ -14,10 +14,9 @@ import { DeleteFileModal } from '@frontend/pages/proceeding/files/DeleteFileModa
 
 interface FileListItemProps {
   file: File;
-  onDelete: () => void;
 }
 
-export const FileListItem: FC<FileListItemProps> = ({ file, onDelete }) => {
+export const FileListItem: FC<FileListItemProps> = ({ file }) => {
   function getFileIcon(type: 'pdf' | 'docx') {
     switch (type) {
       case 'pdf':
@@ -84,7 +83,6 @@ export const FileListItem: FC<FileListItemProps> = ({ file, onDelete }) => {
         isOpen={deleteFileModalOpen}
         onClose={() => setDeleteFileModalOpen(false)}
         fileId={file.id}
-        onDelete={onDelete}
       />
     </Box>
   );

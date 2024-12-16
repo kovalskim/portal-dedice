@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import { useMutation } from '@apollo/client';
 import { defineStyle } from '@chakra-ui/icons';
 import { Box } from '@chakra-ui/layout';
@@ -16,7 +15,6 @@ import {
   Text,
 } from '@chakra-ui/react';
 import { SubmitHandler } from 'react-hook-form';
-import { useNavigate } from 'react-router-dom';
 
 import { useAuth } from '@frontend/context/auth/auth-core';
 import {
@@ -33,7 +31,6 @@ import {
   ChangePersonalDataForm,
   FormFields as ChangePersonalDataFormFields,
 } from '@frontend/pages/profile/components/ChangePersonalDataForm.tsx';
-import { Routes } from '@frontend/routes/routes.ts';
 
 import {
   FormFields as UpdatePreferencesFormFields,
@@ -42,20 +39,8 @@ import {
 
 export const ProfilePage = () => {
   const { signIn, user, token, role } = useAuth();
-  const navigate = useNavigate();
 
   const showToast = useCustomToast();
-
-  useEffect(() => {
-    if (!user) {
-      showToast({
-        title: 'Nepřihlášený uživatel',
-        description: 'Pro zobrazení této stránky se musíte přihlásit.',
-        status: 'error',
-      });
-      navigate(Routes.logIn);
-    }
-  }, [user, showToast, navigate]);
 
   const ringCss = defineStyle({
     outlineWidth: '2px',
@@ -64,101 +49,115 @@ export const ProfilePage = () => {
     outlineStyle: 'solid',
   });
 
-  const [updateUser, { loading: updateUserLoading, error: updateUserError }] =
-    useMutation(UPDATE_USER_MUTATION);
+  const [updateUser, { loading: updateUserLoading }] = useMutation(
+    UPDATE_USER_MUTATION,
+    {
+      onError: () => {
+        showToast({
+          title: 'Něco se pokazilo',
+          description:
+            'Nepodařilo se uložit osobní údaje. Zkuste to prosím znovu.',
+          status: 'error',
+        });
+      },
+      onCompleted: (data) => {
+        const updatedUser = data.updateUser;
+        signIn({ token, user: updatedUser, role });
+
+        showToast({
+          title: 'Osobní údaje změněny',
+          description: 'Vaše osobní údaje byly úspěšně změněny.',
+          status: 'success',
+        });
+      },
+    },
+  );
 
   const [
     changePassword,
     { loading: changePasswordLoading, error: changePasswordError },
-  ] = useMutation(CHANGE_PASSWORD_MUTATION);
-
-  const [
-    updateUserPreferences,
-    {
-      loading: updateUserPreferencesLoading,
-      error: updateUserPreferencesError,
-    },
-  ] = useMutation(UPDATE_USER_PREFERENCES_MUTATION);
-
-  const onSubmitChangePersonalData: SubmitHandler<
-    ChangePersonalDataFormFields
-  > = async (data) => {
-    try {
-      const userData = await updateUser({
-        variables: {
-          userId: user?.id,
-          beforeTitle: data.beforeTitle,
-          firstname: data.firstname,
-          lastname: data.lastname,
-          afterTitle: data.afterTitle,
-        },
-      });
-
-      const updatedUser = userData.data.updateUser;
-      signIn({ token, user: updatedUser, role });
-
+  ] = useMutation(CHANGE_PASSWORD_MUTATION, {
+    onError: () => {
       showToast({
-        title: 'Osobní údaje změněny',
-        description: 'Vaše osobní údaje byly úspěšně změněny.',
-        status: 'success',
+        title: 'Chybné heslo.',
+        description: 'Zadejte, prosím, správné heslo.',
+        status: 'error',
       });
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  const onSubmitChangePassword: SubmitHandler<
-    ChangePasswordFormFields
-  > = async (data) => {
-    try {
-      await changePassword({
-        variables: {
-          userId: user?.id,
-          oldPassword: data.oldPassword,
-          newPassword: data.newPassword,
-        },
-      });
-
+    },
+    onCompleted: () => {
       showToast({
         title: 'Heslo změněno',
         description: 'Vaše heslo bylo úspěšně změněno.',
         status: 'success',
       });
-    } catch (err) {
-      console.error(err);
-    }
+    },
+  });
+
+  const [updateUserPreferences, { loading: updateUserPreferencesLoading }] =
+    useMutation(UPDATE_USER_PREFERENCES_MUTATION, {
+      onError: () => {
+        showToast({
+          title: 'Něco se pokazilo',
+          description:
+            'Nepodařilo se uložit osobní údaje. Zkuste to prosím znovu.',
+          status: 'error',
+        });
+      },
+      onCompleted: (data) => {
+        if (user) {
+          signIn({
+            token,
+            user: {
+              ...user,
+              emailNotifications: data.updateUserPreferences.emailNotifications,
+            },
+            role,
+          });
+        }
+
+        showToast({
+          title: 'Preference změněny',
+          description: 'Vaše preference byly úspěšně změněny.',
+          status: 'success',
+        });
+      },
+    });
+
+  const onSubmitChangePersonalData: SubmitHandler<
+    ChangePersonalDataFormFields
+  > = async (data) => {
+    await updateUser({
+      variables: {
+        userId: user?.id,
+        beforeTitle: data.beforeTitle,
+        firstname: data.firstname,
+        lastname: data.lastname,
+        afterTitle: data.afterTitle,
+      },
+    });
+  };
+
+  const onSubmitChangePassword: SubmitHandler<
+    ChangePasswordFormFields
+  > = async (data) => {
+    await changePassword({
+      variables: {
+        userId: user?.id,
+        oldPassword: data.oldPassword,
+        newPassword: data.newPassword,
+      },
+    });
   };
 
   const onSubmitChangePreferences: SubmitHandler<
     UpdatePreferencesFormFields
   > = async (data) => {
-    try {
-      const updatedPreferences = await updateUserPreferences({
-        variables: {
-          userId: user?.id,
-          emailNotifications: data.emailNotifications,
-        },
-      });
-
-      if (user)
-        signIn({
-          token,
-          user: {
-            ...user,
-            emailNotifications:
-              updatedPreferences.data.updateUserPreferences.emailNotifications,
-          },
-          role,
-        });
-
-      showToast({
-        title: 'Preference změněny',
-        description: 'Vaše preference byly úspěšně změněny.',
-        status: 'success',
-      });
-    } catch (err) {
-      console.error(err);
-    }
+    await updateUserPreferences({
+      variables: {
+        userId: user?.id,
+        emailNotifications: data.emailNotifications,
+      },
+    });
   };
 
   if (!user) {
@@ -240,7 +239,6 @@ export const ProfilePage = () => {
               <PreferencesForm
                 onSubmit={onSubmitChangePreferences}
                 loading={updateUserPreferencesLoading}
-                error={updateUserPreferencesError}
               />
             </AccordionPanel>
           </AccordionItem>
@@ -256,7 +254,6 @@ export const ProfilePage = () => {
               <ChangePersonalDataForm
                 onSubmit={onSubmitChangePersonalData}
                 loading={updateUserLoading}
-                error={updateUserError}
               />
             </AccordionPanel>
           </AccordionItem>

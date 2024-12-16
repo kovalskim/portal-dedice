@@ -31,41 +31,33 @@ export const DeleteParticipantModal = ({
   const showToast = useCustomToast();
 
   const [deleteParticipant, { loading }] = useMutation(DELETE_PARTICIPANT, {
-    refetchQueries: [
-      {
-        query: GET_PROCEEDING_PARTICIPANTS,
-        variables: {
-          proceedingId: Number(proceedingId),
-        },
-      },
-    ],
-    fetchPolicy: 'network-only',
+    refetchQueries: [GET_PROCEEDING_PARTICIPANTS],
+    onError: () => {
+      showToast({
+        title: 'Odstranění účastníka řízení proběhlo neúspěšně.',
+        description: `Účastník řízení nebyl odstraněn!`,
+        status: 'error',
+      });
+    },
+    onCompleted: () => {
+      showToast({
+        title: 'Odstranění účastníka řízení proběhlo úspěšně.',
+        description: `Účastník řízení byl odstraněn!`,
+        status: 'success',
+      });
+      onClose();
+    },
   });
 
-  const handleDelete = () => {
-    deleteParticipant({
+  const handleDelete = async () => {
+    await deleteParticipant({
       variables: {
         data: {
           proceedingId: Number(proceedingId),
           participantId: Number(participantId),
         },
       },
-    })
-      .then(() => {
-        showToast({
-          title: 'Odstranění účastníka řízení proběhlo úspěšně.',
-          description: `Účastník řízení byl odstraněn!`,
-          status: 'success',
-        });
-        onClose();
-      })
-      .catch(() => {
-        showToast({
-          title: 'Odstranění účastníka řízení proběhlo neúspěšně.',
-          description: `Účastník řízení nebyl odstraněn!`,
-          status: 'error',
-        });
-      });
+    });
   };
 
   return (

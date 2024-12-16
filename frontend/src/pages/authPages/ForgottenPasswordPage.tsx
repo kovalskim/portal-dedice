@@ -19,33 +19,37 @@ import { Routes } from '@frontend/routes/routes.ts';
 
 export const ForgottenPasswordPage = () => {
   const navigate = useNavigate();
-
-  const [restorePassword, { loading, error }] = useMutation(
-    RESTORE_PASSWORD_MUTATION,
-  );
-
+  const showToast = useCustomToast();
   const isMobile = useBreakpointValue({ base: true, md: false });
 
-  const showToast = useCustomToast();
+  const [restorePassword, { loading }] = useMutation(
+    RESTORE_PASSWORD_MUTATION,
+    {
+      onError: () => {
+        showToast({
+          title: 'Chyba obnovení hesla',
+          description: 'Pokyny pro obnovení hesla se nepodařilo odeslat',
+          status: 'error',
+        });
+      },
+      onCompleted: () => {
+        showToast({
+          title: 'Obnovení hesla',
+          description: 'Pokyny pro obnovení hesla byly odeslány na e-mail',
+          status: 'success',
+        });
+
+        navigate(Routes.logIn);
+      },
+    },
+  );
 
   const onSubmit: SubmitHandler<FormFields> = async (data) => {
-    try {
-      await restorePassword({
-        variables: {
-          email: data.email,
-        },
-      });
-
-      showToast({
-        title: 'Obnovení hesla',
-        description: 'Pokyny pro obnovení hesla byly odeslány na e-mail',
-        status: 'success',
-      });
-
-      navigate(Routes.logIn);
-    } catch (err) {
-      console.error(err);
-    }
+    await restorePassword({
+      variables: {
+        email: data.email,
+      },
+    });
   };
 
   return (
@@ -63,11 +67,7 @@ export const ForgottenPasswordPage = () => {
             boxShadow="lg"
             borderRadius="lg"
           >
-            <ForgottenPasswordForm
-              onSubmit={onSubmit}
-              loading={loading}
-              error={error}
-            />
+            <ForgottenPasswordForm onSubmit={onSubmit} loading={loading} />
           </Box>
         </Flex>
       ) : (
@@ -111,11 +111,7 @@ export const ForgottenPasswordPage = () => {
               justifyContent="center"
               borderRightRadius="lg"
             >
-              <ForgottenPasswordForm
-                onSubmit={onSubmit}
-                loading={loading}
-                error={error}
-              />
+              <ForgottenPasswordForm onSubmit={onSubmit} loading={loading} />
             </Box>
           </Flex>
         </Flex>

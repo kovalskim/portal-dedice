@@ -28,34 +28,48 @@ export const ProceedingChat = () => {
   const [messages, setMessages] = useState<MessageType[]>([]);
   const [actualMessage, setActualMessage] = useState<string>('');
 
+  const showChatErrorToast = () => {
+    showToast({
+      title: 'Nepodařilo se načíst zprávy',
+      description: 'Při načítání zpráv dědického řízení se vyskytla chyba.',
+      status: 'error',
+    });
+  };
+
   const {
     data: allMessages,
     loading: allMessagesLoading,
-    error: allMessagesError,
     refetch: refetchMessages,
   } = useQuery<{ allMessagesByProceedingId: MessageType[] }>(
     ALL_MESSAGES_BY_PROCEEDING_ID,
     {
       variables: { proceedingId: parseFloat(proceedingId ?? 'NaN') },
+      onError: showChatErrorToast,
     },
   );
 
-  const { error: chatSubscriptionError } =
-    useSubscription<NewMessageNotification>(CHAT_SUBSCRIPTION, {
-      variables: { proceedingId: parseFloat(proceedingId ?? 'NaN') },
-      onData: (newData) => {
-        const newMessage = newData.data?.data?.subscribeChat;
-        if (newMessage) {
-          refetchMessages();
-        }
-      },
-      errorPolicy: 'ignore',
-    });
+  useSubscription<NewMessageNotification>(CHAT_SUBSCRIPTION, {
+    variables: { proceedingId: parseFloat(proceedingId ?? 'NaN') },
+    onData: (newData) => {
+      const newMessage = newData.data?.data?.subscribeChat;
+      if (newMessage) {
+        refetchMessages();
+      }
+    },
+    errorPolicy: 'ignore',
+    onError: showChatErrorToast,
+  });
 
-  const [
-    sendMessage,
-    { loading: sendingMessageLoading, error: sendingMessageError },
-  ] = useMutation<SendMessageArgs>(CREATE_MESSAGE_MUTATION);
+  const [sendMessage, { loading: sendingMessageLoading }] =
+    useMutation<SendMessageArgs>(CREATE_MESSAGE_MUTATION, {
+      onError: () => {
+        showToast({
+          title: 'Nepodařilo se odeslat zprávu',
+          description: 'Při odesílání zprávy se vyskytla chyba.',
+          status: 'error',
+        });
+      },
+    });
 
   useEffect(() => {
     if (allMessages) {
@@ -82,26 +96,6 @@ export const ProceedingChat = () => {
 
     setActualMessage('');
   };
-
-  useEffect(() => {
-    if (allMessagesError || chatSubscriptionError) {
-      showToast({
-        title: 'Nepodařilo se načíst zprávy',
-        description: 'Při načítání zpráv dědického řízení se vyskytla chyba.',
-        status: 'error',
-      });
-    }
-  }, [allMessagesError, chatSubscriptionError, showToast]);
-
-  useEffect(() => {
-    if (sendingMessageError) {
-      showToast({
-        title: 'Nepodařilo se odeslat zprávu',
-        description: 'Při odesílání zprávy se vyskytla chyba.',
-        status: 'error',
-      });
-    }
-  }, [sendingMessageError, showToast]);
 
   if (allMessagesLoading && messages.length === 0) {
     return (

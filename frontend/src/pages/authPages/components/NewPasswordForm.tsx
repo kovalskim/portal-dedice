@@ -1,4 +1,4 @@
-import React, { FC, useEffect } from 'react';
+import React, { FC } from 'react';
 import { Box, Center, Heading, Stack, Text } from '@chakra-ui/react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { SubmitHandler } from 'react-hook-form';
@@ -8,7 +8,6 @@ import { PrimaryButton } from '@frontend/components/buttons';
 import { InputField } from '@frontend/components/forms/fields/InputField';
 import { Form } from '@frontend/components/forms/Form';
 import { RouterLink } from '@frontend/components/navigation/atoms';
-import { useCustomToast } from '@frontend/hooks/useCustomToast.ts';
 import { Routes } from '@frontend/routes/routes.ts';
 
 export type FormFields = z.infer<typeof schema>;
@@ -16,7 +15,6 @@ export type FormFields = z.infer<typeof schema>;
 type NewPasswordFormProps = {
   onSubmit: SubmitHandler<FormFields>;
   loading: boolean;
-  error: Error | undefined;
 };
 
 const schema = z
@@ -32,21 +30,7 @@ const schema = z
 export const NewPasswordForm: FC<NewPasswordFormProps> = ({
   onSubmit,
   loading,
-  error,
 }) => {
-  const showToast = useCustomToast();
-
-  useEffect(() => {
-    if (error) {
-      showToast({
-        title: 'Něco se pokazilo',
-        description:
-          'Nepodařilo se nastavit nové heslo. Zkuste to prosím znovu.',
-        status: 'error',
-      });
-    }
-  }, [error, showToast]);
-
   return (
     <Box>
       <Heading size="md" mb={12} textAlign="center">

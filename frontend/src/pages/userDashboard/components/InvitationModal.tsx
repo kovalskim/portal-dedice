@@ -20,14 +20,42 @@ export const InvitationModal = () => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
-  const [acceptInvitation, { loading, error }] = useMutation(
-    ACCEPT_INVITATION_MUTATION,
-  );
-  const [hasProcessedError, setHasProcessedError] = useState(false);
   const showToast = useCustomToast();
 
   const searchParams = new URLSearchParams(location.search);
   const invitationToken = searchParams.get('invitation_token');
+
+  const [acceptInvitation, { loading }] = useMutation(
+    ACCEPT_INVITATION_MUTATION,
+    {
+      onError: (error) => {
+        if (error.message.includes('expired')) {
+          showToast({
+            title: 'Odkaz k přijetí účasti expiroval.',
+            description: 'Požádejte o nový odkaz notáře.',
+            status: 'error',
+          });
+        } else {
+          showToast({
+            title: 'Neplatný odkaz',
+            description: 'Zadejte prosím platný odkaz.',
+            status: 'error',
+          });
+        }
+        setIsOpen(false);
+        navigate(Routes.proceedings);
+      },
+      onCompleted: () => {
+        showToast({
+          title: 'Úspěšně jste přijal(a) pozvánku.',
+          description: 'Vyčkejte na schválení vaší účasti v dědickém řízení.',
+          status: 'success',
+        });
+        setIsOpen(false);
+        navigate(Routes.proceedings);
+      },
+    },
+  );
 
   useEffect(() => {
     if (invitationToken) {
@@ -35,38 +63,8 @@ export const InvitationModal = () => {
     }
   }, [invitationToken]);
 
-  useEffect(() => {
-    if (!error || hasProcessedError) return;
-    if (error.message.includes('expired')) {
-      showToast({
-        title: 'Odkaz k přijetí účasti expiroval.',
-        description: 'Požádejte o nový odkaz notáře.',
-        status: 'error',
-      });
-    } else {
-      showToast({
-        title: 'Neplatný odkaz',
-        description: 'Zadejte prosím platný odkaz.',
-        status: 'error',
-      });
-    }
-    setHasProcessedError(true);
-    navigate(Routes.proceedings);
-  }, [error, hasProcessedError, navigate, showToast]);
-
   const handleAccept = async () => {
-    try {
-      await acceptInvitation({ variables: { token: invitationToken } });
-      showToast({
-        title: 'Úspěšně jste přijal(a) pozvánku.',
-        description: 'Vyčkejte na schválení vaší účasti v dědickém řízení.',
-        status: 'success',
-      });
-    } catch (err) {
-      console.error('Error accepting invitation:', err);
-    }
-    setIsOpen(false);
-    navigate(Routes.proceedings);
+    await acceptInvitation({ variables: { token: invitationToken } });
   };
 
   const handleClose = () => {

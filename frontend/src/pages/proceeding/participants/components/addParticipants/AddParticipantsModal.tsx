@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import { useMutation } from '@apollo/client';
 import {
   Flex,
@@ -34,20 +33,27 @@ export const AddParticipantsModal = ({
 }: AddParticipantsModalProps) => {
   const showToast = useCustomToast();
 
-  const [addParticipantsToProceeding, { loading, error }] = useMutation(
+  const [addParticipantsToProceeding, { loading }] = useMutation(
     INVITE_PARTICIPANTS_TO_PROCEEDING,
+    {
+      onError: () => {
+        showToast({
+          title: 'Pozvání účastníků řízení se nezdařilo',
+          description:
+            'Při odesílání pozvánek účastníkům řízení došlo k problémům.',
+          status: 'error',
+        });
+      },
+      onCompleted: () => {
+        showToast({
+          title: 'Pozvání účastníků řízení proběhlo úspěšně.',
+          description: `Zvoleným účastníkům řízení byly odeslány pozvánky.`,
+          status: 'success',
+        });
+        onClose();
+      },
+    },
   );
-
-  useEffect(() => {
-    if (error && isOpen) {
-      showToast({
-        title: 'Pozvání účastníků řízení se nezdařilo',
-        description:
-          'Při odesílání pozvánek účastníkům řízení došlo k problémům.',
-        status: 'error',
-      });
-    }
-  }, [error, showToast, isOpen]);
 
   const handleSubmit = async (data: {
     participants: ParticipantFormFields[];
@@ -59,13 +65,6 @@ export const AddParticipantsModal = ({
           participants: data.participants,
         },
       },
-    }).then(() => {
-      showToast({
-        title: 'Pozvání účastníků řízení proběhlo úspěšně.',
-        description: `Zvoleným účastníkům řízení byly odeslány pozvánky.`,
-        status: 'success',
-      });
-      onClose();
     });
   };
 

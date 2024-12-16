@@ -1,4 +1,4 @@
-import { FC, useEffect } from 'react';
+import { FC } from 'react';
 import { Box, Center, Heading, Stack, Text } from '@chakra-ui/react';
 import { SubmitHandler } from 'react-hook-form';
 import * as z from 'zod';
@@ -7,7 +7,6 @@ import { PrimaryButton } from '@frontend/components/buttons';
 import { InputField } from '@frontend/components/forms/fields/InputField';
 import { Form } from '@frontend/components/forms/Form';
 import { RouterLink } from '@frontend/components/navigation/atoms';
-import { useCustomToast } from '@frontend/hooks/useCustomToast.ts';
 import { Routes } from '@frontend/routes/routes.ts';
 
 export type FormFields = z.infer<typeof schema>;
@@ -15,7 +14,6 @@ export type FormFields = z.infer<typeof schema>;
 type ForgottenPasswordFormProps = {
   onSubmit: SubmitHandler<FormFields>;
   loading: boolean;
-  error: Error | undefined;
 };
 
 const schema = z.object({
@@ -25,19 +23,7 @@ const schema = z.object({
 export const ForgottenPasswordForm: FC<ForgottenPasswordFormProps> = ({
   onSubmit,
   loading,
-  error,
 }) => {
-  const showToast = useCustomToast();
-
-  useEffect(() => {
-    if (error) {
-      showToast({
-        title: 'Něco se pokazilo.',
-        status: 'error',
-      });
-    }
-  }, [error, showToast]);
-
   return (
     <Box>
       <Heading size="md" mb={12} textAlign="center">

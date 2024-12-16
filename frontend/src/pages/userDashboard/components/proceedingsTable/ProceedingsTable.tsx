@@ -34,7 +34,7 @@ import { RouterNavButton } from '@frontend/components/navigation/atoms/RouterNav
 import { Role, useAuth } from '@frontend/context/auth/auth-core';
 import { useProceedings } from '@frontend/pages/userDashboard/hooks/useProceedings.ts';
 import { Routes } from '@frontend/routes/routes.ts';
-import { insertIdToUrl } from '@frontend/utils/util.tsx';
+import { formatDate, insertIdToUrl } from '@frontend/utils/util.tsx';
 
 type ProceedingsTableProps = {
   onEditProceeding?: (id: number, data: DeceasedPersonFormFields) => void;
@@ -244,16 +244,7 @@ export const ProceedingsTable: React.FC<ProceedingsTableProps> = ({
                     >
                       <Td>{proceeding.proceedingNumber}</Td>
                       <Td>{`${proceeding.deceasedFirstName} ${proceeding.deceasedLastName}`}</Td>
-                      <Td>
-                        {new Date(proceeding.startDate).toLocaleDateString(
-                          'cs-CZ',
-                          {
-                            day: '2-digit',
-                            month: '2-digit',
-                            year: 'numeric',
-                          },
-                        )}
-                      </Td>
+                      <Td>{formatDate(proceeding.startDate)}</Td>
                       <Td>{proceeding.phaseTitle ?? ''}</Td>
                       <Td>
                         <Flex direction="row" gap={2}>

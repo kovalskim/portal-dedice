@@ -1,17 +1,13 @@
 import { FC } from 'react';
 import { Card, Flex, Text } from '@chakra-ui/react';
-import { format } from 'date-fns';
 
 import { Message as MessageType } from '@frontend/gql/chat/types';
+import { formatDatetime } from '@frontend/utils/util.tsx';
 
 interface MessageProps {
   message: MessageType;
   myMessage: boolean;
 }
-
-const formatDate = (date: Date) => {
-  return format(date, 'dd/MM HH:mm');
-};
 
 export const Message: FC<MessageProps> = ({ message, myMessage }) => {
   return (
@@ -31,7 +27,7 @@ export const Message: FC<MessageProps> = ({ message, myMessage }) => {
           {message.user.firstname} {message.user.lastname}
         </Text>
         <Text fontSize={'small'} color={'gray'}>
-          {formatDate(message.timestamp)}
+          {formatDatetime(message.timestamp)}
         </Text>
       </Flex>
       <Text>{message.text}</Text>

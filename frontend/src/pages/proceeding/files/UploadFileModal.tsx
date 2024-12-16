@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useMutation } from '@apollo/client';
 import {
   Flex,
@@ -22,13 +22,13 @@ import {
   GET_SIGNED_URL_MUTATION,
   SAVE_FILE_MUTATION,
 } from '@frontend/gql/file/mutations.ts';
+import { FILES_BY_PROCEEDING_ID } from '@frontend/gql/file/queries.ts';
 import { useCustomToast } from '@frontend/hooks/useCustomToast.ts';
 import { MAX_FILE_SIZE } from '@frontend/utils/constants.ts';
 
 type UploadFileModalProps = {
   isOpen: boolean;
   onClose: () => void;
-  onSuccess: () => void;
   proceedingId: number;
 };
 
@@ -54,32 +54,85 @@ const uploadFileFormSchema = z.object({
 
 type UploadFileFormFields = z.infer<typeof uploadFileFormSchema>;
 
+type UploadFileType = {
+  filename: string;
+  rawFileType: string;
+  fileType: string;
+  alias: string;
+  file: File;
+};
+
 export const UploadFileModal = ({
   isOpen,
   onClose,
-  onSuccess,
   proceedingId,
 }: UploadFileModalProps) => {
-  const [getSignedUrl, { error: getSignedUrlError }] = useMutation(
-    GET_SIGNED_URL_MUTATION,
-  );
-
-  const [saveFile, { error: saveFileError }] = useMutation(SAVE_FILE_MUTATION);
-
   const showToast = useCustomToast();
 
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    if (getSignedUrlError || saveFileError) {
+  const showUploadErrorToast = () => {
+    showToast({
+      title: 'Nepodařilo se uložit soubor',
+      description: 'Při ukládání souboru k dědickému řízení se vyskytla chyba.',
+      status: 'error',
+    });
+  };
+
+  const [getSignedUrl] = useMutation(GET_SIGNED_URL_MUTATION, {
+    onError: showUploadErrorToast,
+  });
+
+  const [saveFile] = useMutation(SAVE_FILE_MUTATION, {
+    onError: showUploadErrorToast,
+    onCompleted: () => {
+      setLoading(false);
+      onClose();
       showToast({
-        title: 'Nepodařilo se uložit soubor',
-        description:
-          'Při ukládání souboru k dědickému řízení se vyskytla chyba.',
-        status: 'error',
+        title: 'Soubor nahrán',
+        description: 'Soubor byl úspěšně nahrán.',
+        status: 'success',
       });
-    }
-  }, [getSignedUrlError, saveFileError, showToast]);
+    },
+    refetchQueries: [FILES_BY_PROCEEDING_ID],
+  });
+
+  const uploadFile = async ({
+    filename,
+    rawFileType,
+    fileType,
+    alias,
+    file,
+  }: UploadFileType) => {
+    const {
+      data: {
+        getSignedUrl: { url },
+      },
+    } = await getSignedUrl({
+      variables: {
+        filename: filename,
+        filetype: rawFileType,
+        proceedingId: proceedingId,
+      },
+    });
+
+    await fetch(url, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': rawFileType,
+      },
+      body: file,
+    });
+
+    await saveFile({
+      variables: {
+        type: fileType,
+        proceedingId: proceedingId,
+        alias: alias,
+        key: filename,
+      },
+    });
+  };
 
   const onSubmit = async (formData: UploadFileFormFields) => {
     setLoading(true);
@@ -97,39 +150,15 @@ export const UploadFileModal = ({
     const filename = `${slugify(formData.alias)}_${Date.now()}.${fileType}`;
 
     try {
-      const response = await getSignedUrl({
-        variables: {
-          filename: filename,
-          filetype: formData.uploadFile.type,
-          proceedingId: proceedingId,
-        },
+      await uploadFile({
+        filename,
+        rawFileType: formData.uploadFile.type,
+        fileType,
+        alias: formData.alias,
+        file: formData.uploadFile,
       });
-
-      const { url } = response.data.getSignedUrl;
-
-      await fetch(url, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': formData.uploadFile.type,
-        },
-        body: formData.uploadFile,
-      });
-
-      console.log(formData.uploadFile.type);
-      await saveFile({
-        variables: {
-          type: fileType,
-          proceedingId: proceedingId,
-          alias: formData.alias,
-          key: filename,
-        },
-      });
-
-      setLoading(false);
-
-      onSuccess();
     } catch (error) {
-      console.error('Upload failed:', error);
+      showUploadErrorToast();
     }
   };
 
