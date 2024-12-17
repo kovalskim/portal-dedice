@@ -1,5 +1,6 @@
 import { FC } from 'react';
 import { Box, Center, Heading, Stack, Text } from '@chakra-ui/react';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { SubmitHandler } from 'react-hook-form';
 import * as z from 'zod';
 
@@ -29,15 +30,13 @@ export const ForgottenPasswordForm: FC<ForgottenPasswordFormProps> = ({
       <Heading size="md" mb={12} textAlign="center">
         Zadejte Vaší e-mailovou adresu
       </Heading>
-      <Form onSubmit={onSubmit}>
+      <Form
+        onSubmit={onSubmit}
+        defaultValues={{ email: '' }}
+        resolver={zodResolver(schema)}
+      >
         <Stack spacing={5} mb={8}>
-          <InputField
-            name="email"
-            type="text"
-            label="E-mailová adresa"
-            placeholder={'@'}
-            isRequired={true}
-          />
+          <InputField name="email" type="text" label="E-mailová adresa" />
         </Stack>
 
         <Center>
