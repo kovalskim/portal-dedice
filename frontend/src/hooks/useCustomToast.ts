@@ -1,3 +1,4 @@
+import { useCallback } from 'react';
 import { useToast, UseToastOptions } from '@chakra-ui/react';
 
 type ToastParams = {
@@ -12,14 +13,18 @@ type ToastParams = {
 export const useCustomToast = () => {
   const toast = useToast();
 
-  return ({
-    title,
-    description,
-    status = 'info',
-    duration = 4000,
-    isClosable = true,
-    position = 'bottom-right',
-  }: ToastParams) => {
-    toast({ title, description, status, duration, isClosable, position });
-  };
+  // Memoize the toast function (doesn't get recreated on every render, to avoid unnecessary re-renders)
+  return useCallback(
+    ({
+      title,
+      description,
+      status = 'info',
+      duration = 4000,
+      isClosable = true,
+      position = 'bottom-right',
+    }: ToastParams) => {
+      toast({ title, description, status, duration, isClosable, position });
+    },
+    [toast],
+  );
 };
