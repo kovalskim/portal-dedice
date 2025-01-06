@@ -90,12 +90,15 @@ export class ParticipantService {
     return invitationIds;
   }
 
-  async acceptParticipantInvitation(token: string) {
+  async verifyParticipantInvitationToken(token: string) {
     const payload = parseAndVerifyJWT(token);
     if (!payload || !payload.email) {
       throw new AppError('INVALID_TOKEN');
     }
+    return true;
+  }
 
+  async acceptParticipantInvitation(token: string) {
     const invitation =
       await this.participantInvitationRepository.getParticipantInvitationByToken(
         token,
@@ -105,7 +108,7 @@ export class ParticipantService {
     }
 
     const registeredUser = await this.userRepository.getUserByEmail(
-      payload.email,
+      invitation.participantEmail,
     );
     if (!registeredUser || registeredUser.id !== this.authUser!.id) {
       throw new AppError('UNAUTHORIZED', 'Unauthorized. Email mismatch.');

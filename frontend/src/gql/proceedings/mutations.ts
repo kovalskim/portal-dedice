@@ -42,6 +42,12 @@ export const UPDATE_PROCEEDING = gql`
   }
 `;
 
+export const VERIFY_PARTICIPANT_INVITATION_TOKEN = gql`
+  mutation VerifyParticipantInvitationToken($token: String!) {
+    verifyParticipantInvitationToken(token: $token)
+  }
+`;
+
 export const ACCEPT_INVITATION_MUTATION = gql`
   mutation AcceptParticipantInvitation($token: String!) {
     acceptParticipantInvitation(token: $token)

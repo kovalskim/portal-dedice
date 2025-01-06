@@ -92,4 +92,12 @@ export class ParticipantsResolver {
     );
     return true;
   }
+
+  @Mutation(() => String)
+  async verifyParticipantInvitationToken(
+    @Arg('token') token: string,
+    @Ctx() { participantService }: CustomContext,
+  ): Promise<boolean> {
+    return participantService.verifyParticipantInvitationToken(token);
+  }
 }
