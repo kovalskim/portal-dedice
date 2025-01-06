@@ -87,3 +87,9 @@ export const DELETE_PARTICIPANT = gql`
     deleteParticipantById(data: $data)
   }
 `;
+
+export const UPDATE_PROCEEDING_PHASE = gql`
+  mutation UpdateProceedingPhase($phaseId: Float!, $proceedingId: Float!) {
+    updateProceedingPhase(phaseId: $phaseId, proceedingId: $proceedingId)
+  }
+`;

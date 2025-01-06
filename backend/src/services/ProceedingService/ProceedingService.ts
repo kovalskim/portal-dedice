@@ -217,4 +217,31 @@ export class ProceedingService {
 
     return await this.proceedingRepository.getProceedingById(proceedingId);
   }
+
+  async updateProceedingPhase(
+    userId: number,
+    proceedingId: number,
+    phaseId: number,
+  ) {
+    if (
+      !(await this.participantValidationService.isUserNotaryInProceeding(
+        userId,
+        proceedingId,
+      ))
+    ) {
+      throw new AppError(
+        'UNAUTHORIZED',
+        'Unauthorized to delete the proceeding',
+      );
+    }
+
+    const updatedProceeding = await this.proceedingRepository.updateProceeding(
+      proceedingId,
+      {
+        phaseId: phaseId,
+      },
+    );
+
+    return updatedProceeding?.phaseId === phaseId;
+  }
 }

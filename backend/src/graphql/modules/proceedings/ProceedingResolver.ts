@@ -93,4 +93,19 @@ export class ProceedingResolver {
   ): Promise<boolean> {
     return await proceedingService.deleteProceeding(authUser.id, id);
   }
+
+  @Mutation(() => Boolean)
+  @Authenticated()
+  async updateProceedingPhase(
+    @Arg('proceedingId') proceedingId: number,
+    @Arg('phaseId') phaseId: number,
+    @Ctx()
+    { authUser, proceedingService }: AuthenticatedContext,
+  ): Promise<boolean> {
+    return await proceedingService.updateProceedingPhase(
+      authUser.id,
+      proceedingId,
+      phaseId,
+    );
+  }
 }

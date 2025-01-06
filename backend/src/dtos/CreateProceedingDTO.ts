@@ -1,4 +1,5 @@
 export interface CreateProceedingDTO {
+  phaseId?: number;
   proceedingNumber: string;
   deceasedFirstName: string;
   deceasedLastName: string;
