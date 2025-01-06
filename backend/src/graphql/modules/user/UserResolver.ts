@@ -8,8 +8,11 @@ import {
   Root,
 } from 'type-graphql';
 
+import { NotaryCriteriaType } from '@backend/graphql/modules/user/NotaryCriteriaType';
+import { Payload } from '@backend/graphql/modules/user/payloadType';
 import { Role } from '@backend/graphql/modules/user/roleType';
 import { AuthInfo, User } from '@backend/graphql/modules/user/userType';
+import { parseAndVerifyJWT } from '@backend/libs/jwt';
 import { type CustomContext } from '@backend/types/types';
 import {
   Authenticated,
@@ -99,9 +102,16 @@ export class UserResolver {
     @Arg('password') password: string,
     @Arg('firstname') firstname: string,
     @Arg('lastname') lastname: string,
+    @Arg('token') token: string, // TODO: nefunguje undefined
     @Ctx() { authenticationService }: CustomContext,
   ): Promise<AuthInfo> {
-    return authenticationService.signUp(email, password, firstname, lastname);
+    return authenticationService.signUp(
+      email,
+      password,
+      firstname,
+      lastname,
+      token,
+    );
   }
 
   @Mutation(() => String)
@@ -129,11 +139,16 @@ export class UserResolver {
     return authenticationService.setNewPassword(token, newPassword);
   }
 
-  @Mutation(() => String)
-  async verifyToken(
-    @Arg('token') token: string,
-    @Ctx() { authenticationService }: CustomContext,
-  ): Promise<string> {
-    return authenticationService.verifyResetPasswordToken(token);
+  @Mutation(() => Payload)
+  async verifyToken(@Arg('token') token: string): Promise<Payload | null> {
+    return parseAndVerifyJWT(token);
+  }
+
+  @Query(() => NotaryCriteriaType, { nullable: true })
+  async notaryCriteria(
+    @Arg('userId') userId: number,
+    @Ctx() { notaryCriteriaService }: CustomContext,
+  ) {
+    return await notaryCriteriaService.getNotaryCriteria(userId);
   }
 }

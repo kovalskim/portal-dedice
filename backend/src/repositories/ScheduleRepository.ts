@@ -1,4 +1,4 @@
-import { and, eq, sql } from 'drizzle-orm';
+import { and, eq, like, sql } from 'drizzle-orm';
 import { MySql2Database } from 'drizzle-orm/mysql2';
 
 import { schedules } from '@backend/db/schema';
@@ -10,6 +10,20 @@ export class ScheduleRepository {
   constructor(db: MySql2Database<Record<string, unknown>>) {
     this.db = db;
   }
+
+  async getScheduleByNotaryNameAndCourtId(name: string, courtId: number) {
+    return await this.db
+      .select()
+      .from(schedules)
+      .where(
+        and(
+          like(schedules.notaryName, `%${name}%`),
+          eq(schedules.courtId, courtId),
+        ),
+      )
+      .then(([schedule]) => schedule as ScheduleDTO);
+  }
+
   async getScheduleByCourtAndAttribute(
     courtId: number,
     attributeValue: string | undefined,
@@ -26,5 +40,12 @@ export class ScheduleRepository {
         ),
       )
       .then(([schedule]) => schedule as ScheduleDTO);
+  }
+
+  async updateSchedule(schedule: ScheduleDTO) {
+    await this.db
+      .update(schedules)
+      .set(schedule)
+      .where(eq(schedules.id, schedule.id));
   }
 }

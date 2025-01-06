@@ -9,7 +9,6 @@ import {
 } from '@backend/db/schema';
 import { RoleDTO, UserRole } from '@backend/dtos/RoleDTO';
 import { UserDTO } from '@backend/dtos/UserDTO';
-import { User } from '@backend/graphql/modules/user/userType';
 
 export class UserRepository {
   db: MySql2Database<Record<string, unknown>>;
@@ -42,7 +41,8 @@ export class UserRepository {
       .where(eq(roles.name, name));
     return {
       id: role.id,
-      name: role.name as UserRole,
+      name: role.name,
+      description: role.description,
     };
   }
 
@@ -52,6 +52,7 @@ export class UserRepository {
     firstname: string;
     lastname: string;
     roleId: number;
+    criteriaId: number | null;
   }) {
     const resultingIds = await this.db
       .insert(users)
@@ -62,6 +63,7 @@ export class UserRepository {
         lastname: data.lastname,
         isVerified: false,
         roleId: data.roleId,
+        criteriaId: data.criteriaId,
       })
       .$returningId();
 
@@ -119,24 +121,21 @@ export class UserRepository {
     return tokenRecord;
   }
 
-  async updateUser(user: User) {
+  async updateUser(user: UserDTO) {
     await this.db.update(users).set(user).where(eq(users.id, user.id));
   }
 
-  async getUserRole(userId: number): Promise<RoleDTO | null> {
+  async getUserRole(userId: number): Promise<RoleDTO> {
     return await this.db
       .select()
       .from(users)
       .leftJoin(roles, eq(users.roleId, roles.id))
       .where(eq(users.id, userId))
       .then(([user]) => {
-        if (!user || !user.roles) {
-          return null;
-        }
-
         return {
-          id: user.roles?.id,
-          name: user.roles?.name as UserRole,
+          id: user?.roles?.id as number,
+          name: user?.roles?.name as UserRole,
+          description: user?.roles?.description as string,
         };
       });
   }

@@ -6,12 +6,14 @@ export const SIGN_UP_MUTATION = gql`
     $password: String!
     $firstname: String!
     $lastname: String!
+    $token: String!
   ) {
     signUp(
       email: $email
       password: $password
       firstname: $firstname
       lastname: $lastname
+      token: $token
     ) {
       token
     }
@@ -121,8 +123,30 @@ export const NEW_PASSWORD_MUTATION = gql`
   }
 `;
 
+export type TokenPayload = {
+  verifyToken: {
+    id: number;
+    email?: string | null;
+    firstname?: string | null;
+    lastname?: string | null;
+    role?: string | null;
+  };
+};
+
 export const VERIFY_TOKEN_MUTATION = gql`
   mutation verifyToken($token: String!) {
-    verifyToken(token: $token)
+    verifyToken(token: $token) {
+      id
+      email
+      firstname
+      lastname
+      role
+    }
+  }
+`;
+
+export const INVITE_USER = gql`
+  mutation InviteUser($data: UserInvitationInput!) {
+    inviteUser(data: $data)
   }
 `;

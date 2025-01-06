@@ -12,6 +12,7 @@ import {
 export const roles = mysqlTable('roles', {
   id: int('id').primaryKey().autoincrement(),
   name: varchar('name', { length: 255 }).notNull(),
+  description: varchar('description', { length: 255 }).notNull(),
 });
 
 export const users = mysqlTable('users', {
@@ -27,6 +28,42 @@ export const users = mysqlTable('users', {
   password: varchar('password', { length: 255 }).notNull(),
   isVerified: boolean('isVerified').default(false).notNull(),
   emailNotifications: boolean('email_notifications').default(true).notNull(),
+  criteriaId: int('criteria_id').references(() => notaryCriteria.id),
+});
+
+export const userInvitations = mysqlTable('user_invitations', {
+  id: int('id').primaryKey().autoincrement(),
+  email: varchar('email', { length: 255 }).notNull(),
+  firstname: varchar('firstname', { length: 255 }).notNull(),
+  lastname: varchar('lastname', { length: 255 }).notNull(),
+  role: varchar('role', { length: 255 }).notNull(),
+  criteriaId: int('criteria_id').references(() => notaryCriteria.id),
+  token: varchar('token', { length: 255 }).notNull(),
+  expiresAt: timestamp('expires_at'),
+});
+
+export const notaryCriteria = mysqlTable('notary_criteria', {
+  id: int('id').primaryKey().autoincrement(),
+  courtId: int('court_id')
+    .notNull()
+    .references(() => courts.id),
+  lastnameLettersActive: boolean('lastname_letters_active').default(false),
+  birthDaysMonthsActive: boolean('birth_days_months_active').default(false),
+  deathDaysMonthsActive: boolean('death_days_months_active').default(false),
+});
+
+export const lettersCriteria = mysqlTable('letters_criteria', {
+  id: int('id').primaryKey().autoincrement(),
+  criteriaId: int('criteria_id').references(() => notaryCriteria.id),
+  letter: varchar('letter', { length: 1 }).notNull(),
+});
+
+export const daysMonthsCriteria = mysqlTable('days_months_criteria', {
+  id: int('id').primaryKey().autoincrement(),
+  criteriaId: int('criteria_id').references(() => notaryCriteria.id),
+  type: varchar('type', { length: 50 }).notNull(),
+  day: int('day'),
+  month: int('month'),
 });
 
 export const VerificationReason: [string, ...string[]] = [

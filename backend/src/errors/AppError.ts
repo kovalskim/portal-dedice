@@ -11,7 +11,8 @@ type ErrorCode =
   | 'VALIDATION_ERROR'
   | 'ALREADY_EXISTING'
   | 'DELETE_ERROR'
-  | 'NOT_SUPPORTED';
+  | 'NOT_SUPPORTED'
+  | 'CRITERIA_ERROR';
 
 const defaultErrorMessages: Record<ErrorCode, string> = {
   UNAUTHENTICATED: 'You must be authenticated to access this resource.',
@@ -28,6 +29,7 @@ const defaultErrorMessages: Record<ErrorCode, string> = {
   ALREADY_EXISTING: 'Already existing',
   DELETE_ERROR: 'Error during deletion process occurred',
   NOT_SUPPORTED: 'Not supported',
+  CRITERIA_ERROR: 'Proceeding input does not meet notary criteria',
 };
 
 export class AppError extends Error {

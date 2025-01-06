@@ -40,6 +40,11 @@ export class UserService {
     return userRole?.name === UserRole.NOTARY;
   }
 
+  async hasUserAdminRole(userId: number) {
+    const userRole = await this.userRepository.getUserRole(userId);
+    return userRole?.name === UserRole.ADMIN;
+  }
+
   async findAllUsers() {
     return this.userRepository.findUsers();
   }
@@ -133,6 +138,7 @@ export class UserService {
     firstname: string;
     lastname: string;
     roleId: number;
+    criteriaId: number | null;
   }) {
     return this.userRepository.createUser(userData);
   }

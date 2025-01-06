@@ -7,7 +7,7 @@ import { AutocompleteAddress } from '@frontend/components/forms/deceasedPersonFo
 import { InputField } from '@frontend/components/forms/fields/InputField';
 import { RadioGroupField } from '@frontend/components/forms/fields/RadioGroupField';
 import { Form } from '@frontend/components/forms/Form';
-import { useValidDistricts } from '@frontend/pages/educator/components/notary-identification/useValidDistricts.ts';
+import { useValidDistricts } from '@frontend/hooks/useValidDistricts.ts';
 import { deceasedInfoSchema } from '@shared/schemas/deceasedInfoSchema';
 
 export type DeceasedPersonFormFields = z.infer<typeof deceasedInfoSchema>;

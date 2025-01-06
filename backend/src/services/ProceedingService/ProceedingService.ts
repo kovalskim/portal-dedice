@@ -6,6 +6,7 @@ import { createToken } from '@backend/libs/jwt';
 import { ParticipantInvitationRepository } from '@backend/repositories/ParticipantInvitationRepository';
 import { ProceedingRepository } from '@backend/repositories/ProceedingRepository';
 import { EmailService } from '@backend/services/EmailService/EmailService';
+import { NotaryCriteriaService } from '@backend/services/NotaryCriteriaService';
 import { ParticipantValidationService } from '@backend/services/ParticipantValidationService/ParticipantValidationService';
 import { UserService } from '@backend/services/UserService/UserService';
 import { JWTPayload } from '@backend/types/types';
@@ -19,6 +20,7 @@ export class ProceedingService {
   private readonly emailService: EmailService;
   private readonly participantValidationService: ParticipantValidationService;
   private readonly userService: UserService;
+  private readonly notaryCriteriaService: NotaryCriteriaService;
 
   constructor(
     authUser: JWTPayload | null,
@@ -27,6 +29,7 @@ export class ProceedingService {
     emailService: EmailService,
     participantValidationService: ParticipantValidationService,
     userService: UserService,
+    notaryCriteriaService: NotaryCriteriaService,
   ) {
     this.authUser = authUser;
     this.proceedingRepository = proceedingRepository;
@@ -34,6 +37,7 @@ export class ProceedingService {
     this.emailService = emailService;
     this.participantValidationService = participantValidationService;
     this.userService = userService;
+    this.notaryCriteriaService = notaryCriteriaService;
   }
 
   async findAllProceedings(userId: number, args: FindAllProceedingArgsDTO) {
@@ -101,6 +105,15 @@ export class ProceedingService {
       newProceedingInputSchema.parse(input);
     } catch (error) {
       throw new AppError('VALIDATION_ERROR', 'Not valid input');
+    }
+
+    if (
+      !(await this.notaryCriteriaService.doesProceedingInputPassNotaryCriteria(
+        userId,
+        input,
+      ))
+    ) {
+      throw new AppError('CRITERIA_ERROR');
     }
 
     const proceedingNumber = `${new Date().getFullYear()}_${new Date().getMonth()}_${new Date().getDate()}_${input.deceasedPersonInfo.firstname[0]}${input.deceasedPersonInfo.lastname.slice(0, 2)}`;
@@ -180,7 +193,7 @@ export class ProceedingService {
     updateProceedingInput: UpdateProceedingInputDTO,
   ) {
     try {
-      deceasedInfoSchema.parse(updateProceedingInput);
+      deceasedInfoSchema.parse(updateProceedingInput.deceasedPersonInfo);
     } catch (error) {
       throw new AppError('VALIDATION_ERROR', 'Not valid input.');
     }
@@ -203,16 +216,30 @@ export class ProceedingService {
       throw new AppError('NOT_FOUND', 'Proceeding not found.');
     }
 
+    if (
+      !(await this.notaryCriteriaService.doesProceedingInputPassNotaryCriteria(
+        userId,
+        updateProceedingInput,
+      ))
+    ) {
+      throw new AppError('CRITERIA_ERROR');
+    }
+
     await this.proceedingRepository.updateProceeding(proceedingId, {
-      deceasedFirstName: updateProceedingInput.firstname,
-      deceasedLastName: updateProceedingInput.lastname,
-      deceasedDateOfDeath: new Date(updateProceedingInput.deathdate),
-      deceasedDateOfBirth: new Date(updateProceedingInput.birthdate),
-      deceasedStreetWithNumber: updateProceedingInput.streetWithNumber,
-      deceasedCity: updateProceedingInput.city,
-      deceasedDistrict: updateProceedingInput.district,
-      deceasedPostalCode: updateProceedingInput.postalCode,
-      deceasedSex: updateProceedingInput.sex,
+      deceasedFirstName: updateProceedingInput.deceasedPersonInfo.firstname,
+      deceasedLastName: updateProceedingInput.deceasedPersonInfo.lastname,
+      deceasedDateOfDeath: new Date(
+        updateProceedingInput.deceasedPersonInfo.deathdate,
+      ),
+      deceasedDateOfBirth: new Date(
+        updateProceedingInput.deceasedPersonInfo.birthdate,
+      ),
+      deceasedStreetWithNumber:
+        updateProceedingInput.deceasedPersonInfo.streetWithNumber,
+      deceasedCity: updateProceedingInput.deceasedPersonInfo.city,
+      deceasedDistrict: updateProceedingInput.deceasedPersonInfo.district,
+      deceasedPostalCode: updateProceedingInput.deceasedPersonInfo.postalCode,
+      deceasedSex: updateProceedingInput.deceasedPersonInfo.sex,
     });
 
     return await this.proceedingRepository.getProceedingById(proceedingId);

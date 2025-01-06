@@ -6,11 +6,13 @@ import { BulkEmailService } from '@backend/services/BulkEmailService/BulkEmailSe
 import { ChatService } from '@backend/services/ChatService/ChatService';
 import { EmailService } from '@backend/services/EmailService/EmailService';
 import { FileService } from '@backend/services/FileService/FileService';
+import { NotaryCriteriaService } from '@backend/services/NotaryCriteriaService';
 import { NotaryPaymentCalculationService } from '@backend/services/NotaryPaymentCalculationService/NotaryPaymentCalculationService';
 import { ParticipantService } from '@backend/services/ParticipantService/ParticipantService';
 import { ParticipantValidationService } from '@backend/services/ParticipantValidationService/ParticipantValidationService';
 import { ProceedingService } from '@backend/services/ProceedingService/ProceedingService';
 import { ScheduleService } from '@backend/services/ScheduleService/ScheduleService';
+import { UserInvitationService } from '@backend/services/UserInvitationService';
 import { UserService } from '@backend/services/UserService/UserService';
 
 export type CustomContext = {
@@ -28,6 +30,8 @@ export type CustomContext = {
   proceedingService: ProceedingService;
   scheduleService: ScheduleService;
   bulkEmailService: BulkEmailService;
+  userInvitationService: UserInvitationService;
+  notaryCriteriaService: NotaryCriteriaService;
 };
 
 export type JWTPayload = {
@@ -35,4 +39,7 @@ export type JWTPayload = {
   iat: number;
   email?: string;
   userId?: number;
+  firstname?: string;
+  lastname?: string;
+  role?: string;
 };

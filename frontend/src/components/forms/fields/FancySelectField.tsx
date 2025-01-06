@@ -22,7 +22,12 @@ export const FancySelectField = ({
       isRequired={selectProps.isRequired}
     >
       {(field) => (
-        <Select {...selectProps} {...field} tagColorScheme="goldenYellow" />
+        <Select
+          {...selectProps}
+          {...field}
+          tagColorScheme="goldenYellow"
+          selectedOptionColorScheme="goldenYellow"
+        />
       )}
     </FormField>
   );

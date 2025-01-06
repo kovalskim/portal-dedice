@@ -33,6 +33,7 @@ import { ProceedingResolver } from '@backend/graphql/modules/proceedings/Proceed
 import { DistrictResolver } from '@backend/graphql/modules/schedules/DistrictResolver';
 import { ScheduleResolver } from '@backend/graphql/modules/schedules/ScheduleResolver';
 import { SendBulkEmailResolver } from '@backend/graphql/modules/sendBulkEmail/SendBulkEmailResolver';
+import { UserInvitationResolver } from '@backend/graphql/modules/user/UserInvitationResolver';
 import { UserResolver } from '@backend/graphql/modules/user/UserResolver';
 import { parseAndVerifyJWT } from '@backend/libs/jwt';
 import { mockResolvers } from '@backend/mocks/mocks';
@@ -42,10 +43,12 @@ import { BulkEmailService } from '@backend/services/BulkEmailService/BulkEmailSe
 import { ChatService } from '@backend/services/ChatService/ChatService';
 import { EmailService } from '@backend/services/EmailService/EmailService';
 import { FileService } from '@backend/services/FileService/FileService';
+import { NotaryCriteriaService } from '@backend/services/NotaryCriteriaService';
 import { NotaryPaymentCalculationService } from '@backend/services/NotaryPaymentCalculationService/NotaryPaymentCalculationService';
 import { ParticipantService } from '@backend/services/ParticipantService/ParticipantService';
 import { ProceedingService } from '@backend/services/ProceedingService/ProceedingService';
 import { ScheduleService } from '@backend/services/ScheduleService/ScheduleService';
+import { UserInvitationService } from '@backend/services/UserInvitationService';
 import { UserService } from '@backend/services/UserService/UserService';
 import { CustomContext } from '@backend/types/types';
 
@@ -79,6 +82,7 @@ const init = async () => {
       FileResolver,
       ParticipantsResolver,
       NotaryPaymentCalculationResolver,
+      UserInvitationResolver,
     ],
     emitSchemaFile: true,
     pubSub: pubSub,
@@ -150,6 +154,12 @@ const init = async () => {
         container.resolve<ParticipantService>('participantService'),
       chatService: container.resolve<ChatService>('chatService'),
       bulkEmailService: container.resolve<BulkEmailService>('bulkEmailService'),
+      userInvitationService: container.resolve<UserInvitationService>(
+        'userInvitationService',
+      ),
+      notaryCriteriaService: container.resolve<NotaryCriteriaService>(
+        'notaryCriteriaService',
+      ),
     };
   };
 

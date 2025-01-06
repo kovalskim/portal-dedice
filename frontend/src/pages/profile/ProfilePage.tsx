@@ -16,7 +16,7 @@ import {
 } from '@chakra-ui/react';
 import { SubmitHandler } from 'react-hook-form';
 
-import { useAuth } from '@frontend/context/auth/auth-core';
+import { Role, useAuth } from '@frontend/context/auth/auth-core';
 import {
   CHANGE_PASSWORD_MUTATION,
   UPDATE_USER_MUTATION,
@@ -31,6 +31,7 @@ import {
   ChangePersonalDataForm,
   FormFields as ChangePersonalDataFormFields,
 } from '@frontend/pages/profile/components/ChangePersonalDataForm.tsx';
+import { CriteriaView } from '@frontend/pages/profile/components/CriteriaView.tsx';
 
 import {
   FormFields as UpdatePreferencesFormFields,
@@ -208,7 +209,7 @@ export const ProfilePage = () => {
           allowMultiple
           // ummm next three lines are fixing the accordion bug that all of items are opened when your open the page
           // It seems that defaultIndex={[0]} is broken, so I switched the order and opened last (forst in switched order) item
-          defaultIndex={[1, 2]}
+          defaultIndex={[3, 2]}
           display={'flex'}
           flexDirection={'column-reverse'}
         >
@@ -257,6 +258,20 @@ export const ProfilePage = () => {
               />
             </AccordionPanel>
           </AccordionItem>
+
+          {role === Role.NOTARY && (
+            <AccordionItem>
+              <AccordionButton>
+                <Heading as="h3" size="md" textAlign="left" flex="1">
+                  Kritéria přiřazování případů
+                </Heading>
+                <AccordionIcon />
+              </AccordionButton>
+              <AccordionPanel>
+                <CriteriaView />
+              </AccordionPanel>
+            </AccordionItem>
+          )}
         </Accordion>
       </Card>
     </Box>

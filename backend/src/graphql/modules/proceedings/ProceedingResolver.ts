@@ -15,7 +15,7 @@ import {
   PaginatedProceedings,
   Proceeding,
 } from '@backend/graphql/modules/proceedings/proceedingType';
-import { DeceasedPersonInput } from '@backend/graphql/modules/schedules/DeceasedPersonInput';
+import { UpdateProceedingInput } from '@backend/graphql/modules/proceedings/UpdateProceedingInput';
 import { User } from '@backend/graphql/modules/user/userType';
 import { CustomContext } from '@backend/types/types';
 import {
@@ -78,7 +78,7 @@ export class ProceedingResolver {
   @Authenticated()
   async updateProceeding(
     @Arg('id') id: number,
-    @Arg('data') input: DeceasedPersonInput,
+    @Arg('data') input: UpdateProceedingInput,
     @Ctx() { authUser, proceedingService }: AuthenticatedContext,
   ): Promise<Proceeding> {
     return await proceedingService.updateProceeding(authUser.id, id, input);

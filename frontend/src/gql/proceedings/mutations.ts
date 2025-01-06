@@ -34,7 +34,7 @@ export const CREATE_PROCEEDING = gql`
 `;
 
 export const UPDATE_PROCEEDING = gql`
-  mutation Mutation($data: DeceasedPersonInput!, $id: Float!) {
+  mutation Mutation($data: UpdateProceedingInput!, $id: Float!) {
     updateProceeding(data: $data, id: $id) {
       id
       proceedingNumber

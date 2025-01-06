@@ -1,4 +1,5 @@
 import { DeceasedPersonInputDTO } from '@backend/dtos/DeceasedPersonInputDTO';
+import { ScheduleDTO } from '@backend/dtos/ScheduleDTO';
 import { AppError } from '@backend/errors/AppError';
 import { CourtRepository } from '@backend/repositories/CourtRepository';
 import { ScheduleRepository } from '@backend/repositories/ScheduleRepository';
@@ -16,8 +17,19 @@ export class ScheduleService {
     this.scheduleRepository = scheduleRepository;
   }
 
+  async getScheduleByNotaryNameAndCourtId(name: string, courtId: number) {
+    return await this.scheduleRepository.getScheduleByNotaryNameAndCourtId(
+      name,
+      courtId,
+    );
+  }
+
   async getCourtById(id: number) {
     return await this.courtRepository.getCourtById(id);
+  }
+
+  async findAllCourts() {
+    return await this.courtRepository.findCourts();
   }
 
   async identifyNotary(deceasedPersonInput: DeceasedPersonInputDTO) {
@@ -54,5 +66,9 @@ export class ScheduleService {
       throw new AppError('NOT_FOUND', 'Notary schedule not found error');
     }
     return schedule;
+  }
+
+  async updateSchedule(schedule: ScheduleDTO) {
+    await this.scheduleRepository.updateSchedule(schedule);
   }
 }

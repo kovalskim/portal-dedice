@@ -3,6 +3,7 @@ import {
   Ctx,
   FieldResolver,
   Mutation,
+  Query,
   Resolver,
   Root,
 } from 'type-graphql';
@@ -20,6 +21,11 @@ export class ScheduleResolver {
     @Ctx() { scheduleService }: CustomContext,
   ): Promise<Court> {
     return await scheduleService.getCourtById(schedule.courtId);
+  }
+
+  @Query(() => [Court])
+  async courts(@Ctx() { scheduleService }: CustomContext) {
+    return await scheduleService.findAllCourts();
   }
 
   @Mutation(() => Schedule)

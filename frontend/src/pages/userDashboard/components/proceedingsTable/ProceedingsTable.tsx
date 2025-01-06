@@ -348,7 +348,7 @@ export const ProceedingsTable: React.FC<ProceedingsTableProps> = ({
               aria-label="Next page"
               onClick={handleNextPage}
               variant="ghost"
-              isDisabled={currentPage === totalPages}
+              isDisabled={totalPages === 0}
               _disabled={{ cursor: 'default', opacity: 0.5 }}
             />
           </Box>

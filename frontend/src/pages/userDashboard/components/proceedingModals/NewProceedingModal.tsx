@@ -44,12 +44,22 @@ export const NewProceedingModal: FC<NewProceedingModalProps> = ({
   const [createProceeding, { loading }] = useMutation<CreateProceedingResponse>(
     CREATE_PROCEEDING,
     {
-      onError: () => {
-        showToast({
-          title: 'Založení nového dědického řízení se nezdařilo',
-          description: 'Při vytváření dědického řízení došlo k problémům.',
-          status: 'error',
-        });
+      onError: (error) => {
+        if (error?.graphQLErrors[0]?.extensions?.code === 'CRITERIA_ERROR') {
+          showToast({
+            title: 'Dědické řízení pro daného zůstavitele nelze založit.',
+            description:
+              'Dědické řízení nesplňuje kritéria pro přiřazení případů.',
+            status: 'error',
+          });
+          setStep(1);
+        } else {
+          showToast({
+            title: 'Založení nového dědického řízení se nezdařilo',
+            description: 'Při vytváření dědického řízení došlo k problémům.',
+            status: 'error',
+          });
+        }
       },
       onCompleted: () => {
         showToast({

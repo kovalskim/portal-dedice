@@ -11,6 +11,10 @@ export class CourtRepository {
     this.db = db;
   }
 
+  async findCourts(): Promise<CourtDTO[]> {
+    return await this.db.select().from(courts);
+  }
+
   async getCourtById(id: number): Promise<CourtDTO> {
     return await this.db
       .select()

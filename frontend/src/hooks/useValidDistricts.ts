@@ -16,5 +16,5 @@ export const useValidDistricts = () => {
     [data],
   );
 
-  return { validDistrictNames, error, loading };
+  return { data, validDistrictNames, error, loading };
 };

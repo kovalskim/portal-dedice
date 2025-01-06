@@ -22,12 +22,21 @@ export const SignUpPage = () => {
   const showToast = useCustomToast();
 
   const [signUp, { loading }] = useMutation(SIGN_UP_MUTATION, {
-    onError: () => {
-      showToast({
-        title: 'Registrace se nezdařila.',
-        description: 'Uživatel se zadanou emailovou adresou již existuje.',
-        status: 'error',
-      });
+    onError: (error) => {
+      if (error.message.includes('match')) {
+        showToast({
+          title: 'Registrace se nezdařila.',
+          description:
+            'Zadané registrační údaje se neshodují s údaji z pozvánky.',
+          status: 'error',
+        });
+      } else {
+        showToast({
+          title: 'Registrace se nezdařila.',
+          description: 'Uživatel se zadanou emailovou adresou již existuje.',
+          status: 'error',
+        });
+      }
     },
     onCompleted: () => {
       navigate(Routes.emailConfirmation);
@@ -41,9 +50,14 @@ export const SignUpPage = () => {
         lastname: data.lastname,
         email: data.email,
         password: data.password,
+        token: data.token,
       },
     });
   };
+
+  const registrationForm = (
+    <RegistrationForm onSubmit={onSubmit} loading={loading} />
+  );
 
   return (
     <>
@@ -61,7 +75,7 @@ export const SignUpPage = () => {
             boxShadow="lg"
             borderRadius="lg"
           >
-            <RegistrationForm onSubmit={onSubmit} loading={loading} />
+            {registrationForm}
           </Box>
         </Flex>
       ) : (
@@ -89,7 +103,7 @@ export const SignUpPage = () => {
               alignItems="center"
               borderLeftRadius="lg"
             >
-              <RegistrationForm onSubmit={onSubmit} loading={loading} />
+              {registrationForm}
             </Box>
             <Box
               w="45%"

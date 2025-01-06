@@ -9,4 +9,5 @@ export interface UserDTO {
   beforeTitle: string | null;
   afterTitle: string | null;
   emailNotifications: boolean;
+  criteriaId: number | null;
 }

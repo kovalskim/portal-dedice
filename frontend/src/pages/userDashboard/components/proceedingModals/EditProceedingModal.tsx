@@ -41,12 +41,21 @@ export const EditProceedingModal: FC<EditProceedingModalProps> = ({
   const [updateProceeding, { loading }] = useMutation<UpdateProceedingResponse>(
     UPDATE_PROCEEDING,
     {
-      onError: () => {
-        showToast({
-          title: 'Aktualizace dědického řízení se nezdařila',
-          description: 'Při aktualizaci dědického řízení došlo k problémům.',
-          status: 'error',
-        });
+      onError: (error) => {
+        if (error?.graphQLErrors[0]?.extensions?.code === 'CRITERIA_ERROR') {
+          showToast({
+            title: 'Aktualizace dědického řízení se nezdařila.',
+            description:
+              'Dědické řízení nesplňuje kritéria pro přiřazení případů.',
+            status: 'error',
+          });
+        } else {
+          showToast({
+            title: 'Aktualizace dědického řízení se nezdařila',
+            description: 'Při aktualizaci dědického řízení došlo k problémům.',
+            status: 'error',
+          });
+        }
       },
       onCompleted: () => {
         onClose();
@@ -64,7 +73,9 @@ export const EditProceedingModal: FC<EditProceedingModalProps> = ({
     await updateProceeding({
       variables: {
         id: Number(proceedingId),
-        data: data,
+        data: {
+          deceasedPersonInfo: data,
+        },
       },
     });
   };

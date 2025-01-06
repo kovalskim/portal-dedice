@@ -8,6 +8,7 @@ export const RadioGroupField = ({
   id,
   name,
   label,
+  onChange, // Support onChange callback
   children,
   ...radioProps
 }: RadioGroupFieldProps) => {
@@ -19,7 +20,18 @@ export const RadioGroupField = ({
       isRequired={radioProps.isRequired}
     >
       {(field) => (
-        <RadioGroup {...radioProps} {...field} colorScheme="goldenYellow">
+        <RadioGroup
+          {...radioProps}
+          {...field}
+          colorScheme="goldenYellow"
+          onChange={(value) => {
+            // Call onChange if provided
+            if (onChange) onChange(value);
+
+            // Also propagate the change to the form field
+            field.onChange(value);
+          }}
+        >
           {children}
         </RadioGroup>
       )}

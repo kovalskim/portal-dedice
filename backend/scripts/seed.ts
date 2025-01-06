@@ -1,10 +1,13 @@
 import { getConnection } from '../src/db/db';
 import {
   courts,
+  daysMonthsCriteria,
   districts,
   files,
+  lettersCriteria,
   meetings,
   messages,
+  notaryCriteria,
   participants,
   participantStates,
   phases,
@@ -13,6 +16,7 @@ import {
   schedules,
   tasks,
   taskStates,
+  userInvitations,
   users,
   verificationTokens,
 } from '../src/db/schema';
@@ -41,8 +45,12 @@ async function seed() {
   await db.delete(files);
   await db.delete(taskStates);
   await db.delete(tasks);
-  await db.delete(courts);
+  await db.delete(userInvitations);
   await db.delete(users);
+  await db.delete(lettersCriteria);
+  await db.delete(daysMonthsCriteria);
+  await db.delete(notaryCriteria);
+  await db.delete(courts);
   await db.delete(roles);
 
   try {
@@ -50,9 +58,9 @@ async function seed() {
       console.log('No roles found, inserting sample roles');
       // @ts-ignore
       await db.insert(roles).values([
-        { id: 1, name: 'admin' },
-        { id: 2, name: 'user' },
-        { id: 3, name: 'notary' },
+        { id: 1, name: 'admin', description: 'Administrátor' },
+        { id: 2, name: 'user', description: 'Uživatel' },
+        { id: 3, name: 'notary', description: 'Notář' },
       ]);
       console.log('Sample roles inserted');
     } else {
@@ -65,7 +73,7 @@ async function seed() {
       await db.insert(users).values([
         {
           id: 1,
-          roleId: 1,
+          roleId: 2,
           beforeTitle: null,
           firstname: 'Jan',
           lastname: 'Nový',
@@ -74,6 +82,7 @@ async function seed() {
           password:
             '$argon2id$v=19$m=65536,t=3,p=4$2WbGklNQBpoqvGGU++ZbVw$QqmS8jPchj+f3n8BvxSrrsuaIEaVs75Ohx2FzkEl+Y8',
           isVerified: true,
+          criteriaId: null,
         },
         {
           id: 2,
@@ -86,6 +95,7 @@ async function seed() {
           password:
             '$argon2id$v=19$m=65536,t=3,p=4$2WbGklNQBpoqvGGU++ZbVw$QqmS8jPchj+f3n8BvxSrrsuaIEaVs75Ohx2FzkEl+Y8',
           isVerified: true,
+          criteriaId: null,
         },
         {
           id: 3,
@@ -98,6 +108,20 @@ async function seed() {
           password:
             '$argon2id$v=19$m=65536,t=3,p=4$2WbGklNQBpoqvGGU++ZbVw$QqmS8jPchj+f3n8BvxSrrsuaIEaVs75Ohx2FzkEl+Y8',
           isVerified: true,
+          criteriaId: null,
+        },
+        {
+          id: 4,
+          roleId: 1,
+          beforeTitle: null,
+          firstname: 'Admin',
+          lastname: 'Adminovič',
+          afterTitle: null,
+          email: 'admin@email.cz',
+          password:
+            '$argon2id$v=19$m=65536,t=3,p=4$2WbGklNQBpoqvGGU++ZbVw$QqmS8jPchj+f3n8BvxSrrsuaIEaVs75Ohx2FzkEl+Y8',
+          isVerified: true,
+          criteriaId: null,
         },
       ]);
       console.log('Sample users inserted');

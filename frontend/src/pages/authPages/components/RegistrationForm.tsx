@@ -1,6 +1,14 @@
 import React from 'react';
 import { Box } from '@chakra-ui/layout';
-import { Center, Flex, Heading, Stack, Text, Tooltip } from '@chakra-ui/react';
+import {
+  Center,
+  Flex,
+  Heading,
+  Spinner,
+  Stack,
+  Text,
+  Tooltip,
+} from '@chakra-ui/react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { SubmitHandler } from 'react-hook-form';
 import * as z from 'zod';
@@ -9,6 +17,7 @@ import { PrimaryButton } from '@frontend/components/buttons';
 import { InputField } from '@frontend/components/forms/fields/InputField';
 import { Form } from '@frontend/components/forms/Form';
 import { RouterLink } from '@frontend/components/navigation/atoms';
+import { useTokenVerification } from '@frontend/hooks/useTokenVerification.ts';
 import { Routes } from '@frontend/routes/routes.ts';
 
 export type FormFields = z.infer<typeof schema>;
@@ -25,6 +34,7 @@ const schema = z
     email: z.string().email({ message: 'Zadejte platnou emailovou adresu.' }),
     password: z.string().min(8, { message: 'Heslo musí mít alespoň 8 znaků.' }),
     confirmPassword: z.string(),
+    token: z.string(),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: 'Hesla se neshodují.',
@@ -35,6 +45,21 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
   onSubmit,
   loading,
 }) => {
+  const { token, payload, tokenVerificationLoading } = useTokenVerification(
+    'invitation_token',
+    Routes.signUp,
+  );
+
+  if (tokenVerificationLoading)
+    return (
+      <Flex justifyContent="center" alignItems="center" direction="column">
+        <Spinner size="xl" color="goldenYellow.500"></Spinner>
+        <Text size="lg" my={4}>
+          Probíhá ověřování tokenu z pozvánky...
+        </Text>
+      </Flex>
+    );
+
   return (
     <Box>
       <Heading size="md" mb={8} textAlign="center">
@@ -42,11 +67,12 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
       </Heading>
       <Form
         defaultValues={{
-          firstname: '',
-          lastname: '',
-          email: '',
+          firstname: payload?.verifyToken?.firstname || '',
+          lastname: payload?.verifyToken?.lastname || '',
+          email: payload?.verifyToken?.email || '',
           password: '',
           confirmPassword: '',
+          token: token || '',
         }}
         resolver={zodResolver(schema)}
         onSubmit={onSubmit}
@@ -62,7 +88,6 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
             <InputField name="firstname" type="text" label="Jméno" />
             <InputField name="lastname" type="text" label="Příjmení" />
           </Flex>
-
           <InputField
             name="email"
             type="text"
@@ -97,6 +122,7 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
               />
             </Box>
           </Flex>
+          <InputField name="token" type="hidden" />
         </Stack>
 
         <Center mt={8}>

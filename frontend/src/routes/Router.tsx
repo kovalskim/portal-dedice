@@ -24,6 +24,7 @@ import { ProceedingParticipants } from '@frontend/pages/proceeding/participants/
 import { ProceedingLayout } from '@frontend/pages/proceeding/ProceedingLayout';
 import { ProfilePage } from '@frontend/pages/profile/ProfilePage.tsx';
 import { UserDashboard } from '@frontend/pages/userDashboard/UserDashboard';
+import { UsersPage } from '@frontend/pages/users/UsersPage.tsx';
 import { ProtectedRoute } from '@frontend/routes/ProtectedRoute.tsx';
 import { Routes } from '@frontend/routes/routes.ts';
 
@@ -90,6 +91,8 @@ export const getRouter = () => {
                   element={<NotFoundPage />}
                 />
               </Route>
+
+              <Route path={Routes.users} element={<UsersPage />} />
             </Route>
             <Route path="*" element={<NotFoundPage />} />
           </Route>

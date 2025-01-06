@@ -8,12 +8,12 @@ import {
   MenuList,
   useBreakpointValue,
 } from '@chakra-ui/react';
-import { FaList, FaSignOutAlt } from 'react-icons/fa';
+import { FaList, FaSignOutAlt, FaUserCog } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 
 import { RouterLink } from '@frontend/components/navigation/atoms/RouterLink.tsx';
 import { RouterNavButton } from '@frontend/components/navigation/atoms/RouterNavButton.tsx';
-import { useAuth } from '@frontend/context/auth/auth-core';
+import { Role, useAuth } from '@frontend/context/auth/auth-core';
 import { useCustomToast } from '@frontend/hooks/useCustomToast.ts';
 import { Routes } from '@frontend/routes/routes.ts';
 
@@ -22,7 +22,7 @@ type AuthButtonProps = {
 };
 
 export const AuthButton = ({ onClose }: AuthButtonProps) => {
-  const { user, signOut } = useAuth();
+  const { user, role, signOut } = useAuth();
   const navButtonlabel = useBreakpointValue({
     base: 'Přihlásit se',
     md: 'Přihlásit se do Portálu dědice',
@@ -52,6 +52,14 @@ export const AuthButton = ({ onClose }: AuthButtonProps) => {
           <MenuItem icon={<SettingsIcon />}>Nastavení profilu</MenuItem>
         </RouterLink>
         <Divider></Divider>
+        {role === Role.ADMIN && (
+          <>
+            <RouterLink to={Routes.users} textColor="black" noUnderline>
+              <MenuItem icon={<FaUserCog />}>Správa uživatelů</MenuItem>
+            </RouterLink>
+            <Divider></Divider>
+          </>
+        )}
         <MenuItem
           icon={<FaSignOutAlt />}
           onClick={() => {

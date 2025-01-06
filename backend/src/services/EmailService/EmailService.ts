@@ -140,6 +140,34 @@ export class EmailService {
     await this.sendEmail(email, subject, htmlContent);
   }
 
+  async sendUserInvitationEmail(
+    email: string,
+    firstname: string,
+    lastname: string,
+    role: string,
+    token: string,
+  ) {
+    const subject = 'Pozvánka do Portálu dědice';
+
+    const invitationLink = `${process.env.APP_URL}/auth/signup?invitation_token=${token}`;
+
+    const bodies = await Promise.all([
+      buildHeading(`Dobrý den, ${toVocative(firstname)}`),
+      buildText(`Byl/a jste pozván/a jako ${role} k používání Portálu dědice.`),
+      buildButton('Zaregistrovat se', encodeURI(invitationLink)),
+      buildText('Nebo zkopírujte a vložte tuto URL do svého prohlížeče:'),
+      buildLink(invitationLink, encodeURI(invitationLink)),
+      buildText(
+        'Tento e-mail byl automaticky vygenerován. Pokud tuto pozvánku nepoznáváte, pravděpodobně se jedná o omyl. V takovém případě tento e-mail ignorujte.',
+      ),
+    ]);
+
+    const layout = await buildLayout(...bodies);
+    const htmlContent = getEmailBody(layout);
+
+    await this.sendEmail(email, subject, htmlContent);
+  }
+
   async sendBulkEmail(
     title: string,
     message: string,
