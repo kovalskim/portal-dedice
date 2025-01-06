@@ -119,9 +119,10 @@ export class AuthenticationService {
   }
 
   async verifyEmail(token: string) {
-    const decoded = await this.verifyToken(token, 'register');
+    const result = await this.verifyToken(token, 'register');
 
-    await this.userService.markUserAsVerified(decoded.userId, true);
+    await this.userService.markUserAsVerified(result.decoded.userId!, true);
+    await this.userService.deleteVerificationToken(result.tokenRecord.id);
 
     return true;
   }
@@ -212,6 +213,6 @@ export class AuthenticationService {
     if (new Date() > new Date(tokenRecord.expiresAt)) {
       throw new AppError('VALIDATION_ERROR', 'Validation token has expired.');
     }
-    return decoded;
+    return { tokenRecord, decoded };
   }
 }

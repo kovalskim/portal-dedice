@@ -1,10 +1,7 @@
 import { ParticipantDTO } from '@backend/dtos/ParticipantDTO';
 import { AppError } from '@backend/errors/AppError';
 import { ParticipantsInput } from '@backend/graphql/modules/participants/ParticipantsInput';
-import {
-  createToken,
-  parseAndVerifyParticipationInvitationJWT,
-} from '@backend/libs/jwt';
+import { createToken, parseAndVerifyJWT } from '@backend/libs/jwt';
 import { ParticipantInvitationRepository } from '@backend/repositories/ParticipantInvitationRepository';
 import { ParticipantRepository } from '@backend/repositories/ParticipantRepository';
 import { UserRepository } from '@backend/repositories/UserRepository';
@@ -94,7 +91,7 @@ export class ParticipantService {
   }
 
   async acceptParticipantInvitation(token: string) {
-    const payload = parseAndVerifyParticipationInvitationJWT(token);
+    const payload = parseAndVerifyJWT(token);
     if (!payload || !payload.email) {
       throw new AppError('INVALID_TOKEN');
     }
