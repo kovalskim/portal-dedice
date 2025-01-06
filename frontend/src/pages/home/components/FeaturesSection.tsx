@@ -23,14 +23,13 @@ export const FeaturesSection = () => {
             </Text>
           </FeatureCard>
           <FeatureCard
-            heading="Přípravka v rámci dědického řízení"
-            linkLabel="Připravit se"
-            linkTo={Routes.logIn}
+            heading="Výpočet odměny notáře"
+            linkLabel="Vypočítat odměnu"
+            linkTo={Routes.notaryPaymentCalculation}
           >
             <Text>
-              Zjistěte, co vše je třeba a připravte si prostřednictvím Portálu
-              dědice potřebné podklady včas pro nadcházející či probíhající
-              dědické řízení.
+              Využijte naší jednoduchou kalkukačku pro výpočet odměny notáře
+              plynoucí z vedení dědického řízení.
             </Text>
           </FeatureCard>
         </Flex>
