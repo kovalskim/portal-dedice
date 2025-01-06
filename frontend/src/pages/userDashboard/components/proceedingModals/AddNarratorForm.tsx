@@ -9,15 +9,24 @@ import { participantSchema } from '@shared/schemas/participantSchema.ts';
 type AddNarratorFormProps = {
   id: string;
   onSubmit: SubmitHandler<ParticipantFormFields>;
+  formData?: ParticipantFormFields | undefined;
 };
 
-export const AddNarratorForm = ({ id, onSubmit }: AddNarratorFormProps) => {
+export const AddNarratorForm = ({
+  id,
+  onSubmit,
+  formData,
+}: AddNarratorFormProps) => {
   return (
     <Form
       id={id}
       onSubmit={onSubmit}
       resolver={zodResolver(participantSchema)}
-      defaultValues={{ firstname: '', lastname: '', email: '' }}
+      defaultValues={{
+        firstname: formData?.firstname ?? '',
+        lastname: formData?.lastname ?? '',
+        email: formData?.email ?? '',
+      }}
     >
       <NewParticipantInput />
     </Form>

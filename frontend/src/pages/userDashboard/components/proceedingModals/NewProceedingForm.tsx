@@ -49,7 +49,11 @@ export const NewProceedingForm = ({
           <Heading size="sm" mb={6} textAlign="center">
             Krok2: Přidání účastníka (vypravitele)
           </Heading>
-          <AddNarratorForm id="narratorInfo" onSubmit={onSubmitStep2} />
+          <AddNarratorForm
+            id="narratorInfo"
+            onSubmit={onSubmitStep2}
+            formData={formData.narratorContactInfo}
+          />
         </>
       )}
     </>
