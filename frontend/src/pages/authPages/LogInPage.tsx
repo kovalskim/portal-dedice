@@ -29,7 +29,7 @@ export const LogInPage = () => {
 
   const [signIn, { loading }] = useMutation(SIGN_IN_MUTATION, {
     onError: (error) => {
-      if (error?.graphQLErrors[0]?.extensions?.code === 'NOT_VERIFIED') {
+      if (error?.graphQLErrors[0]?.extensions?.code === 'VERIFICATION_ERROR') {
         showToast({
           title: 'Účet nebyl ověřen.',
           description: 'Zkontrolujte si email a dokončete registraci.',

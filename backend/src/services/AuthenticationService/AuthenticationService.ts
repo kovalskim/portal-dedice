@@ -7,25 +7,21 @@ import { signUpSchema } from '@backend/graphql/modules/user/userSchema';
 import { createToken, parseAndVerifyJWT } from '@backend/libs/jwt';
 import { UserInvitationRepository } from '@backend/repositories/UserInvitationRepository';
 import { EmailService } from '@backend/services/EmailService/EmailService';
-import { ScheduleService } from '@backend/services/ScheduleService/ScheduleService';
 import { UserService } from '@backend/services/UserService/UserService';
 
 export class AuthenticationService {
   private readonly userService: UserService;
   private readonly emailService: EmailService;
   private readonly userInvitationRepository: UserInvitationRepository;
-  private readonly scheduleService: ScheduleService;
 
   constructor(
     userService: UserService,
     emailService: EmailService,
     userInvitationRepository: UserInvitationRepository,
-    scheduleService: ScheduleService,
   ) {
     this.userService = userService;
     this.emailService = emailService;
     this.userInvitationRepository = userInvitationRepository;
-    this.scheduleService = scheduleService;
   }
 
   async signIn(email: string, password: string) {
@@ -148,6 +144,8 @@ export class AuthenticationService {
 
     await this.userService.markUserAsVerified(result.decoded.userId, true);
 
+    await this.userService.deleteVerificationToken(result.tokenRecord.id);
+
     return true;
   }
 
@@ -169,7 +167,7 @@ export class AuthenticationService {
       reason: 'password_reset',
     });
 
-    this.emailService.sendPasswordResetEmail(email, verificationToken);
+    await this.emailService.sendPasswordResetEmail(email, verificationToken);
 
     return true;
   }

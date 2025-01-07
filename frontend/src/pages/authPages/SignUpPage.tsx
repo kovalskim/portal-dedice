@@ -23,17 +23,26 @@ export const SignUpPage = () => {
 
   const [signUp, { loading }] = useMutation(SIGN_UP_MUTATION, {
     onError: (error) => {
-      if (error.message.includes('match')) {
+      if (error?.graphQLErrors[0]?.extensions?.code === 'VALIDATION_ERROR') {
         showToast({
           title: 'Registrace se nezdařila.',
           description:
             'Zadané registrační údaje se neshodují s údaji z pozvánky.',
           status: 'error',
         });
-      } else {
+      } else if (
+        error?.graphQLErrors[0]?.extensions?.code === 'ALREADY_EXISTING'
+      ) {
         showToast({
           title: 'Registrace se nezdařila.',
           description: 'Uživatel se zadanou emailovou adresou již existuje.',
+          status: 'error',
+        });
+      } else {
+        showToast({
+          title: 'Registrace se nezdařila.',
+          description:
+            'Registraci nyní nelze provést, zkuste to prosím později.',
           status: 'error',
         });
       }
