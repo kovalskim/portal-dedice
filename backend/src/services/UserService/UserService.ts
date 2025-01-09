@@ -35,14 +35,14 @@ export class UserService {
     return this.userRepository.getRoleByName(roleName);
   }
 
-  async hasUserNotaryRole(userId: number) {
-    const userRole = await this.userRepository.getUserRole(userId);
-    return userRole?.name === UserRole.NOTARY;
-  }
-
   async hasUserAdminRole(userId: number) {
     const userRole = await this.userRepository.getUserRole(userId);
     return userRole?.name === UserRole.ADMIN;
+  }
+
+  async hasUserNotaryRole(userId: number) {
+    const userRole = await this.userRepository.getUserRole(userId);
+    return userRole?.name === UserRole.NOTARY;
   }
 
   async findAllUsers() {

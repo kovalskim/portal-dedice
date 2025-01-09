@@ -4,23 +4,19 @@ import { EmailService } from '@backend/services/EmailService/EmailService';
 import { ParticipantService } from '@backend/services/ParticipantService/ParticipantService';
 import { ParticipantValidationService } from '@backend/services/ParticipantValidationService/ParticipantValidationService';
 import { ProceedingService } from '@backend/services/ProceedingService/ProceedingService';
-import { JWTPayload } from '@backend/types/types';
 
 export class BulkEmailService {
-  private readonly authUser: JWTPayload | null;
   private readonly participantValidationService: ParticipantValidationService;
   private readonly proceedingService: ProceedingService;
   private readonly participantService: ParticipantService;
   private readonly emailService: EmailService;
 
   constructor(
-    authUser: JWTPayload | null,
     participantValidationService: ParticipantValidationService,
     proceedingService: ProceedingService,
     participantService: ParticipantService,
     emailService: EmailService,
   ) {
-    this.authUser = authUser;
     this.participantValidationService = participantValidationService;
     this.proceedingService = proceedingService;
     this.participantService = participantService;
@@ -43,6 +39,10 @@ export class BulkEmailService {
     );
     if (!proceeding) {
       throw new AppError('NOT_FOUND', 'Proceeding not found');
+    }
+
+    if (await this.proceedingService.isProceedingFinished(input.proceedingId)) {
+      throw new AppError('PROCEEDING_FINISHED');
     }
 
     // validate that all receivers are in proceeding

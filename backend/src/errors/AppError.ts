@@ -12,7 +12,8 @@ type ErrorCode =
   | 'ALREADY_EXISTING'
   | 'DELETE_ERROR'
   | 'NOT_SUPPORTED'
-  | 'CRITERIA_ERROR';
+  | 'CRITERIA_ERROR'
+  | 'PROCEEDING_FINISHED';
 
 const defaultErrorMessages: Record<ErrorCode, string> = {
   UNAUTHENTICATED: 'You must be authenticated to access this resource.',
@@ -30,6 +31,7 @@ const defaultErrorMessages: Record<ErrorCode, string> = {
   DELETE_ERROR: 'Error during deletion process occurred',
   NOT_SUPPORTED: 'Not supported',
   CRITERIA_ERROR: 'Proceeding input does not meet notary criteria',
+  PROCEEDING_FINISHED: 'Proceeding is already finished',
 };
 
 export class AppError extends Error {

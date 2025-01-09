@@ -16,9 +16,11 @@ import { useOutletContext } from 'react-router-dom';
 
 import { PrimaryButton } from '@frontend/components/buttons';
 import { InfoHintBox } from '@frontend/components/infoHintBox/InfoHintBox';
+import { Role, useAuth } from '@frontend/context/auth/auth-core.tsx';
 import { FILES_BY_PROCEEDING_ID } from '@frontend/gql/file/queries.ts';
 import { File } from '@frontend/gql/file/types.ts';
 import { useCustomToast } from '@frontend/hooks/useCustomToast.ts';
+import { PROCEEDING_PHASES } from '@frontend/pages/proceeding/constants.ts';
 import { FileList } from '@frontend/pages/proceeding/files/FileList.tsx';
 import { UploadFileModal } from '@frontend/pages/proceeding/files/UploadFileModal.tsx';
 import { MAX_FILES } from '@frontend/utils/constants';
@@ -30,6 +32,7 @@ interface FilesData {
 }
 
 export const FilesPage = () => {
+  const { role } = useAuth();
   const { proceeding } = useOutletContext<OutletContextType>();
   const proceedingId = proceeding.id;
 
@@ -62,13 +65,16 @@ export const FilesPage = () => {
         <Heading size="md" mb={{ base: 2, md: 0 }}>
           Seznam souborů
         </Heading>
-        <PrimaryButton
-          leftIcon={<PiUploadSimple />}
-          onClick={() => setOpenUploadFileModal(true)}
-          isDisabled={isUploadDisabled}
-        >
-          Nahrát soubor
-        </PrimaryButton>
+        {role !== Role.ADMIN &&
+          proceeding.phaseId !== PROCEEDING_PHASES.FINISHED && (
+            <PrimaryButton
+              leftIcon={<PiUploadSimple />}
+              onClick={() => setOpenUploadFileModal(true)}
+              isDisabled={isUploadDisabled}
+            >
+              Nahrát soubor
+            </PrimaryButton>
+          )}
       </Flex>
       {isUploadDisabled && (
         <Text mb={4} color="red.500" fontSize="sm" align="right">

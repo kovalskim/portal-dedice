@@ -5,7 +5,6 @@ import { MySql2Database } from 'drizzle-orm/mysql2';
 import { participants, phases, proceedings } from '@backend/db/schema';
 import { CreateProceedingDTO } from '@backend/dtos/CreateProceedingDTO';
 import { ProceedingDTO } from '@backend/dtos/ProceedingDTO';
-import { UserRole } from '@backend/dtos/RoleDTO';
 import { PARTICIPANT_STATES } from '@backend/utils/constants';
 
 export class ProceedingRepository {
@@ -45,7 +44,7 @@ export class ProceedingRepository {
   }
 
   private async fetchProceedings(
-    identifier: { type: 'notary' | 'participant'; id: number },
+    identifier: { type: 'notary' | 'participant' | 'admin'; id?: number },
     currentPage: number = 1,
     pageSize: number = 0,
     sortOrder: 'asc' | 'desc' = 'desc',
@@ -80,9 +79,9 @@ export class ProceedingRepository {
 
     const whereConditions = [];
 
-    if (identifier.type === UserRole.NOTARY) {
+    if (identifier.type === 'notary' && identifier.id) {
       whereConditions.push(eq(proceedings.notaryId, identifier.id));
-    } else {
+    } else if (identifier.type === 'participant' && identifier.id) {
       query = query.innerJoin(
         participants,
         eq(proceedings.id, participants.proceedingId),
@@ -185,6 +184,29 @@ export class ProceedingRepository {
   ): Promise<{ data: ProceedingDTO[]; total: number }> {
     return this.fetchProceedings(
       { type: 'participant', id: userId },
+      currentPage,
+      pageSize,
+      sortOrder,
+      filterProceedingNumber,
+      filterDeceasedName,
+      filterStartDate,
+      filterPhaseId,
+      filterStatus,
+    );
+  }
+
+  async getAllProceedings(
+    currentPage: number = 1,
+    pageSize: number = 0,
+    sortOrder: 'asc' | 'desc' = 'desc',
+    filterProceedingNumber?: string,
+    filterDeceasedName?: string,
+    filterStartDate?: string,
+    filterPhaseId?: number,
+    filterStatus?: string,
+  ): Promise<{ data: ProceedingDTO[]; total: number }> {
+    return this.fetchProceedings(
+      { type: 'admin' },
       currentPage,
       pageSize,
       sortOrder,

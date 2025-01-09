@@ -32,7 +32,7 @@ import { useCustomToast } from '@frontend/hooks/useCustomToast.ts';
 import {
   PROCEEDING_PHASES,
   PROCEEDING_PHASES_TASKS,
-} from '@frontend/pages/proceeding/overview/constants.ts';
+} from '@frontend/pages/proceeding/constants.ts';
 
 export type OutletContextType = { proceeding: Proceeding };
 

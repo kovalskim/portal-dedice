@@ -78,6 +78,10 @@ export class ChatService {
       throw new AppError('NOT_FOUND', 'Proceeding with given id was not found');
     }
 
+    if (await this.proceedingService.isProceedingFinished(proceedingId)) {
+      throw new AppError('PROCEEDING_FINISHED');
+    }
+
     const newMessageId = await this.messageRepository.createMessage(
       this.authUser!.id,
       proceedingId,

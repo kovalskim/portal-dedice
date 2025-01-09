@@ -7,6 +7,8 @@ import { ParticipantRepository } from '@backend/repositories/ParticipantReposito
 import { UserRepository } from '@backend/repositories/UserRepository';
 import { EmailService } from '@backend/services/EmailService/EmailService';
 import { ParticipantValidationService } from '@backend/services/ParticipantValidationService/ParticipantValidationService';
+import { ProceedingService } from '@backend/services/ProceedingService/ProceedingService';
+import { UserService } from '@backend/services/UserService/UserService';
 import { JWTPayload } from '@backend/types/types';
 import { PARTICIPANT_STATES } from '@backend/utils/constants';
 
@@ -17,6 +19,8 @@ export class ParticipantService {
   private readonly userRepository: UserRepository;
   private readonly authUser: JWTPayload | null;
   private readonly emailService: EmailService;
+  private readonly userService: UserService;
+  private readonly proceedingService: ProceedingService;
 
   constructor(
     authUser: JWTPayload | null,
@@ -25,6 +29,8 @@ export class ParticipantService {
     participantValidationService: ParticipantValidationService,
     userRepository: UserRepository,
     emailService: EmailService,
+    userService: UserService,
+    proceedingService: ProceedingService,
   ) {
     this.authUser = authUser;
     this.participantRepository = participantRepository;
@@ -32,19 +38,20 @@ export class ParticipantService {
     this.participantValidationService = participantValidationService;
     this.userRepository = userRepository;
     this.emailService = emailService;
+    this.userService = userService;
+    this.proceedingService = proceedingService;
   }
 
   async findParticipantsInProceeding(userId: number, proceedingId: number) {
     if (
-      !(await this.participantValidationService.isUserParticipantOrNotaryOfProceeding(
-        userId,
-        proceedingId,
-      ))
+      !(
+        (await this.participantValidationService.isUserParticipantOrNotaryOfProceeding(
+          userId,
+          proceedingId,
+        )) && !(await this.userService.hasUserAdminRole(userId))
+      )
     ) {
-      throw new AppError(
-        'UNAUTHORIZED',
-        'Unauthorized to fetch participants of the proceeding',
-      );
+      throw new AppError('NOT_PROCEEDING_PARTICIPANT');
     }
 
     return await this.participantRepository.findProceedingParticipants(
@@ -63,6 +70,10 @@ export class ParticipantService {
       ))
     ) {
       throw new AppError('UNAUTHORIZED');
+    }
+
+    if (await this.proceedingService.isProceedingFinished(input.proceedingId)) {
+      throw new AppError('PROCEEDING_FINISHED');
     }
 
     let invitationIds: number[] = [];
@@ -114,6 +125,12 @@ export class ParticipantService {
       throw new AppError('UNAUTHORIZED', 'Unauthorized. Email mismatch.');
     }
 
+    if (
+      await this.proceedingService.isProceedingFinished(invitation.proceedingId)
+    ) {
+      throw new AppError('PROCEEDING_FINISHED');
+    }
+
     const isAlreadyParticipant =
       await this.participantValidationService.isUserParticipantInProceeding(
         registeredUser.id,
@@ -148,6 +165,10 @@ export class ParticipantService {
       throw new AppError('UNAUTHORIZED');
     }
 
+    if (await this.proceedingService.isProceedingFinished(proceedingId)) {
+      throw new AppError('PROCEEDING_FINISHED');
+    }
+
     await this.participantRepository.updateParticipantStatus(
       participantId,
       PARTICIPANT_STATES.APPROVED,
@@ -169,6 +190,10 @@ export class ParticipantService {
       throw new AppError('UNAUTHORIZED');
     }
 
+    if (await this.proceedingService.isProceedingFinished(proceedingId)) {
+      throw new AppError('PROCEEDING_FINISHED');
+    }
+
     await this.participantRepository.updateParticipantStatus(
       participantId,
       PARTICIPANT_STATES.REJECTED,
@@ -188,6 +213,10 @@ export class ParticipantService {
       ))
     ) {
       throw new AppError('UNAUTHORIZED');
+    }
+
+    if (await this.proceedingService.isProceedingFinished(proceedingId)) {
+      throw new AppError('PROCEEDING_FINISHED');
     }
 
     const deleteParticipant =

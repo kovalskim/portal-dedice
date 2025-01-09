@@ -8,15 +8,22 @@ import {
   FaFileWord,
   FaTrashAlt,
 } from 'react-icons/fa';
+import { useOutletContext } from 'react-router-dom';
 
+import { Role, useAuth } from '@frontend/context/auth/auth-core.tsx';
 import { File } from '@frontend/gql/file/types.ts';
+import { PROCEEDING_PHASES } from '@frontend/pages/proceeding/constants.ts';
 import { DeleteFileModal } from '@frontend/pages/proceeding/files/DeleteFileModal.tsx';
+import { OutletContextType } from '@frontend/pages/proceeding/overview/ProceedingOverviewPage.tsx';
 
 interface FileListItemProps {
   file: File;
 }
 
 export const FileListItem: FC<FileListItemProps> = ({ file }) => {
+  const { role } = useAuth();
+  const { proceeding } = useOutletContext<OutletContextType>();
+
   function getFileIcon(type: 'pdf' | 'docx') {
     switch (type) {
       case 'pdf':
@@ -66,17 +73,20 @@ export const FileListItem: FC<FileListItemProps> = ({ file }) => {
           </Text>
         </Box>
 
-        <Button
-          size="sm"
-          colorScheme="red"
-          onClick={() => setDeleteFileModalOpen(true)}
-          variant="ghost"
-          opacity={0}
-          _groupHover={{ opacity: 1 }}
-          ml={4}
-        >
-          <FaTrashAlt />
-        </Button>
+        {role !== Role.ADMIN &&
+          proceeding.phaseId !== PROCEEDING_PHASES.FINISHED && (
+            <Button
+              size="sm"
+              colorScheme="red"
+              onClick={() => setDeleteFileModalOpen(true)}
+              variant="ghost"
+              opacity={0}
+              _groupHover={{ opacity: 1 }}
+              ml={4}
+            >
+              <FaTrashAlt />
+            </Button>
+          )}
       </Stack>
 
       <DeleteFileModal

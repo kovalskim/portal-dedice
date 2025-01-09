@@ -248,7 +248,8 @@ export const ProceedingsTable: React.FC<ProceedingsTableProps> = ({
                       <Td>{proceeding.phaseTitle ?? ''}</Td>
                       <Td>
                         <Flex direction="row" gap={2}>
-                          {proceeding.isLoggedUserApprovedParticipantOrNotary ? (
+                          {proceeding.isLoggedUserApprovedParticipantOrNotary ||
+                          role === Role.ADMIN ? (
                             <RouterNavButton
                               to={insertIdToUrl(
                                 Routes.proceedingOverview,

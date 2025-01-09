@@ -36,6 +36,7 @@ import {
   ParticipantsResponse,
 } from '@frontend/gql/proceedings/queries.ts';
 import { useCustomToast } from '@frontend/hooks/useCustomToast.ts';
+import { PROCEEDING_PHASES } from '@frontend/pages/proceeding/constants.ts';
 import { OutletContextType } from '@frontend/pages/proceeding/overview/ProceedingOverviewPage.tsx';
 import { AddParticipantsModal } from '@frontend/pages/proceeding/participants/components/addParticipants/AddParticipantsModal.tsx';
 import { DeleteParticipantModal } from '@frontend/pages/proceeding/participants/components/DeleteParticipantModal.tsx';
@@ -147,23 +148,25 @@ export const ProceedingParticipants = () => {
           Seznam účastníků řízení
         </Heading>{' '}
         <Flex gap={4} direction={{ base: 'column', md: 'row' }}>
-          {role === Role.NOTARY && (
-            <PrimaryButton
-              leftIcon={<EmailIcon />}
-              onClick={() => setOpenSendEmailModal(true)}
-            >
-              Hromadná zpráva
-            </PrimaryButton>
-          )}
-          {role === Role.NOTARY && (
-            <PrimaryButton
-              variant="outline"
-              leftIcon={<AddIcon />}
-              onClick={() => setOpenAddParticipantsModal(true)}
-            >
-              Přidat účastníky
-            </PrimaryButton>
-          )}
+          {role === Role.NOTARY &&
+            proceeding.phaseId !== PROCEEDING_PHASES.FINISHED && (
+              <PrimaryButton
+                leftIcon={<EmailIcon />}
+                onClick={() => setOpenSendEmailModal(true)}
+              >
+                Hromadná zpráva
+              </PrimaryButton>
+            )}
+          {role === Role.NOTARY &&
+            proceeding.phaseId !== PROCEEDING_PHASES.FINISHED && (
+              <PrimaryButton
+                variant="outline"
+                leftIcon={<AddIcon />}
+                onClick={() => setOpenAddParticipantsModal(true)}
+              >
+                Přidat účastníky
+              </PrimaryButton>
+            )}
         </Flex>
       </Flex>
       {loading && (
@@ -189,7 +192,10 @@ export const ProceedingParticipants = () => {
                 <Th>Jméno</Th>
                 <Th>Email</Th>
                 <Th>Stav</Th>
-                {role === Role.NOTARY && <Th>Akce</Th>}
+                {role === Role.NOTARY &&
+                  proceeding.phaseId !== PROCEEDING_PHASES.FINISHED && (
+                    <Th>Akce</Th>
+                  )}
               </Tr>
             </Thead>
             <Tbody>
@@ -204,51 +210,54 @@ export const ProceedingParticipants = () => {
                   </Td>
                   <Td>{participant.user.email}</Td>
                   <Td>{participant.participantState.title}</Td>
-                  {role === Role.NOTARY && (
-                    <Td>
-                      {participant.participantState.id ===
-                      PARTICIPANT_STATES.WAITING_FOR_APPROVAL ? (
-                        <>
+                  {role === Role.NOTARY &&
+                    proceeding.phaseId !== PROCEEDING_PHASES.FINISHED && (
+                      <Td>
+                        {participant.participantState.id ===
+                        PARTICIPANT_STATES.WAITING_FOR_APPROVAL ? (
+                          <>
+                            <Button
+                              size="sm"
+                              mr={2}
+                              colorScheme="green"
+                              onClick={() =>
+                                handleApproveParticipant(
+                                  participant.participantId,
+                                )
+                              }
+                            >
+                              <CheckIcon mr={2} />
+                              Schválit
+                            </Button>
+                            <Button
+                              size="sm"
+                              colorScheme="red"
+                              onClick={() =>
+                                handleRejectParticipant(
+                                  participant.participantId,
+                                )
+                              }
+                            >
+                              <NotAllowedIcon mr={2} />
+                              Zamítnout
+                            </Button>
+                          </>
+                        ) : (
                           <Button
                             size="sm"
                             mr={2}
-                            colorScheme="green"
-                            onClick={() =>
-                              handleApproveParticipant(
-                                participant.participantId,
-                              )
-                            }
-                          >
-                            <CheckIcon mr={2} />
-                            Schválit
-                          </Button>
-                          <Button
-                            size="sm"
                             colorScheme="red"
+                            variant="outline"
                             onClick={() =>
-                              handleRejectParticipant(participant.participantId)
+                              handleDeleteParticipant(participant.participantId)
                             }
                           >
-                            <NotAllowedIcon mr={2} />
-                            Zamítnout
+                            <CloseIcon fontSize="xs" mr={2} />
+                            Odebrat účastníka
                           </Button>
-                        </>
-                      ) : (
-                        <Button
-                          size="sm"
-                          mr={2}
-                          colorScheme="red"
-                          variant="outline"
-                          onClick={() =>
-                            handleDeleteParticipant(participant.participantId)
-                          }
-                        >
-                          <CloseIcon fontSize="xs" mr={2} />
-                          Odebrat účastníka
-                        </Button>
-                      )}
-                    </Td>
-                  )}
+                        )}
+                      </Td>
+                    )}
                 </Tr>
               ))}
             </Tbody>

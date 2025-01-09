@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react';
 import { useMutation, useQuery, useSubscription } from '@apollo/client';
+import { NotAllowedIcon } from '@chakra-ui/icons';
 import { Flex, Input, Spinner, Text } from '@chakra-ui/react';
 import { useWindowSize } from '@uidotdev/usehooks';
-import { useParams } from 'react-router-dom';
+import { useOutletContext, useParams } from 'react-router-dom';
 
 import { PrimaryButton } from '@frontend/components/buttons';
 import { Form } from '@frontend/components/forms/Form';
-import { useAuth } from '@frontend/context/auth/auth-core';
+import { Role, useAuth } from '@frontend/context/auth/auth-core';
 import { CREATE_MESSAGE_MUTATION } from '@frontend/gql/chat/mutations';
 import { ALL_MESSAGES_BY_PROCEEDING_ID } from '@frontend/gql/chat/queries';
 import { CHAT_SUBSCRIPTION } from '@frontend/gql/chat/subscriptions';
@@ -16,14 +17,17 @@ import {
   SendMessageArgs,
 } from '@frontend/gql/chat/types';
 import { useCustomToast } from '@frontend/hooks/useCustomToast';
+import { PROCEEDING_PHASES } from '@frontend/pages/proceeding/constants.ts';
+import { OutletContextType } from '@frontend/pages/proceeding/overview/ProceedingOverviewPage.tsx';
 
 import { Message } from './Message';
 
 export const ProceedingChat = () => {
   const proceedingId = useParams<{ id: string }>().id;
-  const { user } = useAuth();
+  const { user, role } = useAuth();
   const { height } = useWindowSize();
   const showToast = useCustomToast();
+  const { proceeding } = useOutletContext<OutletContextType>();
 
   const [messages, setMessages] = useState<MessageType[]>([]);
   const [actualMessage, setActualMessage] = useState<string>('');
@@ -45,6 +49,7 @@ export const ProceedingChat = () => {
     {
       variables: { proceedingId: parseFloat(proceedingId ?? 'NaN') },
       onError: showChatErrorToast,
+      skip: role === Role.ADMIN,
     },
   );
 
@@ -58,6 +63,7 @@ export const ProceedingChat = () => {
     },
     errorPolicy: 'ignore',
     onError: showChatErrorToast,
+    skip: role === Role.ADMIN,
   });
 
   const [sendMessage, { loading: sendingMessageLoading }] =
@@ -97,6 +103,23 @@ export const ProceedingChat = () => {
     setActualMessage('');
   };
 
+  if (role === Role.ADMIN) {
+    return (
+      <Flex
+        alignItems="center"
+        justifyContent="center"
+        direction="column"
+        gap={6}
+        my="auto"
+      >
+        <NotAllowedIcon color="goldenYellow.500" boxSize="20" />
+        <Text fontSize="xl" fontWeight="medium">
+          Účet administrátora nemůže zasahovat do chatu dědického řízení.
+        </Text>
+      </Flex>
+    );
+  }
+
   if (allMessagesLoading && messages.length === 0) {
     return (
       <Flex width="full" justifyContent="center" gap={10} my="auto">
@@ -126,19 +149,25 @@ export const ProceedingChat = () => {
             />
           ))}
       </Flex>
-      <Form onSubmit={handleSubmit}>
-        <Flex flexDirection={'row'} width={'100%'} gap={8}>
-          <Input
-            placeholder="Začnete psát zprávu..."
-            flex={1}
-            value={actualMessage}
-            onChange={(e) => setActualMessage(e.target.value)}
-          />
-          <PrimaryButton type="submit" isLoading={sendingMessageLoading}>
-            Poslat
-          </PrimaryButton>
-        </Flex>
-      </Form>
+      {proceeding.phaseId !== PROCEEDING_PHASES.FINISHED ? (
+        <Form onSubmit={handleSubmit}>
+          <Flex flexDirection={'row'} width={'100%'} gap={8}>
+            <Input
+              placeholder="Začnete psát zprávu..."
+              flex={1}
+              value={actualMessage}
+              onChange={(e) => setActualMessage(e.target.value)}
+            />
+            <PrimaryButton type="submit" isLoading={sendingMessageLoading}>
+              Poslat
+            </PrimaryButton>
+          </Flex>
+        </Form>
+      ) : (
+        <Text fontSize="sm" color="gray.500" textAlign="center">
+          Chat je uzavřen, protože dědické řízení bylo ukončeno.
+        </Text>
+      )}
     </Flex>
   );
 };

@@ -3,6 +3,8 @@ import { AppError } from '@backend/errors/AppError';
 import { FileRepository } from '@backend/repositories/FileRepository';
 import { AwsService } from '@backend/services/AwsService/AwsService';
 import { ParticipantValidationService } from '@backend/services/ParticipantValidationService/ParticipantValidationService';
+import { ProceedingService } from '@backend/services/ProceedingService/ProceedingService';
+import { UserService } from '@backend/services/UserService/UserService';
 import { JWTPayload } from '@backend/types/types';
 
 export class FileService {
@@ -10,25 +12,33 @@ export class FileService {
   private participantValidationService: ParticipantValidationService;
   private fileRepository: FileRepository;
   private awsService: AwsService;
+  private userService: UserService;
+  private proceedingService: ProceedingService;
 
   constructor(
     authUser: JWTPayload | null,
     participantValidationService: ParticipantValidationService,
     fileRepository: FileRepository,
     awsService: AwsService,
+    userService: UserService,
+    proceedingService: ProceedingService,
   ) {
     this.authUser = authUser;
     this.participantValidationService = participantValidationService;
     this.fileRepository = fileRepository;
     this.awsService = awsService;
+    this.userService = userService;
+    this.proceedingService = proceedingService;
   }
 
   async findFilesByProceeding(proceedingId: number): Promise<FileDTO[]> {
     if (
-      !(await this.participantValidationService.isUserParticipantOrNotaryOfProceeding(
-        this.authUser!.id,
-        proceedingId,
-      ))
+      !(
+        (await this.participantValidationService.isUserParticipantOrNotaryOfProceeding(
+          this.authUser!.id,
+          proceedingId,
+        )) && !(await this.userService.hasUserAdminRole(this.authUser!.id))
+      )
     ) {
       throw new AppError('NOT_PROCEEDING_PARTICIPANT');
     }
@@ -53,6 +63,10 @@ export class FileService {
 
     const file = await this.fileRepository.getFileById(id);
 
+    if (!file) {
+      throw new AppError('FILE_NOT_FOUND');
+    }
+
     if (
       !(await this.participantValidationService.isUserParticipantOrNotaryOfProceeding(
         this.authUser!.id,
@@ -62,8 +76,8 @@ export class FileService {
       throw new AppError('NOT_PROCEEDING_PARTICIPANT');
     }
 
-    if (!file) {
-      throw new AppError('FILE_NOT_FOUND');
+    if (await this.proceedingService.isProceedingFinished(file.proceedingId)) {
+      throw new AppError('PROCEEDING_FINISHED');
     }
 
     try {
@@ -95,6 +109,10 @@ export class FileService {
       throw new AppError('NOT_PROCEEDING_PARTICIPANT');
     }
 
+    if (await this.proceedingService.isProceedingFinished(proceedingId)) {
+      throw new AppError('PROCEEDING_FINISHED');
+    }
+
     const key = `${proceedingId}/${filename}`;
 
     return await this.awsService.getUploadUrl(key, filetype);
@@ -115,6 +133,10 @@ export class FileService {
       ))
     ) {
       throw new AppError('NOT_PROCEEDING_PARTICIPANT');
+    }
+
+    if (await this.proceedingService.isProceedingFinished(proceedingId)) {
+      throw new AppError('PROCEEDING_FINISHED');
     }
 
     await this.fileRepository.saveFile(
