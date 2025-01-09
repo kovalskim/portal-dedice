@@ -22,10 +22,6 @@ import { useOutletContext } from 'react-router-dom';
 
 import { PrimaryButton } from '@frontend/components/buttons';
 import { InfoHintBox } from '@frontend/components/infoHintBox/InfoHintBox';
-import {
-  PROCEEDING_PHASES,
-  PROCEEDING_PHASES_TASKS,
-} from '@frontend/constants.ts';
 import { Role, useAuth } from '@frontend/context/auth/auth-core.tsx';
 import { UPDATE_PROCEEDING_PHASE } from '@frontend/gql/proceedings/mutations.ts';
 import {
@@ -33,6 +29,10 @@ import {
   Proceeding,
 } from '@frontend/gql/proceedings/queries.ts';
 import { useCustomToast } from '@frontend/hooks/useCustomToast.ts';
+import {
+  PROCEEDING_PHASES,
+  PROCEEDING_PHASES_TASKS,
+} from '@frontend/pages/proceeding/overview/constants.ts';
 
 export type OutletContextType = { proceeding: Proceeding };
 
@@ -96,7 +96,9 @@ export const ProceedingOverviewPage = () => {
                 mr={2}
               >
                 {PROCEEDING_PHASES_TASKS.map((phase) => (
-                  <option value={phase.id}>{phase.title}</option>
+                  <option key={phase.id} value={phase.id}>
+                    {phase.title}
+                  </option>
                 ))}
               </Select>
               <PrimaryButton onClick={handlePhaseChange} size="sm">

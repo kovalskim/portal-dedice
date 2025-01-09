@@ -4,12 +4,12 @@ import { Flex, SystemStyleObject, Text } from '@chakra-ui/react';
 import { useFormContext } from 'react-hook-form';
 
 import { FancySelectField } from '@frontend/components/forms/fields/FancySelectField.tsx';
-import { ALPHABET_CZ } from '@frontend/constants.ts';
 import { Court } from '@frontend/gql/user/queries.ts';
 import { useCourts } from '@frontend/hooks/useCourts.ts';
 import { CombinedDateCriteria } from '@frontend/pages/users/components/CombinedDateCriteria.tsx';
 import { RuleActivationInput } from '@frontend/pages/users/components/RuleActivationInput.tsx';
 import { UserInvitationFormFields } from '@frontend/pages/users/components/UserInvitationForm.tsx';
+import { ALPHABET_CZ } from '@frontend/pages/users/constants.ts';
 
 export const RulesInput = () => {
   const { data } = useCourts();
