@@ -17,6 +17,7 @@ import { ErrorPage } from '@frontend/pages/errorPages/ErrorPage.tsx';
 import { NotFoundPage } from '@frontend/pages/errorPages/NotFoundPage';
 import { HomePage } from '@frontend/pages/home/HomePage';
 import { NotaryPaymentCalculationPage } from '@frontend/pages/notaryPaymentCalculation/NotaryPaymentCalculationPage.tsx';
+import { AssetsPage } from '@frontend/pages/proceeding/assets/AssetsPage';
 import { ProceedingChat } from '@frontend/pages/proceeding/chat/ProceedingChat.tsx';
 import { FilesPage } from '@frontend/pages/proceeding/files/FilesPage.tsx';
 import { ProceedingOverviewPage } from '@frontend/pages/proceeding/overview/ProceedingOverviewPage';
@@ -84,7 +85,7 @@ export const getRouter = () => {
                 <Route path={Routes.proceedingFiles} element={<FilesPage />} />
                 <Route
                   path={Routes.proceedingAssets}
-                  element={<NotFoundPage />}
+                  element={<AssetsPage />}
                 />
                 <Route
                   path={Routes.proceedingSettings}

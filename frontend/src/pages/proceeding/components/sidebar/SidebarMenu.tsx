@@ -77,7 +77,7 @@ export const SidebarMenu = ({ id }: SidebarMenuProps) => {
                 to={insertIdToUrl(Routes.proceedingAssets, id)}
                 width="full"
               >
-                Rozvrh majetku
+                Určení majetku
               </RouterNavLink>
             </MenuItem>
           </MenuList>
@@ -119,7 +119,7 @@ export const SidebarMenu = ({ id }: SidebarMenuProps) => {
             width="full"
           >
             <FaChartPie />
-            <Text ml={2}>Rozvrh majetku</Text>
+            <Text ml={2}>Určení majetku</Text>
           </RouterSidebarButton>
         </Flex>
       </Show>

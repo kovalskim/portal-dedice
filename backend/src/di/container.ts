@@ -3,6 +3,7 @@ import { asClass, asValue, createContainer, InjectionMode } from 'awilix';
 import nodemailer from 'nodemailer';
 
 import { getConnection } from '@backend/db/db';
+import { AssetRepository } from '@backend/repositories/AssetRepository';
 import { CourtRepository } from '@backend/repositories/CourtRepository';
 import { CriteriaRepository } from '@backend/repositories/CriteriaRepository';
 import { FileRepository } from '@backend/repositories/FileRepository';
@@ -13,6 +14,7 @@ import { ProceedingRepository } from '@backend/repositories/ProceedingRepository
 import { ScheduleRepository } from '@backend/repositories/ScheduleRepository';
 import { UserInvitationRepository } from '@backend/repositories/UserInvitationRepository';
 import { UserRepository } from '@backend/repositories/UserRepository';
+import { AssetsService } from '@backend/services/AssetsService/AssetsService';
 import { AuthenticationService } from '@backend/services/AuthenticationService/AuthenticationService';
 import { AwsService } from '@backend/services/AwsService/AwsService';
 import { BulkEmailService } from '@backend/services/BulkEmailService/BulkEmailService';
@@ -59,6 +61,7 @@ export const createDIContainer = async () => {
     fileRepository: asClass(FileRepository),
     userInvitationRepository: asClass(UserInvitationRepository),
     criteriaRepository: asClass(CriteriaRepository),
+    assetRepository: asClass(AssetRepository),
     // services
     awsService: asClass(AwsService),
     emailService: asClass(EmailService),
@@ -74,6 +77,7 @@ export const createDIContainer = async () => {
     bulkEmailService: asClass(BulkEmailService),
     userInvitationService: asClass(UserInvitationService),
     notaryCriteriaService: asClass(NotaryCriteriaService),
+    assetsService: asClass(AssetsService),
   });
 
   return container;

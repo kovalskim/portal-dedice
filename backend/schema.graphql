@@ -3,16 +3,57 @@
 # !!!   DO NOT MODIFY THIS FILE BY YOURSELF   !!!
 # -----------------------------------------------
 
+type AssetsAll {
+  businessParticipations: [BusinessParticipation!]!
+  cars: [Car!]!
+  financialInstruments: [FinancialInstrument!]!
+  generalInfo: GeneralInfo!
+  others: [Other!]!
+  valuables: [Valuable!]!
+}
+
 type AuthInfo {
   role: Role!
   token: String!
   user: User!
 }
 
+type BusinessParticipation {
+  assetId: Float!
+  ico: String!
+  id: Float!
+}
+
+input BusinessParticipationInput {
+  ico: String!
+}
+
+type Car {
+  assetId: Float!
+  brand: String!
+  id: Float!
+  registrationYear: Int!
+  typeDetail: String!
+}
+
+input CarInput {
+  brand: String!
+  registrationYear: Int!
+  typeDetail: String!
+}
+
 type Court {
   attribute: String!
   id: ID!
   name: String!
+}
+
+input CreateAssetsAllInput {
+  businessParticipations: [BusinessParticipationInput!]!
+  cars: [CarInput!]!
+  financialInstruments: [FinancialInstrumentInput!]!
+  others: [OtherInput!]!
+  valuables: [ValuableInput!]!
 }
 
 """
@@ -51,15 +92,33 @@ type File {
   timestamp: String!
   type: String!
   user: User!
+  userId: Float!
+}
+
+type FinancialInstrument {
+  assetId: Float!
+  id: Float!
+  selectedBank: String!
+}
+
+input FinancialInstrumentInput {
+  selectedBank: String!
+}
+
+type GeneralInfo {
+  id: Float!
+  lastModified: DateTimeISO!
+  modifiedBy: String!
+  proceedingsId: Float!
 }
 
 type Message {
   id: ID!
-  proceedingId: Float
+  proceedingId: Float!
   text: String!
   timestamp: DateTimeISO!
-  user: User
-  userId: Float
+  user: User!
+  userId: Float!
 }
 
 type Mutation {
@@ -67,7 +126,9 @@ type Mutation {
   approveParticipant(data: UpdateParticipantStateInput!): Participant!
   changePassword(newPassword: String!, oldPassword: String!, userId: String!): AuthInfo!
   createMessage(proceedingId: Float!, text: String!): Message!
+  createOrUpdateAsset(data: CreateAssetsAllInput!, proceedingId: Int!): Boolean!
   createProceeding(data: NewProceedingInput!): Proceeding!
+  deleteAsset(proceedingId: Int!): Boolean!
   deleteFile(id: String!): Boolean!
   deleteParticipantById(data: DeleteParticipantInput!): Boolean!
   deleteProceeding(id: Float!): Boolean!
@@ -102,6 +163,16 @@ type NotaryPaymentCalculation {
   fee: Float!
   total: Float!
   vat: Float!
+}
+
+type Other {
+  assetId: Float!
+  description: String!
+  id: Float!
+}
+
+input OtherInput {
+  description: String!
 }
 
 type PaginatedProceedings {
@@ -144,9 +215,6 @@ type Proceeding {
   deceasedStreetWithNumber: String!
   id: ID!
   isLoggedUserApprovedParticipantOrNotary: Boolean!
-  narratorEmail: String
-  narratorFirstname: String
-  narratorLastname: String
   notary: User!
   notaryId: Float!
   phaseId: Float!
@@ -160,9 +228,10 @@ type Query {
   districts: [District!]!
   filesByProceeding(proceedingId: Float!): [File!]!
   getAllProceedings(currentPage: Float! = 1, filterDeceasedName: String, filterPhaseId: Float, filterProceedingNumber: String, filterStartDate: String, filterStatus: String, pageSize: Float! = 2, sortOrder: String! = "desc"): PaginatedProceedings!
+  getAssetById(proceedingId: Int!): AssetsAll
   getProceeding(id: Float!): Proceeding
   proceedingParticipants(id: Float!): [Participant!]!
-  user(id: String!): User
+  user(id: Float!): User
   users: [User!]!
 }
 
@@ -212,4 +281,14 @@ type User {
   isVerified: Boolean!
   lastname: String!
   role: Role!
+}
+
+type Valuable {
+  assetId: Float!
+  description: String!
+  id: Float!
+}
+
+input ValuableInput {
+  description: String!
 }

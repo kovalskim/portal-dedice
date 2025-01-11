@@ -52,6 +52,9 @@ import { UserInvitationService } from '@backend/services/UserInvitationService';
 import { UserService } from '@backend/services/UserService/UserService';
 import { CustomContext } from '@backend/types/types';
 
+import { AssetsResolver } from './graphql/modules/assets/AssetsResolver';
+import { AssetsService } from './services/AssetsService/AssetsService';
+
 const init = async () => {
   const app = express();
 
@@ -83,6 +86,7 @@ const init = async () => {
       ParticipantsResolver,
       NotaryPaymentCalculationResolver,
       UserInvitationResolver,
+      AssetsResolver,
     ],
     emitSchemaFile: true,
     pubSub: pubSub,
@@ -160,6 +164,7 @@ const init = async () => {
       notaryCriteriaService: container.resolve<NotaryCriteriaService>(
         'notaryCriteriaService',
       ),
+      assetsService: container.resolve<AssetsService>('assetsService'),
     };
   };
 

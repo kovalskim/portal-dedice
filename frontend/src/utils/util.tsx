@@ -16,6 +16,10 @@ export const formatDatetime = (date: Date) => {
   return format(date, 'dd/MM HH:mm');
 };
 
+export const formatTimestamp = (date: Date): string => {
+  return format(date, 'dd.MM.yyyy HH:mm:ss');
+};
+
 export const formatPrice = (price: number) => {
   return new Intl.NumberFormat('cs-CZ').format(price) + ' Kč';
 };

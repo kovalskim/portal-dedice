@@ -244,3 +244,56 @@ export const tasks = mysqlTable('tasks', {
     onDelete: 'cascade',
   }),
 });
+
+export const assets = mysqlTable('assets', {
+  id: int('id').primaryKey().autoincrement(),
+  lastModified: datetime('last_modified').notNull(),
+  modifiedBy: int('modified_by')
+    .notNull()
+    .references(() => users.id),
+  proceedingsId: int('proceedings_id')
+    .notNull()
+    .references(() => proceedings.id, { onDelete: 'cascade' }),
+});
+
+export const financialInstrument = mysqlTable('financial_instrument', {
+  id: int('id').primaryKey().autoincrement(),
+  assetId: int('asset_id')
+    .notNull()
+    .references(() => assets.id, { onDelete: 'cascade' }),
+  selectedBank: varchar('selected_bank', { length: 255 }).notNull(),
+});
+
+export const businessParticipation = mysqlTable('business_participation', {
+  id: int('id').primaryKey().autoincrement(),
+  assetId: int('asset_id')
+    .notNull()
+    .references(() => assets.id, { onDelete: 'cascade' }),
+  ico: varchar('ico', { length: 8 }).notNull(),
+});
+
+export const car = mysqlTable('car', {
+  id: int('id').primaryKey().autoincrement(),
+  assetId: int('asset_id')
+    .notNull()
+    .references(() => assets.id, { onDelete: 'cascade' }),
+  brand: varchar('brand', { length: 255 }).notNull(),
+  registrationYear: int('registration_year').notNull(),
+  typeDetail: varchar('type_detail', { length: 20 }).notNull(),
+});
+
+export const valuable = mysqlTable('valuable', {
+  id: int('id').primaryKey().autoincrement(),
+  assetId: int('asset_id')
+    .notNull()
+    .references(() => assets.id, { onDelete: 'cascade' }),
+  description: varchar('type_detail', { length: 300 }).notNull(),
+});
+
+export const other = mysqlTable('other', {
+  id: int('id').primaryKey().autoincrement(),
+  assetId: int('asset_id')
+    .notNull()
+    .references(() => assets.id, { onDelete: 'cascade' }),
+  description: varchar('type_detail', { length: 300 }).notNull(),
+});

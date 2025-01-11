@@ -1,5 +1,6 @@
 import { MySql2Database } from 'drizzle-orm/mysql2';
 
+import { AssetsService } from '@backend/services/AssetsService/AssetsService';
 import { AuthenticationService } from '@backend/services/AuthenticationService/AuthenticationService';
 import { AwsService } from '@backend/services/AwsService/AwsService';
 import { BulkEmailService } from '@backend/services/BulkEmailService/BulkEmailService';
@@ -32,6 +33,7 @@ export type CustomContext = {
   bulkEmailService: BulkEmailService;
   userInvitationService: UserInvitationService;
   notaryCriteriaService: NotaryCriteriaService;
+  assetsService: AssetsService;
 };
 
 export type JWTPayload = {
