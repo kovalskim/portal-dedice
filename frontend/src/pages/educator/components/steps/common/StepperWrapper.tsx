@@ -4,7 +4,7 @@ import { Box, Card, Container, Flex, Heading } from '@chakra-ui/react';
 import { PrimaryButton, SecondaryButton } from '@frontend/components/buttons';
 import { SummaryStepper } from '@frontend/components/stepper/SummaryStepper';
 import { stepsCountShowenInEducation } from '@frontend/constants';
-import { useEducatorState } from '@frontend/hooks/useEducatorState';
+import { useEducatorState } from '@frontend/hooks/useEducatorState.ts';
 
 type NavigationButtonProps = {
   onClick?: () => void;
@@ -20,6 +20,7 @@ type StepperWrapperProps = {
   nextBtnProps?: NavigationButtonProps;
   prevBtnProps?: NavigationButtonProps;
   midBtnProps?: NavigationButtonProps;
+  maxWidth?: string;
 };
 
 export const StepperWrapper: FC<PropsWithChildren<StepperWrapperProps>> = ({
@@ -29,6 +30,7 @@ export const StepperWrapper: FC<PropsWithChildren<StepperWrapperProps>> = ({
   midBtnProps,
   prevBtnProps,
   nextBtnProps,
+  maxWidth = 'container.sm',
 }) => {
   const { state } = useEducatorState();
 
@@ -62,7 +64,9 @@ export const StepperWrapper: FC<PropsWithChildren<StepperWrapperProps>> = ({
               lg: 12,
             }}
           >
-            <Container px={0}>{children}</Container>
+            <Container maxW={maxWidth} px={0}>
+              {children}
+            </Container>
           </Box>
         </Flex>
         <Flex

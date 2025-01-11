@@ -1,6 +1,6 @@
 import { Box } from '@chakra-ui/react';
 
-import { useEducatorState } from '@frontend/hooks/useEducatorState';
+import { useEducatorState } from '@frontend/hooks/useEducatorState.ts';
 import { Step00 } from '@frontend/pages/educator/components/steps/phase0/Step00.tsx';
 import { Step01 } from '@frontend/pages/educator/components/steps/phase0/Step01.tsx';
 import { Step02 } from '@frontend/pages/educator/components/steps/phase0/Step02.tsx';
@@ -12,6 +12,10 @@ import { Step14 } from '@frontend/pages/educator/components/steps/phase1/Step14.
 import { Step15 } from '@frontend/pages/educator/components/steps/phase1/Step15.tsx';
 import { Step16 } from '@frontend/pages/educator/components/steps/phase1/Step16.tsx';
 import { Step20 } from '@frontend/pages/educator/components/steps/phase2/Step20.tsx';
+import { Step30 } from '@frontend/pages/educator/components/steps/phase3/Step30.tsx';
+import { Step31_HeirsIdentification } from '@frontend/pages/educator/components/steps/phase3/Step31_HeirsIdentification.tsx';
+import { Step32_AssetsIdentification } from '@frontend/pages/educator/components/steps/phase3/Step32_AssetsIdentification.tsx';
+import { Step33_Result } from '@frontend/pages/educator/components/steps/phase3/Step33_Result.tsx';
 import { StepNotFound } from '@frontend/pages/educator/components/steps/StepNotFound.tsx';
 
 import { Step27 } from './components/steps/phase2/21-no-ans/24-no-ans/25-no-ans/Step27';
@@ -26,8 +30,8 @@ import { Step22 } from './components/steps/phase2/Step22';
 import { Step23 } from './components/steps/phase2/Step23';
 import { Step211 } from './components/steps/phase2/Step211';
 import { Step212 } from './components/steps/phase2/Step212';
-import { Step30 } from './components/steps/phase3/Step30';
-import { Step31 } from './components/steps/phase3/Step31';
+import { Step40 } from './components/steps/phase4-summary/Step40.tsx';
+import { Step41 } from './components/steps/phase4-summary/Step41.tsx';
 
 type Step = {
   index: number;
@@ -60,7 +64,11 @@ const steps: Step[] = [
   { index: 211, stepEl: Step211 },
   { index: 212, stepEl: Step212 },
   { index: 30, stepEl: Step30 },
-  { index: 31, stepEl: Step31 },
+  { index: 31, stepEl: Step31_HeirsIdentification },
+  { index: 32, stepEl: Step32_AssetsIdentification },
+  { index: 33, stepEl: Step33_Result },
+  { index: 40, stepEl: Step40 },
+  { index: 41, stepEl: Step41 },
 ];
 
 const findStepEl = (stepIndex: number) => {

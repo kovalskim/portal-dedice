@@ -3,6 +3,9 @@ import { createJSONStorage, persist } from 'zustand/middleware';
 
 import { DeceasedPersonFormFields } from '@frontend/components/forms/deceasedPersonForm/DeceasedPersonForm.tsx';
 import { IdentifiedNotary } from '@frontend/gql/educator/mutations.ts';
+import { AssetFields } from '@frontend/pages/educator/components/assetsDistribution/assetsIdentificationFormSchema.ts';
+import { HeirsIdentificationFormFields } from '@frontend/pages/educator/components/assetsDistribution/heirsIdentificatonFormSchema.ts';
+import { InheritanceResult } from '@frontend/pages/educator/components/steps/phase3/useInheritanceCalculator.tsx';
 
 export type Result = {
   condition: (resultState: EducatorStorage) => boolean | undefined;
@@ -153,7 +156,7 @@ export const results: Result[] = [
       'V tomto případě bude dědicem veškerého majetku v pozůstalostním řízení pozůstalá manželka.',
     ],
   },
-  // TODO: ve figjamu chybi varianta kdyz na vse odpovis ne
+  // ve figjamu chybi varianta kdyz na vse odpovis ne
 ];
 
 export type EducatorStorage = {
@@ -166,12 +169,14 @@ export type EducatorStorage = {
   hadParents?: boolean;
   livedWithSomeone?: boolean;
   numberOfKids?: 'one' | 'many';
+  assetsDistribution?: {
+    heirs?: HeirsIdentificationFormFields;
+    assets?: AssetFields[];
+  };
+  assetsDistributionResult?: InheritanceResult;
 };
 
-const defaultEducatorStorage: EducatorStorage = {
-  deceasedPersonFormData: undefined,
-  identifiedNotary: undefined,
-};
+const defaultEducatorStorage: EducatorStorage = {};
 
 type State = {
   storage: EducatorStorage;

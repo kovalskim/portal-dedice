@@ -1,4 +1,4 @@
-export const stepsCountShowenInEducation = 4;
+export const stepsCountShowenInEducation = 5;
 
 export const BACKLINK_KEY = 'auth-backlink';
 

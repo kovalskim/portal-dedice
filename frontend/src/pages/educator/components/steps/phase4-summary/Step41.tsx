@@ -3,12 +3,12 @@ import { useNavigate } from 'react-router-dom';
 
 import { PrimaryButton, SecondaryButton } from '@frontend/components/buttons';
 import { useEducatorState } from '@frontend/hooks/useEducatorState.ts';
-import { useEducatorStorage } from '@frontend/hooks/useEducatorStorage';
+import { useEducatorStorage } from '@frontend/hooks/useEducatorStorage.ts';
 import { Routes } from '@frontend/routes/routes.ts';
 
-import { StepperWrapper } from '../common/StepperWrapper';
+import { StepperWrapper } from '../common/StepperWrapper.tsx';
 
-export const Step31 = () => {
+export const Step41 = () => {
   const { setPrevState, resetState } = useEducatorState();
   const { resetStorage } = useEducatorStorage();
   const nav = useNavigate();
@@ -16,7 +16,7 @@ export const Step31 = () => {
   return (
     <StepperWrapper
       title={'Řešíte aktuálně pozůstalostní řízení?'}
-      showStep={3}
+      showStep={4}
       prevBtnProps={{ onClick: setPrevState }}
     >
       <Stack spacing={10} alignItems="center">

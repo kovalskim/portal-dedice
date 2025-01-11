@@ -34,7 +34,7 @@ import { RouterNavButton } from '@frontend/components/navigation/atoms/RouterNav
 import { Role, useAuth } from '@frontend/context/auth/auth-core';
 import { useProceedings } from '@frontend/pages/userDashboard/hooks/useProceedings.ts';
 import { Routes } from '@frontend/routes/routes.ts';
-import { formatDate, insertIdToUrl } from '@frontend/utils/util.tsx';
+import { formatDate, insertIdToUrl } from '@frontend/utils/util.ts';
 
 type ProceedingsTableProps = {
   onEditProceeding?: (id: number, data: DeceasedPersonFormFields) => void;

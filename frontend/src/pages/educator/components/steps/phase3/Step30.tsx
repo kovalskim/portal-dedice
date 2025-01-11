@@ -1,54 +1,34 @@
-import { useEffect } from 'react';
-import { Heading } from '@chakra-ui/react';
+import { Stack } from '@chakra-ui/react';
 
+import { PrimaryButton, SecondaryButton } from '@frontend/components/buttons';
 import { useEducatorState } from '@frontend/hooks/useEducatorState.ts';
-import { useEducatorStorage } from '@frontend/hooks/useEducatorStorage';
-
-import { NotaryIdentificationOutput } from '../../notary-identification/NotaryIdentificationOutput';
-import { ResolutionOfInheritance } from '../../resolutionOfInheritance/ResolutionOfInheritance';
-import { StepperWrapper } from '../common/StepperWrapper';
+import { StepperWrapper } from '@frontend/pages/educator/components/steps/common/StepperWrapper.tsx';
 
 export const Step30 = () => {
-  const { setPrevState, setState, incrementState } = useEducatorState();
-  const { storage, getResult } = useEducatorStorage();
-
-  const result = getResult();
-
-  useEffect(() => {
-    if (!storage.identifiedNotary && !result) {
-      // this is done to avoid double increment (bz of double render in dev)
-      setState(31);
-    }
-  }, [result, setState, storage.identifiedNotary]);
+  const { setState, incrementState, setPrevState } = useEducatorState();
 
   return (
     <StepperWrapper
-      title={'Shrnutí'}
+      title={'Chcete si vyzkoušet, jak funguje rozdělení pozůstalosti v praxi?'}
       showStep={3}
       prevBtnProps={{ onClick: setPrevState }}
-      nextBtnProps={{ onClick: incrementState }}
     >
-      {storage.identifiedNotary && (
-        <>
-          <Heading as="h2" textAlign={'center'} size={'md'} mb={8}>
-            Kdo bude přiděleným notářem?
-          </Heading>
-          <NotaryIdentificationOutput hideInfoHintBox hideText />
-        </>
-      )}
-      {result && (
-        <>
-          <Heading as="h2" textAlign={'center'} size={'md'} mb={8}>
-            Jaké bude rozdělení pozůstalosti?
-          </Heading>
-          <ResolutionOfInheritance result={result} />
-        </>
-      )}
-      {!storage.identifiedNotary && !result && (
-        <Heading as="h2" textAlign={'center'} size={'md'} mb={8}>
-          Ve shrnutí není možné zobrazit žádné informace.
-        </Heading>
-      )}
+      <Stack textAlign="center" spacing={6} width={200}>
+        <PrimaryButton
+          onClick={() => {
+            incrementState();
+          }}
+        >
+          Ano
+        </PrimaryButton>
+        <SecondaryButton
+          onClick={() => {
+            setState(40);
+          }}
+        >
+          Ne
+        </SecondaryButton>
+      </Stack>
     </StepperWrapper>
   );
 };

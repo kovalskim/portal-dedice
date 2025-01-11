@@ -21,5 +21,8 @@ export const formatTimestamp = (date: Date): string => {
 };
 
 export const formatPrice = (price: number) => {
-  return new Intl.NumberFormat('cs-CZ').format(price) + ' Kč';
+  return (
+    new Intl.NumberFormat('cs-CZ', { maximumFractionDigits: 2 }).format(price) +
+    ' Kč'
+  );
 };

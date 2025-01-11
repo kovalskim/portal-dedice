@@ -2,7 +2,7 @@ import { FC } from 'react';
 import { Card, Flex, Text } from '@chakra-ui/react';
 
 import { Message as MessageType } from '@frontend/gql/chat/types';
-import { formatDatetime } from '@frontend/utils/util.tsx';
+import { formatDatetime } from '@frontend/utils/util.ts';
 
 interface MessageProps {
   message: MessageType;

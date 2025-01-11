@@ -20,7 +20,7 @@ import {
 
 import { RouterNavLink } from '@frontend/components/navigation/atoms';
 import { Routes } from '@frontend/routes/routes.ts';
-import { insertIdToUrl } from '@frontend/utils/util.tsx';
+import { insertIdToUrl } from '@frontend/utils/util.ts';
 
 import { RouterSidebarButton } from './RouterSidebarButton';
 

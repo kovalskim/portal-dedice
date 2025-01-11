@@ -27,6 +27,7 @@
     "@hookform/resolvers": "~3.9.0",
     "@uidotdev/usehooks": "^2.4.1",
     "apollo-upload-client": "^18.0.1",
+    "boolean": "^3.2.0",
     "chakra-react-select": "^5.0.2",
     "cross-fetch": "^4.0.0",
     "czech-vocative": "^2.0.1",
@@ -76,5 +77,6 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  }
+  },
+  "packageManager": "yarn@1.22.22+sha256.c17d3797fb9a9115bf375e31bfd30058cac6bc9c3b8807a3d8cb2094794b51ca"
 }

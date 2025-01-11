@@ -26,7 +26,7 @@ import {
   FormFields as NotaryPaymentCalculationFormFields,
   NotaryPaymentCalculationForm,
 } from '@frontend/pages/notaryPaymentCalculation/NotaryPaymentCalculationForm.tsx';
-import { formatPrice } from '@frontend/utils/util.tsx';
+import { formatPrice } from '@frontend/utils/util.ts';
 
 export const NotaryPaymentCalculationPage = () => {
   const showToast = useCustomToast();
