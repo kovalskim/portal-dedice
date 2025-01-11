@@ -94,9 +94,10 @@ export class AssetsService {
       !(await this.participantValidationService.isUserParticipantOrNotaryOfProceeding(
         userId,
         proceedingId,
-      ))
+      )) &&
+      !(await this.userService.hasUserAdminRole(userId))
     ) {
-      throw new AppError('UNAUTHORIZED', 'Unauthorized');
+      throw new AppError('NOT_PROCEEDING_PARTICIPANT');
     }
   }
 }

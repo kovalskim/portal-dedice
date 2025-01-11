@@ -33,12 +33,11 @@ export class FileService {
 
   async findFilesByProceeding(proceedingId: number): Promise<FileDTO[]> {
     if (
-      !(
-        (await this.participantValidationService.isUserParticipantOrNotaryOfProceeding(
-          this.authUser!.id,
-          proceedingId,
-        )) && !(await this.userService.hasUserAdminRole(this.authUser!.id))
-      )
+      !(await this.participantValidationService.isUserParticipantOrNotaryOfProceeding(
+        this.authUser!.id,
+        proceedingId,
+      )) &&
+      !(await this.userService.hasUserAdminRole(this.authUser!.id))
     ) {
       throw new AppError('NOT_PROCEEDING_PARTICIPANT');
     }

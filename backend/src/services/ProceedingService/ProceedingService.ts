@@ -97,12 +97,11 @@ export class ProceedingService {
 
   async getProceeding(userId: number, proceedingId: number) {
     if (
-      !(
-        (await this.participantValidationService.isUserParticipantOrNotaryOfProceeding(
-          userId,
-          proceedingId,
-        )) && !(await this.userService.hasUserAdminRole(userId))
-      )
+      !(await this.participantValidationService.isUserParticipantOrNotaryOfProceeding(
+        userId,
+        proceedingId,
+      )) &&
+      !(await this.userService.hasUserAdminRole(userId))
     ) {
       throw new AppError('NOT_PROCEEDING_PARTICIPANT');
     }
