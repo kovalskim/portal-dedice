@@ -59,3 +59,9 @@ export const UPDATE_BLOG_MUTATION = gql`
     }
   }
 `;
+
+export const INCREASE_VIEWERS_COUNT_MUTATION = gql`
+  mutation IncreaseViewersCount($increaseViewersCountId: Float!) {
+    increaseViewersCount(id: $increaseViewersCountId)
+  }
+`;

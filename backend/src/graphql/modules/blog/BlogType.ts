@@ -29,6 +29,9 @@ export class Blog {
   @Field(() => String, { nullable: true })
   authorName?: string;
 
+  @Field(() => Number)
+  viewersCount!: number;
+
   @Field(() => [Blog], { nullable: true })
   additionalBlogs?: Blog[];
 }

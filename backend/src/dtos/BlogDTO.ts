@@ -9,5 +9,6 @@ export interface BlogDTO {
   authorName?: string;
   createdAt: Date;
   updatedAt: Date;
+  viewersCount: number;
   additionalBlogs?: BlogDTO[];
 }

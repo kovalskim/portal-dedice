@@ -12,6 +12,49 @@ export class BlogRepository {
     this.db = db;
   }
 
+  async getAllArticles(): Promise<BlogDTO[]> {
+    const results = await this.db
+      .select({
+        id: blogs.id,
+        title: blogs.title,
+        content: blogs.content,
+        authorId: blogs.authorId,
+        blogDate: blogs.blogDate,
+        createdAt: blogs.createdAt,
+        updatedAt: blogs.updatedAt,
+        viewersCount: blogs.viewersCount,
+        coverImagePath: blogs.coverImagePath,
+        authorName: users.firstname,
+      })
+      .from(blogs)
+      .leftJoin(users, eq(blogs.authorId, users.id))
+      .orderBy(desc(blogs.blogDate));
+
+    return results as BlogDTO[];
+  }
+
+  async getMostViewedArticles(count: number): Promise<BlogDTO[]> {
+    const results = await this.db
+      .select({
+        id: blogs.id,
+        title: blogs.title,
+        content: blogs.content,
+        authorId: blogs.authorId,
+        blogDate: blogs.blogDate,
+        createdAt: blogs.createdAt,
+        updatedAt: blogs.updatedAt,
+        viewersCount: blogs.viewersCount,
+        coverImagePath: blogs.coverImagePath,
+        authorName: users.firstname,
+      })
+      .from(blogs)
+      .leftJoin(users, eq(blogs.authorId, users.id))
+      .orderBy(desc(blogs.viewersCount))
+      .limit(count);
+
+    return results as BlogDTO[];
+  }
+
   async getLimitedBlogs(limit: number): Promise<BlogDTO[]> {
     const results = await this.db
       .select({
@@ -22,6 +65,7 @@ export class BlogRepository {
         blogDate: blogs.blogDate,
         createdAt: blogs.createdAt,
         updatedAt: blogs.updatedAt,
+        viewersCount: blogs.viewersCount,
         coverImagePath: blogs.coverImagePath,
         authorName: users.firstname,
       })
@@ -43,6 +87,7 @@ export class BlogRepository {
         blogDate: blogs.blogDate,
         createdAt: blogs.createdAt,
         updatedAt: blogs.updatedAt,
+        viewersCount: blogs.viewersCount,
         coverImagePath: blogs.coverImagePath,
         authorName: users.firstname,
       })
@@ -62,6 +107,7 @@ export class BlogRepository {
   async updateBlog(blogId: number, data: CreateBlogDTO): Promise<void> {
     await this.db.update(blogs).set(data).where(eq(blogs.id, blogId));
   }
+
   async deleteBlog(blogId: number): Promise<void> {
     await this.db.delete(blogs).where(eq(blogs.id, blogId));
   }

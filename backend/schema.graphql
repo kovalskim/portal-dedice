@@ -18,6 +18,20 @@ type AuthInfo {
   user: User!
 }
 
+type Blog {
+  additionalBlogs: [Blog!]
+  authorName: String
+  blogDate: DateTimeISO!
+  content: String!
+  coverImageFullAWSPath: String!
+  coverImagePath: String!
+  createdAt: DateTimeISO!
+  id: ID!
+  title: String!
+  updatedAt: DateTimeISO!
+  viewersCount: Float!
+}
+
 type BusinessParticipation {
   assetId: Float!
   ico: String!
@@ -48,6 +62,11 @@ type Court {
   name: String!
 }
 
+type CourtType {
+  id: Float!
+  name: String!
+}
+
 input CreateAssetsAllInput {
   businessParticipations: [BusinessParticipationInput!]!
   cars: [CarInput!]!
@@ -56,10 +75,28 @@ input CreateAssetsAllInput {
   valuables: [ValuableInput!]!
 }
 
+input Criteria {
+  birthDaysMonths: [DayMonth!]
+  court: LabelValue
+  deathDaysMonths: [DayMonth!]
+  lastnameLetters: [LabelValue!]
+  rules: Rules
+}
+
 """
 A date-time string at UTC, such as 2007-12-03T10:15:30Z, compliant with the `date-time` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar.This scalar is serialized to a string in ISO 8601 format and parsed from a string in ISO 8601 format.
 """
 scalar DateTimeISO
+
+input DayMonth {
+  days: [NumberedLabelValue!]!
+  months: [NumberedLabelValue!]!
+}
+
+type DayMonthType {
+  days: [Float!]!
+  months: [Float!]!
+}
 
 input DeceasedPersonInput {
   birthdate: String!
@@ -112,6 +149,11 @@ type GeneralInfo {
   proceedingsId: Float!
 }
 
+input LabelValue {
+  label: String!
+  value: String!
+}
+
 type Message {
   id: ID!
   proceedingId: Float!
@@ -125,16 +167,21 @@ type Mutation {
   acceptParticipantInvitation(token: String!): Float!
   approveParticipant(data: UpdateParticipantStateInput!): Participant!
   changePassword(newPassword: String!, oldPassword: String!, userId: String!): AuthInfo!
+  createBlog(data: NewBlogInput!): Blog!
   createMessage(proceedingId: Float!, text: String!): Message!
   createOrUpdateAsset(data: CreateAssetsAllInput!, proceedingId: Int!): Boolean!
   createProceeding(data: NewProceedingInput!): Proceeding!
   deleteAsset(proceedingId: Int!): Boolean!
+  deleteBlog(id: Float!): Boolean!
   deleteFile(id: String!): Boolean!
   deleteParticipantById(data: DeleteParticipantInput!): Boolean!
   deleteProceeding(id: Float!): Boolean!
+  getCoverImgSignedUrl(filename: String!, filetype: String!): SignedUrl!
   getSignedUrl(filename: String!, filetype: String!, proceedingId: String!): SignedUrl!
   identifyNotary(data: DeceasedPersonInput!): Schedule!
+  increaseViewersCount(id: Float!): Boolean!
   inviteParticipantToProceeding(data: ParticipantsInput!): [Float!]!
+  inviteUser(data: UserInvitationInput!): Boolean!
   newPassword(newPassword: String!, token: String!): String!
   notaryPaymentCalculation(estateTotalValue: Float!): NotaryPaymentCalculation!
   rejectParticipant(data: UpdateParticipantStateInput!): Participant!
@@ -142,12 +189,22 @@ type Mutation {
   saveFile(alias: String!, key: String!, proceedingId: String!, type: String!): Boolean!
   sendMessageToParticipants(data: SendEmailRequest!): String!
   signIn(email: String!, password: String!): AuthInfo!
-  signUp(email: String!, firstname: String!, lastname: String!, password: String!): AuthInfo!
-  updateProceeding(data: DeceasedPersonInput!, id: Float!): Proceeding!
+  signUp(email: String!, firstname: String!, lastname: String!, password: String!, token: String!): AuthInfo!
+  updateBlog(data: NewBlogInput!, id: Float!): Blog!
+  updateProceeding(data: UpdateProceedingInput!, id: Float!): Proceeding!
+  updateProceedingPhase(phaseId: Float!, proceedingId: Float!): Boolean!
   updateUser(afterTitle: String, beforeTitle: String, firstname: String!, lastname: String!, userId: String!): User!
   updateUserPreferences(emailNotifications: Boolean!, userId: String!): User!
   verifyEmail(token: String!): String!
-  verifyToken(token: String!): String!
+  verifyParticipantInvitationToken(token: String!): String!
+  verifyToken(token: String!): Payload!
+}
+
+input NewBlogInput {
+  blogDate: String!
+  content: String!
+  coverImagePath: String!
+  title: String!
 }
 
 type NewMessageNotification {
@@ -159,10 +216,23 @@ input NewProceedingInput {
   narratorContactInfo: ParticipantInput!
 }
 
+type NotaryCriteriaType {
+  birthDaysMonths: [DayMonthType!]
+  court: CourtType
+  deathDaysMonths: [DayMonthType!]
+  lastnameLetters: [String!]
+  rules: RulesType
+}
+
 type NotaryPaymentCalculation {
   fee: Float!
   total: Float!
   vat: Float!
+}
+
+input NumberedLabelValue {
+  label: Float!
+  value: Float!
 }
 
 type Other {
@@ -203,6 +273,16 @@ input ParticipantsInput {
   proceedingId: Float!
 }
 
+type Payload {
+  email: String
+  firstname: String
+  iat: Float
+  id: Float
+  lastname: String
+  role: String
+  userId: Float
+}
+
 type Proceeding {
   deceasedCity: String!
   deceasedDateOfBirth: DateTimeISO!
@@ -225,11 +305,16 @@ type Proceeding {
 
 type Query {
   allMessagesByProceedingId(proceedingId: Float!): [Message!]!
+  courts: [Court!]!
   districts: [District!]!
   filesByProceeding(proceedingId: Float!): [File!]!
+  getAllArticles: [Blog!]
   getAllProceedings(currentPage: Float! = 1, filterDeceasedName: String, filterPhaseId: Float, filterProceedingNumber: String, filterStartDate: String, filterStatus: String, pageSize: Float! = 2, sortOrder: String! = "desc"): PaginatedProceedings!
   getAssetById(proceedingId: Int!): AssetsAll
+  getBlogById(id: Float!): Blog
+  getMostViewedArticles(count: Float!): [Blog!]
   getProceeding(id: Float!): Proceeding
+  notaryCriteria(userId: Float!): NotaryCriteriaType
   proceedingParticipants(id: Float!): [Participant!]!
   user(id: Float!): User
   users: [User!]!
@@ -238,6 +323,18 @@ type Query {
 type Role {
   id: ID!
   name: String!
+}
+
+input Rules {
+  birthDaysMonths: Boolean!
+  deathDaysMonths: Boolean!
+  lastnameLetters: Boolean!
+}
+
+type RulesType {
+  birthDaysMonths: Boolean!
+  deathDaysMonths: Boolean!
+  lastnameLetters: Boolean!
 }
 
 type Schedule {
@@ -271,6 +368,10 @@ input UpdateParticipantStateInput {
   proceedingId: Float!
 }
 
+input UpdateProceedingInput {
+  deceasedPersonInfo: DeceasedPersonInput!
+}
+
 type User {
   afterTitle: String
   beforeTitle: String
@@ -281,6 +382,14 @@ type User {
   isVerified: Boolean!
   lastname: String!
   role: Role!
+}
+
+input UserInvitationInput {
+  criteria: Criteria!
+  email: String!
+  firstname: String!
+  lastname: String!
+  role: String!
 }
 
 type Valuable {

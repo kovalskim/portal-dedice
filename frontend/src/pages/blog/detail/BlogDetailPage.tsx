@@ -1,10 +1,9 @@
-import React, { useState } from 'react';
-import { useQuery } from '@apollo/client';
+import React, { useEffect, useState } from 'react';
+import { useMutation, useQuery } from '@apollo/client';
 import {
   Alert,
   AlertIcon,
   Box,
-  Card,
   Flex,
   Heading,
   Icon,
@@ -13,11 +12,12 @@ import {
   Spinner,
   Text,
 } from '@chakra-ui/react';
-import { FaEdit, FaRegCalendarAlt, FaTrash } from 'react-icons/fa';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { FaEdit, FaEye, FaRegCalendarAlt, FaTrash } from 'react-icons/fa';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import { PrimaryButton } from '@frontend/components/buttons';
 import { Role, useAuth } from '@frontend/context/auth/auth-core';
+import { INCREASE_VIEWERS_COUNT_MUTATION } from '@frontend/gql/blog/mutations';
 import {
   GET_BLOG_BY_ID,
   GetBlogByIdResponse,
@@ -25,17 +25,9 @@ import {
 import { Routes } from '@frontend/routes/routes';
 import { insertIdToUrl } from '@frontend/utils/generalUtil';
 
+import { ArticlePreview } from '../components/ArticlePreview';
+
 import { DeleteBlogModal } from './DeleteBlogModal';
-
-const sanitizeWithDOM = (html: string) => {
-  const parser = new DOMParser();
-  const doc = parser.parseFromString(html, 'text/html');
-  const elements = doc.body.querySelectorAll('*');
-
-  elements.forEach((el) => el.removeAttribute('style'));
-
-  return doc.body.innerHTML;
-};
 
 export const BlogDetailPage: React.FC = () => {
   const { role } = useAuth();
@@ -50,6 +42,12 @@ export const BlogDetailPage: React.FC = () => {
   const { loading, data } = useQuery<GetBlogByIdResponse>(GET_BLOG_BY_ID, {
     variables: { id: numericId },
   });
+
+  const [increaseViewersCount] = useMutation(INCREASE_VIEWERS_COUNT_MUTATION);
+
+  useEffect(() => {
+    increaseViewersCount({ variables: { increaseViewersCountId: numericId } });
+  }, [increaseViewersCount, numericId]);
 
   if (loading)
     return (
@@ -123,9 +121,17 @@ export const BlogDetailPage: React.FC = () => {
             {blog.title}
           </Heading>
 
-          <Flex align="center" justifyContent="center" color="gray.500" mb={4}>
-            <Icon as={FaRegCalendarAlt} boxSize={4} mr={2} />
+          <Flex
+            align="center"
+            justifyContent="center"
+            color="gray.500"
+            mb={4}
+            gap={2}
+          >
+            <Icon as={FaRegCalendarAlt} boxSize={4} />
             <Text>{new Date(blog.blogDate).toLocaleDateString()}</Text>
+            <Icon as={FaEye} boxSize={4} ml={4} />
+            <Text>{blog.viewersCount}</Text>
           </Flex>
 
           <Image
@@ -147,60 +153,17 @@ export const BlogDetailPage: React.FC = () => {
         </Box>
 
         {relatedBlogs.length > 0 && (
-          <Box>
+          <Box px={{ base: 4, md: 8, lg: 16 }}>
             <Heading fontSize="lg" mb={4} mt={10}>
               Mohlo by vás také zajímat:
             </Heading>
             <SimpleGrid
               spacing={4}
               templateColumns="repeat(auto-fill, minmax(300px, 1fr))"
+              textAlign="left"
             >
               {relatedBlogs.map((related) => (
-                <Card
-                  key={related.id}
-                  as={Link}
-                  to={`/blog/${related.id}`}
-                  _hover={{ textDecoration: 'none', transform: 'scale(1.02)' }}
-                  transition="transform 0.2s"
-                  p={4}
-                >
-                  <Box mb={2}>
-                    <Image
-                      src={related.coverImageFullAWSPath}
-                      alt={related.title}
-                      borderRadius="md"
-                      height="200px"
-                      width="100%"
-                      objectFit="cover"
-                    />
-                    <Heading mt={4} mb={2} size="sm">
-                      {related.title}
-                    </Heading>
-                  </Box>
-                  <Flex
-                    align="center"
-                    justifyContent="center"
-                    color="gray.500"
-                    fontSize="14px"
-                    mb={3}
-                  >
-                    <Icon as={FaRegCalendarAlt} boxSize={4} mr={2} />
-                    <Text>{new Date(blog.blogDate).toLocaleDateString()}</Text>
-                  </Flex>
-                  <Box
-                    dangerouslySetInnerHTML={{
-                      __html: sanitizeWithDOM(related.content),
-                    }}
-                    style={{
-                      display: '-webkit-box',
-                      WebkitLineClamp: 3,
-                      WebkitBoxOrient: 'vertical',
-                      overflow: 'hidden',
-                      textOverflow: 'ellipsis',
-                      fontSize: '14px',
-                    }}
-                  />
-                </Card>
+                <ArticlePreview key={related.id} article={related} />
               ))}
             </SimpleGrid>
           </Box>

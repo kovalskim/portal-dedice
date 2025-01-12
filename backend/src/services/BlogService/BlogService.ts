@@ -28,6 +28,32 @@ export class BlogService {
     return `blogsImages/coverImages/${filename}`;
   }
 
+  async getAllArticles(): Promise<BlogDTO[]> {
+    const blogs = await this.blogRepository.getLimitedBlogs(4);
+
+    for (const blog of blogs) {
+      const coverImageFullPath = await this.awsService.getFilePath(
+        this.getBlogKey(blog.coverImagePath),
+      );
+      blog.coverImageFullAWSPath = coverImageFullPath;
+    }
+
+    return blogs;
+  }
+
+  async getMostViewedArticles(count: number): Promise<BlogDTO[]> {
+    const blogs = await this.blogRepository.getMostViewedArticles(count);
+
+    for (const blog of blogs) {
+      const coverImageFullPath = await this.awsService.getFilePath(
+        this.getBlogKey(blog.coverImagePath),
+      );
+      blog.coverImageFullAWSPath = coverImageFullPath;
+    }
+
+    return blogs;
+  }
+
   async getRelatedBlogs(blogId: number): Promise<BlogDTO[]> {
     const blogs = await this.blogRepository.getLimitedBlogs(4);
 
@@ -159,6 +185,18 @@ export class BlogService {
     );
 
     return true;
+  }
+
+  async increaseViewersCount(blogId: number): Promise<void> {
+    const blog = await this.blogRepository.getBlogById(blogId);
+    if (!blog) {
+      throw new AppError('NOT_FOUND', 'Blog not found');
+    }
+
+    await this.blogRepository.updateBlog(blogId, {
+      ...blog,
+      viewersCount: blog.viewersCount + 1,
+    });
   }
 
   async getCoverImgSignedUrl(

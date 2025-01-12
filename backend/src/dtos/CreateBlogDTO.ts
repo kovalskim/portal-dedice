@@ -4,4 +4,5 @@ export interface CreateBlogDTO {
   coverImagePath: string;
   blogDate: Date;
   authorId: number;
+  viewersCount?: number;
 }

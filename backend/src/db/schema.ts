@@ -259,6 +259,7 @@ export const blogs = mysqlTable('blogs', {
   blogDate: date('blogDate').notNull(),
   createdAt: timestamp('created_at').notNull().defaultNow(),
   updatedAt: timestamp('updated_at').notNull().defaultNow().onUpdateNow(),
+  viewersCount: int('viewers_count').default(0).notNull(),
 });
 
 export const assets = mysqlTable('assets', {

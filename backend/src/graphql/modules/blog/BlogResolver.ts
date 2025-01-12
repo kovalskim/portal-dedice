@@ -12,6 +12,19 @@ import { NewBlogInput } from './NewBlogInput';
 
 @Resolver(() => Blog)
 export class BlogResolver {
+  @Query(() => [Blog], { nullable: true })
+  async getAllArticles(@Ctx() { blogService }: CustomContext): Promise<Blog[]> {
+    return await blogService.getAllArticles();
+  }
+
+  @Query(() => [Blog], { nullable: true })
+  async getMostViewedArticles(
+    @Arg('count') count: number,
+    @Ctx() { blogService }: CustomContext,
+  ): Promise<Blog[]> {
+    return await blogService.getMostViewedArticles(count);
+  }
+
   @Query(() => Blog, { nullable: true })
   async getBlogById(
     @Arg('id') id: number,
@@ -49,6 +62,15 @@ export class BlogResolver {
     @Ctx() { authUser, blogService }: AuthenticatedContext,
   ): Promise<Blog> {
     return await blogService.updateBlog(authUser.id, blogId, input);
+  }
+
+  @Mutation(() => Boolean)
+  async increaseViewersCount(
+    @Arg('id') blogId: number,
+    @Ctx() { blogService }: CustomContext,
+  ): Promise<boolean> {
+    await blogService.increaseViewersCount(blogId);
+    return true;
   }
 
   @Mutation(() => Boolean)
