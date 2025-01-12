@@ -12,6 +12,9 @@ import { ForgottenPasswordPage } from '@frontend/pages/authPages/ForgottenPasswo
 import { LogInPage } from '@frontend/pages/authPages/LogInPage';
 import { NewPasswordPage } from '@frontend/pages/authPages/NewPasswordPage.tsx';
 import { SignUpPage } from '@frontend/pages/authPages/SignUpPage';
+import { BlogDetailPage } from '@frontend/pages/blog/detail/BlogDetailPage';
+import { BlogEditorPage } from '@frontend/pages/blog/editor/BlogEditorPage';
+import { BlogPage } from '@frontend/pages/blog/overview/BlogPage';
 import { EducatorPage } from '@frontend/pages/educator/EducatorPages.tsx';
 import { ErrorPage } from '@frontend/pages/errorPages/ErrorPage.tsx';
 import { NotFoundPage } from '@frontend/pages/errorPages/NotFoundPage';
@@ -42,6 +45,16 @@ export const getRouter = () => {
               path={Routes.notaryPaymentCalculation}
               element={<NotaryPaymentCalculationPage />}
             />
+
+            <Route path={Routes.blog} element={<BlogPage />} />
+            <Route path={`${Routes.blog}/:id`} element={<BlogDetailPage />} />
+            <Route element={<ProtectedRoute />}>
+              <Route path={`${Routes.blog}/new`} element={<BlogEditorPage />} />
+              <Route
+                path={`${Routes.blog}/edit/:id`}
+                element={<BlogEditorPage />}
+              />
+            </Route>
             <Route
               path={Routes.forgottenPassword}
               element={<ForgottenPasswordPage />}

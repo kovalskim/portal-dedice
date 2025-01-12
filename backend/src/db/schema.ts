@@ -5,6 +5,7 @@ import {
   int,
   mysqlEnum,
   mysqlTable,
+  text,
   timestamp,
   varchar,
 } from 'drizzle-orm/mysql-core';
@@ -243,6 +244,21 @@ export const tasks = mysqlTable('tasks', {
   proceedingId: int('proceeding_id').references(() => proceedings.id, {
     onDelete: 'cascade',
   }),
+});
+
+export const blogs = mysqlTable('blogs', {
+  id: int('id').primaryKey().autoincrement(),
+  title: varchar('title', { length: 255 }).notNull(),
+  content: text('content').notNull(),
+  authorId: int('author_id')
+    .notNull()
+    .references(() => users.id, {
+      onDelete: 'cascade',
+    }),
+  coverImagePath: varchar('path', { length: 2048 }).notNull(),
+  blogDate: date('blogDate').notNull(),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+  updatedAt: timestamp('updated_at').notNull().defaultNow().onUpdateNow(),
 });
 
 export const assets = mysqlTable('assets', {

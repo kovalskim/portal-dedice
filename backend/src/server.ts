@@ -24,6 +24,7 @@ import { MOCKS, PORT } from '@backend/config';
 import { getConnection } from '@backend/db/db';
 import { createDIContainer } from '@backend/di/container';
 import { errorMiddleware } from '@backend/errors/errorMiddleware';
+import { BlogResolver } from '@backend/graphql/modules/blog/BlogResolver';
 import { ChatResolver } from '@backend/graphql/modules/chat/ChatResolver';
 import { pubSub } from '@backend/graphql/modules/chat/PubSub';
 import { FileResolver } from '@backend/graphql/modules/file/FileResolver';
@@ -39,6 +40,7 @@ import { parseAndVerifyJWT } from '@backend/libs/jwt';
 import { mockResolvers } from '@backend/mocks/mocks';
 import { AuthenticationService } from '@backend/services/AuthenticationService/AuthenticationService';
 import { AwsService } from '@backend/services/AwsService/AwsService';
+import { BlogService } from '@backend/services/BlogService/BlogService';
 import { BulkEmailService } from '@backend/services/BulkEmailService/BulkEmailService';
 import { ChatService } from '@backend/services/ChatService/ChatService';
 import { EmailService } from '@backend/services/EmailService/EmailService';
@@ -86,6 +88,7 @@ const init = async () => {
       ParticipantsResolver,
       NotaryPaymentCalculationResolver,
       UserInvitationResolver,
+      BlogResolver,
       AssetsResolver,
     ],
     emitSchemaFile: true,
@@ -164,6 +167,7 @@ const init = async () => {
       notaryCriteriaService: container.resolve<NotaryCriteriaService>(
         'notaryCriteriaService',
       ),
+      blogService: container.resolve<BlogService>('blogService'),
       assetsService: container.resolve<AssetsService>('assetsService'),
     };
   };

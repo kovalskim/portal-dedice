@@ -1,7 +1,7 @@
 import { Badge, Flex, Text } from '@chakra-ui/react';
 
 import { Proceeding } from '@frontend/gql/proceedings/queries.ts';
-import { formatDate } from '@frontend/utils/util';
+import { formatDate } from '@frontend/utils/generalUtil';
 
 type SidebarProceedingsInfoProps = {
   proceeding: Proceeding;

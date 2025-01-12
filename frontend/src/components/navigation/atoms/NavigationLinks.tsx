@@ -19,6 +19,9 @@ export const NavigationLinks = ({ onClose }: NavigationLinksProps) => {
       <RouterNavLink to={Routes.notaryPaymentCalculation} onClick={onClose}>
         Odměna notáře
       </RouterNavLink>
+      <RouterNavLink to={Routes.blog} onClick={onClose}>
+        Blog
+      </RouterNavLink>
     </>
   );
 };

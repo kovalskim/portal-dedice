@@ -13,7 +13,7 @@ import {
   AssetsAll,
 } from '@frontend/gql/assets/queries';
 import { useCustomToast } from '@frontend/hooks/useCustomToast';
-import { formatTimestamp } from '@frontend/utils/util';
+import { formatTimestamp } from '@frontend/utils/generalUtil';
 
 import { OutletContextType } from '../overview/ProceedingOverviewPage';
 

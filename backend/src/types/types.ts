@@ -3,6 +3,7 @@ import { MySql2Database } from 'drizzle-orm/mysql2';
 import { AssetsService } from '@backend/services/AssetsService/AssetsService';
 import { AuthenticationService } from '@backend/services/AuthenticationService/AuthenticationService';
 import { AwsService } from '@backend/services/AwsService/AwsService';
+import { BlogService } from '@backend/services/BlogService/BlogService';
 import { BulkEmailService } from '@backend/services/BulkEmailService/BulkEmailService';
 import { ChatService } from '@backend/services/ChatService/ChatService';
 import { EmailService } from '@backend/services/EmailService/EmailService';
@@ -33,6 +34,7 @@ export type CustomContext = {
   bulkEmailService: BulkEmailService;
   userInvitationService: UserInvitationService;
   notaryCriteriaService: NotaryCriteriaService;
+  blogService: BlogService;
   assetsService: AssetsService;
 };
 

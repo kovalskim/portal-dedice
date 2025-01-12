@@ -13,6 +13,9 @@ type ErrorCode =
   | 'DELETE_ERROR'
   | 'NOT_SUPPORTED'
   | 'CRITERIA_ERROR'
+  | 'FAILED_TO_CREATE'
+  | 'FAILED_TO_UPDATE'
+  | 'FAILED_TO_DELETE'
   | 'PROCEEDING_FINISHED';
 
 const defaultErrorMessages: Record<ErrorCode, string> = {
@@ -31,6 +34,9 @@ const defaultErrorMessages: Record<ErrorCode, string> = {
   DELETE_ERROR: 'Error during deletion process occurred',
   NOT_SUPPORTED: 'Not supported',
   CRITERIA_ERROR: 'Proceeding input does not meet notary criteria',
+  FAILED_TO_CREATE: 'Error occured while trying to create the item',
+  FAILED_TO_UPDATE: 'Error occured while trying to update the item',
+  FAILED_TO_DELETE: 'Error occured while trying to delete the item',
   PROCEEDING_FINISHED: 'Proceeding is already finished',
 };
 

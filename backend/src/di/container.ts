@@ -4,6 +4,7 @@ import nodemailer from 'nodemailer';
 
 import { getConnection } from '@backend/db/db';
 import { AssetRepository } from '@backend/repositories/AssetRepository';
+import { BlogRepository } from '@backend/repositories/BlogRepository';
 import { CourtRepository } from '@backend/repositories/CourtRepository';
 import { CriteriaRepository } from '@backend/repositories/CriteriaRepository';
 import { FileRepository } from '@backend/repositories/FileRepository';
@@ -17,6 +18,7 @@ import { UserRepository } from '@backend/repositories/UserRepository';
 import { AssetsService } from '@backend/services/AssetsService/AssetsService';
 import { AuthenticationService } from '@backend/services/AuthenticationService/AuthenticationService';
 import { AwsService } from '@backend/services/AwsService/AwsService';
+import { BlogService } from '@backend/services/BlogService/BlogService';
 import { BulkEmailService } from '@backend/services/BulkEmailService/BulkEmailService';
 import { ChatService } from '@backend/services/ChatService/ChatService';
 import { EmailService } from '@backend/services/EmailService/EmailService';
@@ -61,6 +63,7 @@ export const createDIContainer = async () => {
     fileRepository: asClass(FileRepository),
     userInvitationRepository: asClass(UserInvitationRepository),
     criteriaRepository: asClass(CriteriaRepository),
+    blogRepository: asClass(BlogRepository),
     assetRepository: asClass(AssetRepository),
     // services
     awsService: asClass(AwsService),
@@ -77,6 +80,7 @@ export const createDIContainer = async () => {
     bulkEmailService: asClass(BulkEmailService),
     userInvitationService: asClass(UserInvitationService),
     notaryCriteriaService: asClass(NotaryCriteriaService),
+    blogService: asClass(BlogService),
     assetsService: asClass(AssetsService),
   });
 

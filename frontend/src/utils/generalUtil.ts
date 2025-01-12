@@ -1,6 +1,6 @@
 import { format } from 'date-fns';
 
-export const insertIdToUrl = (url: string, id: number) => {
+export const insertIdToUrl = (url: string, id: number | string) => {
   return url.replace(':id', String(id));
 };
 

@@ -1,5 +1,6 @@
 import { getConnection } from '../src/db/db';
 import {
+  blogs,
   courts,
   daysMonthsCriteria,
   districts,
@@ -21,6 +22,7 @@ import {
   verificationTokens,
 } from '../src/db/schema';
 
+import { blogsData } from './data/blogs';
 import { courtsData } from './data/courts';
 import { districtsData } from './data/districts';
 import { proceedingsData } from './data/proceedings';
@@ -52,6 +54,7 @@ async function seed() {
   await db.delete(notaryCriteria);
   await db.delete(courts);
   await db.delete(roles);
+  await db.delete(blogs);
 
   try {
     if ((await db.select().from(roles)).length === 0) {
@@ -165,6 +168,9 @@ async function seed() {
       { id: 1, userId: 1, proceedingId: 1, participantStateId: 1 },
       { id: 2, userId: 2, proceedingId: 1, participantStateId: 2 },
     ]);
+
+    console.log('Inserting blogs');
+    await db.insert(blogs).values(blogsData);
 
     console.log('Seed function completed');
   } finally {

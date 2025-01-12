@@ -8,7 +8,7 @@ import {
   HEIR_TYPES,
   InheritanceResult,
 } from '@frontend/pages/educator/hooks/useInheritanceCalculator.ts';
-import { formatPrice } from '@frontend/utils/util.ts';
+import { formatPrice } from '@frontend/utils/generalUtil.ts';
 
 type AssetsDistributionResultProps = {
   heirs: HeirsIdentificationFormFields;
