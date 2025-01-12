@@ -99,14 +99,14 @@ export const AssetsPage: FC = () => {
       onError: () => {
         showToast({
           title: 'Úprava majetku proběhla neúspěšně.',
-          description: `Majetekv dědickém řízení nebyl upraven!`,
+          description: `Majetek v dědickém řízení nebyl upraven!`,
           status: 'error',
         });
       },
       onCompleted: () => {
         showToast({
           title: 'Úprava majetku proběhla úspěšně.',
-          description: `Majetekv dědickém řízení byl upraven!`,
+          description: `Majetek v dědickém řízení byl upraven!`,
           status: 'success',
         });
       },

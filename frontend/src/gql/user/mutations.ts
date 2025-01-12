@@ -150,3 +150,9 @@ export const INVITE_USER = gql`
     inviteUser(data: $data)
   }
 `;
+
+export const SET_USER_BAN_STATUS = gql`
+  mutation SetUserBanStatus($userId: Float!, $isBanned: Boolean!) {
+    setUserBanStatus(userId: $userId, isBanned: $isBanned)
+  }
+`;

@@ -28,7 +28,7 @@ export class AuthenticationService {
     const user = await this.userService.getUserByEmail(email);
 
     if (!user) {
-      throw new AppError('UNAUTHORIZED', 'Unauthorized');
+      throw new AppError('UNAUTHORIZED');
     }
 
     if (!user.isVerified) {
@@ -37,7 +37,11 @@ export class AuthenticationService {
 
     const passwordVerified = await argon2.verify(user.password, password);
 
-    if (!passwordVerified) throw new AppError('UNAUTHORIZED', 'Unauthorized');
+    if (!passwordVerified) throw new AppError('UNAUTHORIZED');
+
+    if (user.isBanned) {
+      throw new AppError('BANNED');
+    }
 
     const token = createToken({ id: user.id });
 
@@ -120,6 +124,7 @@ export class AuthenticationService {
       lastname,
       afterTitle: null,
       isVerified: false,
+      isBanned: false,
       emailNotifications: true,
     };
 

@@ -1,5 +1,7 @@
 import { gql } from '@apollo/client';
 
+import { User } from '@frontend/gql/user/types.ts';
+
 export type Court = {
   id: number;
   name: string;
@@ -55,6 +57,56 @@ export const NOTARY_CRITERIA = gql`
         birthDaysMonths
         deathDaysMonths
       }
+    }
+  }
+`;
+
+export type UsersResponse = {
+  users: {
+    data: User[];
+    total: number;
+  };
+};
+
+export const GET_ALL_USERS = gql`
+  query users(
+    $pageSize: Float!
+    $currentPage: Float!
+    $sortByFirstnameOrder: String!
+    $sortByLastnameOrder: String!
+    $sortByEmailOrder: String!
+    $filterFirstname: String!
+    $filterLastname: String!
+    $filterEmail: String!
+    $filterRoleId: Float!
+    $filterIsVerified: Float
+    $filterIsBanned: Float
+  ) {
+    users(
+      pageSize: $pageSize
+      currentPage: $currentPage
+      sortByFirstnameOrder: $sortByFirstnameOrder
+      sortByLastnameOrder: $sortByLastnameOrder
+      sortByEmailOrder: $sortByEmailOrder
+      filterFirstname: $filterFirstname
+      filterLastname: $filterLastname
+      filterEmail: $filterEmail
+      filterRoleId: $filterRoleId
+      filterIsVerified: $filterIsVerified
+      filterIsBanned: $filterIsBanned
+    ) {
+      data {
+        id
+        firstname
+        lastname
+        email
+        isVerified
+        isBanned
+        role {
+          description
+        }
+      }
+      total
     }
   }
 `;

@@ -1,4 +1,4 @@
-import { and, eq } from 'drizzle-orm';
+import { and, asc, desc, eq, like } from 'drizzle-orm';
 import { MySql2Database } from 'drizzle-orm/mysql2';
 
 import {
@@ -17,8 +17,75 @@ export class UserRepository {
     this.db = db;
   }
 
-  async findUsers(): Promise<UserDTO[]> {
-    return this.db.select().from(users);
+  async findUsers(
+    currentPage: number = 1,
+    pageSize: number = 0,
+    sortByFirstnameOrder?: 'asc' | 'desc' | 'default',
+    sortByLastnameOrder?: 'asc' | 'desc' | 'default',
+    sortByEmailOrder?: 'asc' | 'desc' | 'default',
+    filterFirstname?: string,
+    filterLastname?: string,
+    filterEmail?: string,
+    filterRoleId?: number,
+    filterIsVerified?: number,
+    filterIsBanned?: number,
+  ): Promise<{ data: UserDTO[]; total: number }> {
+    const offset = (currentPage - 1) * pageSize;
+
+    let query = this.db.select().from(users);
+
+    const whereConditions = [];
+    if (filterFirstname) {
+      whereConditions.push(like(users.firstname, `%${filterFirstname}%`));
+    }
+
+    if (filterLastname) {
+      whereConditions.push(like(users.lastname, `%${filterLastname}%`));
+    }
+
+    if (filterEmail) {
+      whereConditions.push(like(users.email, `%${filterEmail}%`));
+    }
+
+    if (filterRoleId) {
+      whereConditions.push(eq(users.roleId, filterRoleId));
+    }
+
+    if (filterIsVerified !== null) {
+      whereConditions.push(eq(users.isVerified, Boolean(filterIsVerified)));
+    }
+
+    if (filterIsBanned !== null) {
+      whereConditions.push(eq(users.isBanned, Boolean(filterIsBanned)));
+    }
+
+    query.where(and(...whereConditions));
+
+    if (sortByFirstnameOrder === 'desc') {
+      query.orderBy(desc(users.firstname));
+    } else if (sortByFirstnameOrder === 'asc') {
+      query.orderBy(asc(users.firstname));
+    }
+
+    if (sortByLastnameOrder === 'desc') {
+      query.orderBy(desc(users.lastname));
+    } else if (sortByLastnameOrder === 'asc') {
+      query.orderBy(asc(users.lastname));
+    }
+
+    if (sortByEmailOrder === 'desc') {
+      query.orderBy(desc(users.email));
+    } else if (sortByEmailOrder === 'asc') {
+      query.orderBy(asc(users.email));
+    }
+
+    const allUsers = await query.execute();
+    const limitUsers = await query.limit(pageSize).offset(offset);
+
+    return {
+      data: limitUsers as UserDTO[],
+      total: allUsers.length,
+    };
   }
 
   async getUserById(id: number): Promise<UserDTO> {

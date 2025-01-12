@@ -35,6 +35,12 @@ export const LogInPage = () => {
           description: 'Zkontrolujte si email a dokončete registraci.',
           status: 'error',
         });
+      } else if (error?.graphQLErrors[0]?.extensions?.code === 'BANNED') {
+        showToast({
+          title: 'Účet byl zablokován.',
+          description: 'Váš účet byl zablokován, kontaktujte podporu aplikace.',
+          status: 'error',
+        });
       } else {
         showToast({
           title: 'Zadali jste neplatné přihlašovací údaje.',

@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react';
-import { Flex, Heading } from '@chakra-ui/react';
+import { Card, Flex, Heading } from '@chakra-ui/react';
 import { FaUserPlus } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 
 import { PrimaryButton } from '@frontend/components/buttons';
 import { Role, useAuth } from '@frontend/context/auth/auth-core.tsx';
 import { useCustomToast } from '@frontend/hooks/useCustomToast.ts';
+import { BanModal } from '@frontend/pages/users/components/BanModal.tsx';
 import { InviteUserModal } from '@frontend/pages/users/components/InviteUserModal.tsx';
+import UsersTable from '@frontend/pages/users/components/UsersTable.tsx';
 import { Routes } from '@frontend/routes/routes.ts';
 
 export const UsersPage = () => {
@@ -15,7 +17,18 @@ export const UsersPage = () => {
   const navigate = useNavigate();
 
   const [newUserModalOpen, setNewUserModalOpen] = useState(false);
+  const [banModalOpenState, setBanModalOpenState] = useState<
+    'close' | 'ban' | 'unban'
+  >('close');
+  const [selectedUserId, setSelectedUserId] = useState(0);
 
+  const handleBanModalOpen = (
+    userId: number,
+    banModalOpenState: 'close' | 'ban' | 'unban',
+  ) => {
+    setSelectedUserId(userId);
+    setBanModalOpenState(banModalOpenState);
+  };
   useEffect(() => {
     if (role !== Role.ADMIN) {
       showToast({
@@ -38,9 +51,17 @@ export const UsersPage = () => {
           Přidat uživatele
         </PrimaryButton>
       </Flex>
+      <Card>
+        <UsersTable setBanModalOpenState={handleBanModalOpen} />
+      </Card>
       <InviteUserModal
         isOpen={newUserModalOpen}
         onClose={() => setNewUserModalOpen(false)}
+      />
+      <BanModal
+        banModalOpenState={banModalOpenState}
+        onClose={() => setBanModalOpenState('close')}
+        userId={selectedUserId}
       />
     </Flex>
   );

@@ -5,6 +5,7 @@ import {
   GET_ALL_PROCEEDINGS,
   ProceedingsResponse,
 } from '@frontend/gql/proceedings/queries.ts';
+import { getNextOrderValue } from '@frontend/utils/generalUtil.ts';
 
 const PAGE_SIZE = 5;
 
@@ -18,7 +19,9 @@ type FilterData = {
 
 export const useProceedings = () => {
   const [currentPage, setCurrentPage] = useState(1);
-  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc' | 'default'>(
+    'default',
+  );
   const [filterData, setFilterData] = useState<FilterData>({
     proceedingNumber: '',
     deceasedName: '',
@@ -45,7 +48,7 @@ export const useProceedings = () => {
   );
 
   const toggleSortOrder = () => {
-    setSortOrder((prevOrder) => (prevOrder === 'asc' ? 'desc' : 'asc'));
+    setSortOrder((prevOrder) => getNextOrderValue(prevOrder));
   };
 
   const handleFilter = (filterData: FilterData) => {

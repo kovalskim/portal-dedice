@@ -16,7 +16,8 @@ type ErrorCode =
   | 'FAILED_TO_CREATE'
   | 'FAILED_TO_UPDATE'
   | 'FAILED_TO_DELETE'
-  | 'PROCEEDING_FINISHED';
+  | 'PROCEEDING_FINISHED'
+  | 'BANNED';
 
 const defaultErrorMessages: Record<ErrorCode, string> = {
   UNAUTHENTICATED: 'You must be authenticated to access this resource.',
@@ -38,6 +39,7 @@ const defaultErrorMessages: Record<ErrorCode, string> = {
   FAILED_TO_UPDATE: 'Error occured while trying to update the item',
   FAILED_TO_DELETE: 'Error occured while trying to delete the item',
   PROCEEDING_FINISHED: 'Proceeding is already finished',
+  BANNED: 'User is banned',
 };
 
 export class AppError extends Error {

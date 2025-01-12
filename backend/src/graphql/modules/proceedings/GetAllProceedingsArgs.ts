@@ -10,7 +10,7 @@ export class GetAllProceedingsArgs {
   @Field(() => Number, { defaultValue: 2 })
   pageSize!: number;
 
-  @Field(() => String, { defaultValue: 'desc' })
+  @Field(() => String, { defaultValue: 'default' })
   sortOrder!: SortOrder;
 
   @Field(() => String, { nullable: true })

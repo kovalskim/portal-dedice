@@ -188,6 +188,7 @@ type Mutation {
   restorePassword(email: String!): String!
   saveFile(alias: String!, key: String!, proceedingId: String!, type: String!): Boolean!
   sendMessageToParticipants(data: SendEmailRequest!): String!
+  setUserBanStatus(isBanned: Boolean!, userId: Float!): Boolean!
   signIn(email: String!, password: String!): AuthInfo!
   signUp(email: String!, firstname: String!, lastname: String!, password: String!, token: String!): AuthInfo!
   updateBlog(data: NewBlogInput!, id: Float!): Blog!
@@ -250,6 +251,11 @@ type PaginatedProceedings {
   total: Float!
 }
 
+type PaginatedUsers {
+  data: [User!]!
+  total: Float!
+}
+
 type Participant {
   participantId: Float!
   participantState: ParticipantState!
@@ -309,7 +315,7 @@ type Query {
   districts: [District!]!
   filesByProceeding(proceedingId: Float!): [File!]!
   getAllArticles: [Blog!]
-  getAllProceedings(currentPage: Float! = 1, filterDeceasedName: String, filterPhaseId: Float, filterProceedingNumber: String, filterStartDate: String, filterStatus: String, pageSize: Float! = 2, sortOrder: String! = "desc"): PaginatedProceedings!
+  getAllProceedings(currentPage: Float! = 1, filterDeceasedName: String, filterPhaseId: Float, filterProceedingNumber: String, filterStartDate: String, filterStatus: String, pageSize: Float! = 2, sortOrder: String! = "default"): PaginatedProceedings!
   getAssetById(proceedingId: Int!): AssetsAll
   getBlogById(id: Float!): Blog
   getMostViewedArticles(count: Float!): [Blog!]
@@ -317,10 +323,11 @@ type Query {
   notaryCriteria(userId: Float!): NotaryCriteriaType
   proceedingParticipants(id: Float!): [Participant!]!
   user(id: Float!): User
-  users: [User!]!
+  users(currentPage: Float! = 1, filterEmail: String, filterFirstname: String, filterIsBanned: Float, filterIsVerified: Float, filterLastname: String, filterRoleId: Float, pageSize: Float! = 5, sortByEmailOrder: String! = "default", sortByFirstnameOrder: String! = "default", sortByLastnameOrder: String! = "default"): PaginatedUsers!
 }
 
 type Role {
+  description: String!
   id: ID!
   name: String!
 }
@@ -379,6 +386,7 @@ type User {
   emailNotifications: Boolean!
   firstname: String!
   id: ID!
+  isBanned: Boolean!
   isVerified: Boolean!
   lastname: String!
   role: Role!

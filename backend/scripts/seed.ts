@@ -157,6 +157,7 @@ async function seed() {
     await db.insert(proceedings).values(proceedingsData);
 
     console.log('Inserting participant states');
+    // @ts-ignore
     await db.insert(participantStates).values([
       { id: 1, title: 'Čeká na schválení' },
       { id: 2, title: 'Schválený' },
@@ -164,6 +165,7 @@ async function seed() {
     ]);
 
     console.log('Inserting proceeding participants');
+    // @ts-ignore
     await db.insert(participants).values([
       { id: 1, userId: 1, proceedingId: 1, participantStateId: 1 },
       { id: 2, userId: 2, proceedingId: 1, participantStateId: 2 },

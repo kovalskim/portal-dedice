@@ -12,7 +12,7 @@ import { useNewProceedingFormStore } from '@frontend/pages/userDashboard/hooks/u
 import { toVocative } from '@shared/utils/languageUtils.ts';
 
 import { NewProceedingModal } from './components/proceedingModals/NewProceedingModal';
-import ProceedingsTable from './components/proceedingsTable/ProceedingsTable';
+import { ProceedingsTable } from './components/proceedingsTable/ProceedingsTable';
 
 export const UserDashboard = () => {
   const [newProceedingModalOpen, setNewProceedingModalOpen] = useState(false);

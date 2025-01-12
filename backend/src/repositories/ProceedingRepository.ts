@@ -47,7 +47,7 @@ export class ProceedingRepository {
     identifier: { type: 'notary' | 'participant' | 'admin'; id?: number },
     currentPage: number = 1,
     pageSize: number = 0,
-    sortOrder: 'asc' | 'desc' = 'desc',
+    sortOrder: 'asc' | 'desc' | 'default' = 'default',
     filterProceedingNumber?: string,
     filterDeceasedName?: string,
     filterStartDate?: string,
@@ -134,7 +134,7 @@ export class ProceedingRepository {
 
     if (sortOrder === 'desc') {
       query.orderBy(desc(proceedings.proceedingNumber));
-    } else {
+    } else if (sortOrder === 'asc') {
       query.orderBy(asc(proceedings.proceedingNumber));
     }
 
@@ -175,7 +175,7 @@ export class ProceedingRepository {
     userId: number,
     currentPage: number = 1,
     pageSize: number = 0,
-    sortOrder: 'asc' | 'desc' = 'desc',
+    sortOrder: 'asc' | 'desc' | 'default' = 'default',
     filterProceedingNumber?: string,
     filterDeceasedName?: string,
     filterStartDate?: string,

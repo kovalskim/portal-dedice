@@ -1,7 +1,20 @@
+import React from 'react';
 import { useQuery } from '@apollo/client';
-import { Card, Flex, Spinner, Text } from '@chakra-ui/react';
+import { WarningIcon } from '@chakra-ui/icons';
+import {
+  Alert,
+  AlertDescription,
+  AlertTitle,
+  Box,
+  Card,
+  Flex,
+  Icon,
+  Spinner,
+  Text,
+} from '@chakra-ui/react';
 import { Outlet, useNavigate, useParams } from 'react-router-dom';
 
+import { theme } from '@frontend/components/design-system';
 import {
   GET_PROCEEDING_BY_ID,
   ProceedingResponse,
@@ -56,6 +69,28 @@ export const ProceedingLayout = () => {
               flex={1}
               flexDirection="column"
             >
+              {data.getProceeding.notary?.isBanned && (
+                <Alert
+                  status="warning"
+                  borderRadius={10}
+                  cursor="pointer"
+                  mb={4}
+                >
+                  <Icon
+                    as={WarningIcon}
+                    boxSize={5}
+                    color={theme.colors.goldenYellow[700]}
+                    mr={5}
+                  />
+                  <Box>
+                    <AlertTitle>Blokace účtu notáře</AlertTitle>
+                    <AlertDescription>
+                      Účet notáře je v tuto chvíli zablokován, prosím
+                      kontaktujte podporu aplikace.
+                    </AlertDescription>
+                  </Box>
+                </Alert>
+              )}
               <Outlet context={{ proceeding: data.getProceeding }} />
             </Flex>
           </Card>

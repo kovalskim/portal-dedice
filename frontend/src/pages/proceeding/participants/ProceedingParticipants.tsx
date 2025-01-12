@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useMutation, useQuery } from '@apollo/client';
 import {
   AddIcon,
@@ -8,6 +8,7 @@ import {
   NotAllowedIcon,
 } from '@chakra-ui/icons';
 import {
+  Badge,
   Box,
   Button,
   Flex,
@@ -207,6 +208,9 @@ export const ProceedingParticipants = () => {
                 >
                   <Td>
                     {`${participant.user.beforeTitle ?? ''} ${participant.user.firstname} ${participant.user.lastname} ${participant.user.afterTitle ?? ''}`}
+                    {participant.user.isBanned && (
+                      <Badge colorScheme="red">Zablokovaný uživatel</Badge>
+                    )}
                   </Td>
                   <Td>{participant.user.email}</Td>
                   <Td>{participant.participantState.title}</Td>

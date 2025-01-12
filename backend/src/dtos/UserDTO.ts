@@ -5,6 +5,7 @@ export interface UserDTO {
   firstname: string;
   lastname: string;
   isVerified: boolean;
+  isBanned: boolean;
   roleId: number;
   beforeTitle: string | null;
   afterTitle: string | null;

@@ -26,6 +26,9 @@ export class User {
   isVerified!: boolean;
 
   @Field()
+  isBanned!: boolean;
+
+  @Field()
   emailNotifications!: boolean;
 }
 
@@ -39,4 +42,13 @@ export class AuthInfo {
 
   @Field(() => Role)
   role!: Role;
+}
+
+@ObjectType()
+export class PaginatedUsers {
+  @Field(() => [User])
+  data!: User[];
+
+  @Field(() => Number)
+  total!: number;
 }

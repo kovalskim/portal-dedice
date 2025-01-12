@@ -63,6 +63,7 @@ export type Proceeding = {
     firstname: string;
     lastname: string;
     afterTitle: string;
+    isBanned: boolean;
   };
   isLoggedUserApprovedParticipantOrNotary: boolean;
 };
@@ -88,6 +89,7 @@ export const GET_PROCEEDING_BY_ID = gql`
         firstname
         lastname
         afterTitle
+        isBanned
       }
       proceedingNumber
       deceasedFirstName
@@ -109,6 +111,7 @@ export type Participant = {
     firstname: string;
     lastname: string;
     afterTitle: string;
+    isBanned: boolean;
   };
   participantState: {
     id: number;
@@ -132,6 +135,7 @@ export const GET_PROCEEDING_PARTICIPANTS = gql`
         lastname
         afterTitle
         email
+        isBanned
       }
       participantState {
         id

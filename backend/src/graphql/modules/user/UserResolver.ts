@@ -1,5 +1,6 @@
 import {
   Arg,
+  Args,
   Ctx,
   FieldResolver,
   Mutation,
@@ -11,7 +12,12 @@ import {
 import { NotaryCriteriaType } from '@backend/graphql/modules/user/NotaryCriteriaType';
 import { Payload } from '@backend/graphql/modules/user/payloadType';
 import { Role } from '@backend/graphql/modules/user/roleType';
-import { AuthInfo, User } from '@backend/graphql/modules/user/userType';
+import { UsersArgs } from '@backend/graphql/modules/user/UsersArgs';
+import {
+  AuthInfo,
+  PaginatedUsers,
+  User,
+} from '@backend/graphql/modules/user/userType';
 import { parseAndVerifyJWT } from '@backend/libs/jwt';
 import { type CustomContext } from '@backend/types/types';
 import {
@@ -37,9 +43,13 @@ export class UserResolver {
     return userService.getUserRole(user.id);
   }
 
-  @Query(() => [User])
-  async users(@Ctx() { userService }: CustomContext): Promise<User[]> {
-    return userService.findAllUsers();
+  @Query(() => PaginatedUsers)
+  @Authenticated()
+  async users(
+    @Ctx() { userService }: CustomContext,
+    @Args() args: UsersArgs,
+  ): Promise<PaginatedUsers> {
+    return userService.findAllUsers(args);
   }
 
   @Mutation(() => User)
@@ -150,5 +160,14 @@ export class UserResolver {
     @Ctx() { notaryCriteriaService }: CustomContext,
   ) {
     return await notaryCriteriaService.getNotaryCriteria(userId);
+  }
+
+  @Mutation(() => Boolean)
+  async setUserBanStatus(
+    @Arg('userId') userId: number,
+    @Arg('isBanned') isBanned: boolean,
+    @Ctx() { userService }: CustomContext,
+  ) {
+    return await userService.setUserBanStatus(userId, isBanned);
   }
 }

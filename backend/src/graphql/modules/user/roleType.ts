@@ -7,4 +7,7 @@ export class Role {
 
   @Field(() => String)
   name!: string;
+
+  @Field(() => String)
+  description!: string;
 }

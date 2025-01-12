@@ -2,6 +2,7 @@ import * as argon2 from 'argon2';
 
 import { UserRole } from '@backend/dtos/RoleDTO';
 import { AppError } from '@backend/errors/AppError';
+import { UsersArgs } from '@backend/graphql/modules/user/UsersArgs';
 import { createToken } from '@backend/libs/jwt';
 import { UserRepository } from '@backend/repositories/UserRepository';
 import { JWTPayload } from '@backend/types/types';
@@ -45,8 +46,23 @@ export class UserService {
     return userRole?.name === UserRole.NOTARY;
   }
 
-  async findAllUsers() {
-    return this.userRepository.findUsers();
+  async findAllUsers(args: UsersArgs) {
+    if (!(await this.hasUserAdminRole(this.authUser!.id))) {
+      throw new AppError('UNAUTHORIZED', 'Unauthorized');
+    }
+    return await this.userRepository.findUsers(
+      args.currentPage,
+      args.pageSize,
+      args.sortByFirstnameOrder,
+      args.sortByLastnameOrder,
+      args.sortByEmailOrder,
+      args.filterFirstname,
+      args.filterLastname,
+      args.filterEmail,
+      args.filterRoleId,
+      args.filterIsVerified,
+      args.filterIsBanned,
+    );
   }
 
   async updateUserInfo(
@@ -186,5 +202,24 @@ export class UserService {
       ...user,
       isVerified,
     });
+  }
+
+  async setUserBanStatus(userId: number, isBanned: boolean) {
+    if (!(await this.hasUserAdminRole(this.authUser!.id))) {
+      throw new AppError('UNAUTHORIZED', 'Unauthorized');
+    }
+
+    const user = await this.userRepository.getUserById(userId);
+
+    if (!user) {
+      throw new AppError('NOT_FOUND', 'User not found');
+    }
+
+    await this.userRepository.updateUser({
+      ...user,
+      isBanned,
+    });
+
+    return true;
   }
 }
