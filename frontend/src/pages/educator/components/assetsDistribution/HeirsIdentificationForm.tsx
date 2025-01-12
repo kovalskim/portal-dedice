@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { Box } from '@chakra-ui/layout';
 import { Alert, AlertIcon, Flex, Radio } from '@chakra-ui/react';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { boolean } from 'boolean';
 import { SubmitHandler } from 'react-hook-form';
 
 import { CheckboxField } from '@frontend/components/forms/fields/CheckboxField.tsx';
@@ -14,6 +13,7 @@ import {
   HeirsIdentificationFormFields,
   heirsIdentificationFormSchema,
 } from '@frontend/pages/educator/components/assetsDistribution/heirsIdentificatonFormSchema.ts';
+import { toBoolean } from '@frontend/utils/generalUtil.ts';
 
 type HeirsIdentificationFormProps = {
   id: string;
@@ -22,7 +22,7 @@ type HeirsIdentificationFormProps = {
 };
 
 const getBooleanStateValue = (value?: string) =>
-  value !== undefined ? boolean(value) : null;
+  value !== undefined ? toBoolean(value) : null;
 
 export const HeirsIdentificationForm = ({
   id,

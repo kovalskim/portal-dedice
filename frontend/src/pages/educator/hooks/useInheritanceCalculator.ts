@@ -1,7 +1,6 @@
-import { boolean } from 'boolean';
-
 import { AssetFields } from '@frontend/pages/educator/components/assetsDistribution/assetsIdentificationFormSchema.ts';
 import { HeirsIdentificationFormFields } from '@frontend/pages/educator/components/assetsDistribution/heirsIdentificatonFormSchema.ts';
+import { toBoolean } from '@frontend/utils/generalUtil.ts';
 
 export const HEIR_TYPES = {
   SPOUSE: 'manžel/ka',
@@ -32,7 +31,7 @@ export const useInheritanceCalculator = (
     hasHusbandOrWife: boolean,
     assets: AssetFields[] | null,
   ): number => {
-    if (!boolean(hasHusbandOrWife)) return 0;
+    if (!hasHusbandOrWife) return 0;
     if (!assets) return 0;
     return assets
       .filter((asset) => asset.SJM)
@@ -89,8 +88,8 @@ export const useInheritanceCalculator = (
     // heirs combinations:
     let idCounter = 0;
     if (
-      boolean(hasHusbandOrWife) &&
-      boolean(hasChildren) &&
+      toBoolean(hasHusbandOrWife) &&
+      toBoolean(hasChildren) &&
       childrenCount > 0
     ) {
       // spouse and children
@@ -104,7 +103,7 @@ export const useInheritanceCalculator = (
           value: share,
         });
       }
-    } else if (boolean(hasChildren) && childrenCount > 0) {
+    } else if (toBoolean(hasChildren) && childrenCount > 0) {
       // only children
       const share = totalValue / childrenCount;
       for (let i = 0; i < childrenCount; i++) {
@@ -116,10 +115,10 @@ export const useInheritanceCalculator = (
         });
       }
     } else if (
-      boolean(hasHusbandOrWife) &&
-      !boolean(hasChildren) &&
-      !boolean(hasLivingParents) &&
-      !boolean(hasHousemate)
+      toBoolean(hasHusbandOrWife) &&
+      !toBoolean(hasChildren) &&
+      !toBoolean(hasLivingParents) &&
+      !toBoolean(hasHousemate)
     ) {
       // only spouse
       result.push({
@@ -129,34 +128,34 @@ export const useInheritanceCalculator = (
       });
     } else if (
       // only parents
-      boolean(hasLivingParents) &&
-      !boolean(hasHusbandOrWife) &&
-      !boolean(hasChildren) &&
-      !boolean(hasHousemate)
+      toBoolean(hasLivingParents) &&
+      !toBoolean(hasHusbandOrWife) &&
+      !toBoolean(hasChildren) &&
+      !toBoolean(hasHousemate)
     ) {
       const parentsCount = calculateLivingParentsCount(
         hasLivingMother,
         hasLivingFather,
       );
       const share = totalValue / parentsCount;
-      if (boolean(hasLivingMother))
+      if (hasLivingMother)
         result.push({
           id: idCounter++,
           type: HEIR_TYPES.MOTHER,
           value: share,
         });
-      if (boolean(hasLivingFather))
+      if (hasLivingFather)
         result.push({
           id: idCounter++,
           type: HEIR_TYPES.FATHER,
           value: share,
         });
     } else if (
-      boolean(hasHousemate) &&
-      !boolean(hasChildren) &&
-      !boolean(hasHusbandOrWife) &&
-      !boolean(hasLivingParents) &&
-      !boolean(hasSiblings)
+      toBoolean(hasHousemate) &&
+      !toBoolean(hasChildren) &&
+      !toBoolean(hasHusbandOrWife) &&
+      !toBoolean(hasLivingParents) &&
+      !toBoolean(hasSiblings)
     ) {
       // only housemate
       result.push({
@@ -165,10 +164,10 @@ export const useInheritanceCalculator = (
         value: totalValue,
       });
     } else if (
-      boolean(hasLivingParents) &&
-      boolean(hasHusbandOrWife) &&
-      !boolean(hasChildren) &&
-      !boolean(hasHousemate)
+      toBoolean(hasLivingParents) &&
+      toBoolean(hasHusbandOrWife) &&
+      !toBoolean(hasChildren) &&
+      !toBoolean(hasHousemate)
     ) {
       // spouse + parents
       result.push({
@@ -181,23 +180,23 @@ export const useInheritanceCalculator = (
         hasLivingFather,
       );
       const remaining = totalValue / 2;
-      if (boolean(hasLivingMother))
+      if (hasLivingMother)
         result.push({
           id: idCounter++,
           type: HEIR_TYPES.MOTHER,
           value: remaining / parentsCount,
         });
-      if (boolean(hasLivingFather))
+      if (hasLivingFather)
         result.push({
           id: idCounter++,
           type: HEIR_TYPES.FATHER,
           value: remaining / parentsCount,
         });
     } else if (
-      boolean(hasHusbandOrWife) &&
-      boolean(hasHousemate) &&
-      !boolean(hasChildren) &&
-      !boolean(hasLivingParents)
+      toBoolean(hasHusbandOrWife) &&
+      toBoolean(hasHousemate) &&
+      !toBoolean(hasChildren) &&
+      !toBoolean(hasLivingParents)
     ) {
       // spouse + housemate
       const share = totalValue / 2;
@@ -208,10 +207,10 @@ export const useInheritanceCalculator = (
         value: share,
       });
     } else if (
-      boolean(hasHusbandOrWife) &&
-      boolean(hasHousemate) &&
-      boolean(hasLivingParents) &&
-      !boolean(hasChildren)
+      toBoolean(hasHusbandOrWife) &&
+      toBoolean(hasHousemate) &&
+      toBoolean(hasLivingParents) &&
+      !toBoolean(hasChildren)
     ) {
       // spouse + parents + housemate
       result.push({
@@ -231,23 +230,23 @@ export const useInheritanceCalculator = (
         value: housemateValue,
       });
       remaining -= housemateValue;
-      if (boolean(hasLivingMother))
+      if (hasLivingMother)
         result.push({
           id: idCounter++,
           type: HEIR_TYPES.MOTHER,
           value: remaining / parentsCount,
         });
-      if (boolean(hasLivingFather))
+      if (hasLivingFather)
         result.push({
           id: idCounter++,
           type: HEIR_TYPES.FATHER,
           value: remaining / parentsCount,
         });
     } else if (
-      boolean(hasLivingParents) &&
-      boolean(hasHousemate) &&
-      !boolean(hasHusbandOrWife) &&
-      !boolean(hasChildren)
+      toBoolean(hasLivingParents) &&
+      toBoolean(hasHousemate) &&
+      !toBoolean(hasHusbandOrWife) &&
+      !toBoolean(hasChildren)
     ) {
       // parents + housemate
       const share = totalValue / 3;
@@ -261,25 +260,25 @@ export const useInheritanceCalculator = (
         hasLivingMother,
         hasLivingFather,
       );
-      if (boolean(hasLivingMother))
+      if (hasLivingMother)
         result.push({
           id: idCounter++,
           type: HEIR_TYPES.MOTHER,
           value: remaining / parentsCount,
         });
-      if (boolean(hasLivingFather))
+      if (hasLivingFather)
         result.push({
           id: idCounter++,
           type: HEIR_TYPES.FATHER,
           value: remaining / parentsCount,
         });
     } else if (
-      boolean(hasSiblings) &&
+      toBoolean(hasSiblings) &&
       siblingsCount > 0 &&
-      !boolean(hasChildren) &&
-      !boolean(hasHusbandOrWife) &&
-      !boolean(hasLivingParents) &&
-      !boolean(hasHousemate)
+      !toBoolean(hasChildren) &&
+      !toBoolean(hasHusbandOrWife) &&
+      !toBoolean(hasLivingParents) &&
+      !toBoolean(hasHousemate)
     ) {
       // only siblings
       const share = totalValue / siblingsCount;
@@ -292,12 +291,12 @@ export const useInheritanceCalculator = (
         });
       }
     } else if (
-      boolean(hasSiblings) &&
+      toBoolean(hasSiblings) &&
       siblingsCount > 0 &&
-      boolean(hasHousemate) &&
-      !boolean(hasChildren) &&
-      !boolean(hasHusbandOrWife) &&
-      !boolean(hasLivingParents)
+      toBoolean(hasHousemate) &&
+      !toBoolean(hasChildren) &&
+      !toBoolean(hasHusbandOrWife) &&
+      !toBoolean(hasLivingParents)
     ) {
       // siblings + housemate
       const share = totalValue / (siblingsCount + 1);
@@ -319,7 +318,7 @@ export const useInheritanceCalculator = (
   };
 
   const SJMTotalValue = calculateSJMValue(
-    boolean(heirs?.hasHusbandOrWife),
+    toBoolean(heirs?.hasHusbandOrWife),
     assets,
   );
   const inheritanceTotalValue = calculateTotalInheritanceValue(
@@ -327,7 +326,7 @@ export const useInheritanceCalculator = (
     assets,
   );
   const spouseValue = calculateSpouseValue(
-    boolean(heirs?.hasHusbandOrWife),
+    toBoolean(heirs?.hasHusbandOrWife),
     SJMTotalValue,
   );
   const inheritanceValues = calculateInheritanceValues(

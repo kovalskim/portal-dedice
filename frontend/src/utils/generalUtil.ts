@@ -23,8 +23,13 @@ export const formatTimestamp = (date: Date): string => {
 export const formatPrice = (price: number) => {
   return (
     new Intl.NumberFormat('cs-CZ', { maximumFractionDigits: 2 }).format(price) +
-    ' Kč'
+    '\u00A0Kč'
   );
+};
+
+export const toBoolean = (str?: string): boolean => {
+  if (str === undefined) return false;
+  return str.toLowerCase() === 'true';
 };
 
 export const sanitizeHtml = (html: string) => {

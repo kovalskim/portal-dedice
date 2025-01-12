@@ -1,14 +1,13 @@
 import { Divider } from '@chakra-ui/icons';
 import { Box } from '@chakra-ui/layout';
 import { Alert, AlertIcon, Flex, Stack, Text } from '@chakra-ui/react';
-import { boolean } from 'boolean';
 
 import { HeirsIdentificationFormFields } from '@frontend/pages/educator/components/assetsDistribution/heirsIdentificatonFormSchema.ts';
 import {
   HEIR_TYPES,
   InheritanceResult,
 } from '@frontend/pages/educator/hooks/useInheritanceCalculator.ts';
-import { formatPrice } from '@frontend/utils/generalUtil.ts';
+import { formatPrice, toBoolean } from '@frontend/utils/generalUtil.ts';
 
 type AssetsDistributionResultProps = {
   heirs: HeirsIdentificationFormFields;
@@ -22,7 +21,7 @@ export const InheritanceDistributionResult = ({
   return (
     <Box p={8} borderWidth="1px" borderRadius="md" boxShadow="sm">
       <Stack direction="column">
-        {boolean(heirs?.hasHusbandOrWife) && (
+        {toBoolean(heirs?.hasHusbandOrWife) && (
           <>
             <Stack spacing={4}>
               <Flex justifyContent="space-between" gap={20}>
