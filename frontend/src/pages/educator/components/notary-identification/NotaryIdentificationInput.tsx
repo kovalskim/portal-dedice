@@ -8,7 +8,7 @@ import {
 } from '@frontend/components/forms/deceasedPersonForm/DeceasedPersonForm.tsx';
 import { InfoHintBox } from '@frontend/components/infoHintBox/InfoHintBox';
 import { Link } from '@frontend/components/links';
-import { useEducatorStorage } from '@frontend/hooks/useEducatorStorage.ts';
+import { useEducatorStorage } from '@frontend/pages/educator/hooks/useEducatorStorage.ts';
 
 type NotaryIdentificationInputProps = {
   onSubmit: SubmitHandler<DeceasedPersonFormFields>;

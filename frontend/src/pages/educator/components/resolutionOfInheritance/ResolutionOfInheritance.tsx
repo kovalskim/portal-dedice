@@ -4,7 +4,7 @@ import { InfoHintBox } from '@frontend/components/infoHintBox/InfoHintBox';
 import {
   Result,
   useEducatorStorage,
-} from '@frontend/hooks/useEducatorStorage.ts';
+} from '@frontend/pages/educator/hooks/useEducatorStorage.ts';
 
 type ResolutionOfInheritanceProps = {
   result?: Result;

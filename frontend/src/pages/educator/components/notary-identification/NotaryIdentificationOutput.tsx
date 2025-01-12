@@ -8,7 +8,7 @@ import {
   IdentifiedNotary,
   IDENTIFY_NOTARY,
 } from '@frontend/gql/educator/mutations.ts';
-import { useEducatorStorage } from '@frontend/hooks/useEducatorStorage.ts';
+import { useEducatorStorage } from '@frontend/pages/educator/hooks/useEducatorStorage.ts';
 
 export type IdentifyNotaryResponse = {
   identifyNotary: IdentifiedNotary;

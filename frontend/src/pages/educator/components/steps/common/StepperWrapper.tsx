@@ -4,7 +4,7 @@ import { Box, Card, Container, Flex, Heading } from '@chakra-ui/react';
 import { PrimaryButton, SecondaryButton } from '@frontend/components/buttons';
 import { SummaryStepper } from '@frontend/components/stepper/SummaryStepper';
 import { stepsCountShowenInEducation } from '@frontend/constants';
-import { useEducatorState } from '@frontend/hooks/useEducatorState.ts';
+import { useEducatorState } from '@frontend/pages/educator/hooks/useEducatorState.ts';
 
 type NavigationButtonProps = {
   onClick?: () => void;
