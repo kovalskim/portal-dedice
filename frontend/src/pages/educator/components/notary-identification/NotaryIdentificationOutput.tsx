@@ -8,6 +8,7 @@ import {
   IdentifiedNotary,
   IDENTIFY_NOTARY,
 } from '@frontend/gql/educator/mutations.ts';
+import { useCustomToast } from '@frontend/hooks/useCustomToast.ts';
 import { useEducatorStorage } from '@frontend/pages/educator/hooks/useEducatorStorage.ts';
 
 export type IdentifyNotaryResponse = {
@@ -24,24 +25,30 @@ export const NotaryIdentificationOutput = ({
   hideText,
 }: NotaryIdentificationOutputProps) => {
   const { storage, updateStorage } = useEducatorStorage();
+  const showToast = useCustomToast();
 
   const [identifyNotary, { data, loading, error }] =
-    useMutation<IdentifyNotaryResponse>(IDENTIFY_NOTARY);
+    useMutation<IdentifyNotaryResponse>(IDENTIFY_NOTARY, {
+      onCompleted: (data) => {
+        updateStorage({
+          identifiedNotary: data.identifyNotary,
+        });
+      },
+      onError: () => {
+        showToast({
+          title: 'Identifikace notáře se nezdařila',
+          description:
+            'Identifikace notáře se nezdařila, zkuste to znovu později.',
+          status: 'error',
+        });
+      },
+    });
 
   useEffect(() => {
     const fetchNotary = async () => {
-      try {
-        const response = await identifyNotary({
-          variables: { data: storage.deceasedPersonFormData },
-        });
-        if (response?.data) {
-          updateStorage({
-            identifiedNotary: response.data.identifyNotary,
-          });
-        }
-      } catch (err) {
-        console.error('Failed to identify notary:', err);
-      }
+      await identifyNotary({
+        variables: { data: storage.deceasedPersonFormData },
+      });
     };
 
     fetchNotary();
