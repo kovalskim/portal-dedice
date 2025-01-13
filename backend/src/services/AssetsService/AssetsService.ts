@@ -31,10 +31,6 @@ export class AssetsService {
   ): Promise<AssetsAll | null> {
     await this.validateUserBeforeAction(userId, proceedingId);
 
-    if (await this.proceedingService.isProceedingFinished(proceedingId)) {
-      throw new AppError('PROCEEDING_FINISHED');
-    }
-
     const asset =
       await this.assetRepository.getAssetByProceedingId(proceedingId);
 
