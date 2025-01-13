@@ -1,21 +1,21 @@
 import { MySql2Database } from 'drizzle-orm/mysql2';
 
-import { AssetsService } from '@backend/services/AssetsService/AssetsService';
-import { AuthenticationService } from '@backend/services/AuthenticationService/AuthenticationService';
-import { AwsService } from '@backend/services/AwsService/AwsService';
-import { BlogService } from '@backend/services/BlogService/BlogService';
-import { BulkEmailService } from '@backend/services/BulkEmailService/BulkEmailService';
-import { ChatService } from '@backend/services/ChatService/ChatService';
-import { EmailService } from '@backend/services/EmailService/EmailService';
-import { FileService } from '@backend/services/FileService/FileService';
-import { NotaryCriteriaService } from '@backend/services/NotaryCriteriaService';
-import { NotaryPaymentCalculationService } from '@backend/services/NotaryPaymentCalculationService/NotaryPaymentCalculationService';
-import { ParticipantService } from '@backend/services/ParticipantService/ParticipantService';
-import { ParticipantValidationService } from '@backend/services/ParticipantValidationService/ParticipantValidationService';
-import { ProceedingService } from '@backend/services/ProceedingService/ProceedingService';
-import { ScheduleService } from '@backend/services/ScheduleService/ScheduleService';
-import { UserInvitationService } from '@backend/services/UserInvitationService';
-import { UserService } from '@backend/services/UserService/UserService';
+import { AssetsService } from '@backend/modules/assets/services/AssetsService';
+import { BlogService } from '@backend/modules/blog/services/BlogService';
+import { BulkEmailService } from '@backend/modules/bulkEmail/services/BulkEmailService';
+import { ChatService } from '@backend/modules/chat/services/ChatService';
+import { EmailService } from '@backend/modules/emails/EmailService';
+import { AwsService } from '@backend/modules/files/services/AwsService';
+import { FileService } from '@backend/modules/files/services/FileService';
+import { NotaryPaymentCalculationService } from '@backend/modules/notaryPaymentCalculation/services/NotaryPaymentCalculationService';
+import { ParticipantService } from '@backend/modules/participants/services/ParticipantService';
+import { ParticipantValidationService } from '@backend/modules/participants/services/ParticipantValidationService';
+import { ProceedingService } from '@backend/modules/proceedings/services/ProceedingService';
+import { ScheduleService } from '@backend/modules/schedules/services/ScheduleService';
+import { AuthenticationService } from '@backend/modules/users/services/AuthenticationService';
+import { NotaryCriteriaService } from '@backend/modules/users/services/NotaryCriteriaService';
+import { UserInvitationService } from '@backend/modules/users/services/UserInvitationService';
+import { UserService } from '@backend/modules/users/services/UserService';
 
 export type CustomContext = {
   db: MySql2Database<Record<string, unknown>>;
