@@ -18,7 +18,7 @@ export const blogsData = [
     title: 'Jak je to se zděděným dluhem?',
     content: blogContents[1],
     coverImagePath: 'zdedeny-dluh-888x448_1736512795020.jpeg',
-    blogDate: new Date('2025-01-10'),
+    blogDate: new Date('2025-01-09'),
     authorId: 1,
   },
   {
@@ -26,7 +26,7 @@ export const blogsData = [
     title: 'Jak projít dědickým řízením bez obav',
     content: blogContents[2],
     coverImagePath: 'dedicke-rizeni-888x589_1736512878311.jpeg',
-    blogDate: new Date('2025-01-10'),
+    blogDate: new Date('2025-01-08'),
     authorId: 1,
   },
 ];

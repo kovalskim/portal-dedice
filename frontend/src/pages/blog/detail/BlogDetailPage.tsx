@@ -154,7 +154,7 @@ export const BlogDetailPage: React.FC = () => {
 
         {relatedBlogs.length > 0 && (
           <Box px={{ base: 4, md: 8, lg: 16 }}>
-            <Heading fontSize="lg" mb={4} mt={10}>
+            <Heading fontSize="lg" mb={6} mt={10} textAlign="left">
               Mohlo by vás také zajímat:
             </Heading>
             <SimpleGrid
