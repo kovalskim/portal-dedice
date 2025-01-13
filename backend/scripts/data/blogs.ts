@@ -17,7 +17,7 @@ export const blogsData = [
     id: 2,
     title: 'Jak je to se zděděným dluhem?',
     content: blogContents[1],
-    coverImagePath: 'zdedeny-dluh-888x448_1736512795020.jpeg',
+    coverImagePath: 'obrazek_1736784075786.jpeg',
     blogDate: new Date('2025-01-09'),
     authorId: 1,
   },

@@ -84,7 +84,6 @@ export const BlogDetailPage: React.FC = () => {
     >
       <Box
         bg="white"
-        width="100vw"
         minHeight="100vh"
         px={{ base: 4, md: 8, lg: 16 }}
         py={6}
@@ -153,13 +152,13 @@ export const BlogDetailPage: React.FC = () => {
         </Box>
 
         {relatedBlogs.length > 0 && (
-          <Box px={{ base: 4, md: 8, lg: 16 }}>
+          <Box px={{ base: 4, md: 8, lg: 16 }} mb={8}>
             <Heading fontSize="lg" mb={6} mt={10} textAlign="left">
               Mohlo by vás také zajímat:
             </Heading>
             <SimpleGrid
               spacing={4}
-              templateColumns="repeat(auto-fill, minmax(300px, 1fr))"
+              columns={{ base: 1, md: 3, lg: 3 }}
               textAlign="left"
             >
               {relatedBlogs.map((related) => (

@@ -1,6 +1,6 @@
 import { Box, Card, Flex, Heading, Image, Text } from '@chakra-ui/react';
-import { useNavigate } from 'react-router-dom';
 
+import { RouterLink } from '@frontend/components/navigation/atoms';
 import { Article } from '@frontend/gql/blog/queries';
 import { Routes } from '@frontend/routes/routes';
 import {
@@ -21,20 +21,15 @@ export const ArticlePreview: React.FC<ArticlePreviewProps> = ({
   article,
   horizontal,
 }) => {
-  const navigate = useNavigate();
-
   return (
     <Card
       key={article.id}
-      // borderWidth="1px"
       borderRadius="lg"
       overflow="hidden"
       display="flex"
       flexDirection={{ base: 'column', md: horizontal ? 'row' : 'column' }}
       justifyContent="space-between"
-      cursor="pointer"
-      onClick={() => navigate(insertIdToUrl(Routes.blogDetail, article.id))}
-      _hover={{ transform: 'scale(1.015)' }}
+      _hover={{ transform: 'scale(1.013)' }}
       transition={'transform 0.2s'}
     >
       <Box flex={horizontal ? 1 : 'none'} height="200px" width="100%">
@@ -53,7 +48,13 @@ export const ArticlePreview: React.FC<ArticlePreviewProps> = ({
         flexDirection="column"
       >
         <Heading size="md" mb={1}>
-          {article.title}
+          <RouterLink
+            to={insertIdToUrl(Routes.blogDetail, article.id)}
+            color="blackAlpha.800"
+            textUnderlineOffset="3px"
+          >
+            {article.title}
+          </RouterLink>
         </Heading>
         <Text mb={1} fontSize="xs" color={'gray.500'}>
           {formatDate(article.blogDate)}
@@ -62,9 +63,14 @@ export const ArticlePreview: React.FC<ArticlePreviewProps> = ({
           noOfLines={3}
           dangerouslySetInnerHTML={{ __html: sanitizeHtml(article.content) }}
         />
-        <Text pt={3} textColor="gray.500" fontSize="sm">
+        <RouterLink
+          to={insertIdToUrl(Routes.blogDetail, article.id)}
+          pt={3}
+          fontSize="md"
+          textUnderlineOffset="3px"
+        >
           Číst článek →
-        </Text>
+        </RouterLink>
       </Flex>
     </Card>
   );

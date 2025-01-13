@@ -79,34 +79,39 @@ export const BlogPage = () => {
         </Flex>
       )}
 
+      {(popularArticlesLoading || allArticlesLoading) && (
+        <Flex width="full" justifyContent="center" gap={10} mt={4}>
+          <Spinner size="md" color="goldenYellow.500" />
+          <Text color="goldenYellow.500">Načítám články</Text>
+        </Flex>
+      )}
+
       <Box width="100%">
-        <Heading as="h3" size="md" textAlign="center" mb={4}>
-          Nejčtenější články
-        </Heading>
-        {!popularArticlesLoading && popularArticles ? (
-          <SimpleGrid
-            columns={{ base: 1, md: 3, lg: 3 }}
-            spacing={6}
-            p={4}
-            className={styles.popularArticlesWrapper}
-          >
-            {popularArticles.getMostViewedArticles.map((article) => (
-              <ArticlePreview key={article.id} article={article} />
-            ))}
-          </SimpleGrid>
-        ) : (
-          <Flex width="full" justifyContent="center" gap={10} mt={4}>
-            <Spinner size="md" color="goldenYellow.500" />
-            <Text color="goldenYellow.500">Načítam články</Text>
-          </Flex>
-        )}
+        {!popularArticlesLoading &&
+          popularArticles?.getMostViewedArticles?.length !== 0 && (
+            <>
+              <Heading as="h3" size="md" textAlign="center" mb={4}>
+                Nejčtenější články
+              </Heading>
+              <SimpleGrid
+                columns={{ base: 1, md: 3, lg: 3 }}
+                spacing={6}
+                p={4}
+                className={styles.popularArticlesWrapper}
+              >
+                {popularArticles?.getMostViewedArticles.map((article) => (
+                  <ArticlePreview key={article.id} article={article} />
+                ))}
+              </SimpleGrid>
+            </>
+          )}
 
         <Divider my={8} />
 
         <Heading size="md" textAlign="center" mb={4}>
           Všechny články
         </Heading>
-        {!allArticlesLoading && allArticles ? (
+        {!allArticlesLoading && allArticles?.getAllArticles?.length ? (
           <>
             <SimpleGrid columns={{ base: 1, md: 2 }} spacing={6} p={4}>
               {allArticles.getAllArticles
@@ -124,11 +129,15 @@ export const BlogPage = () => {
               )}
             </Flex>
           </>
-        ) : (
+        ) : allArticlesLoading ? (
           <Flex width="full" justifyContent="center" gap={10} my={4}>
             <Spinner size="md" color="goldenYellow.500" />
             <Text color="goldenYellow.500">Načítam články</Text>
           </Flex>
+        ) : (
+          <Text fontSize="lg" color="gray.600" textAlign="center">
+            Zatím zde nejsou žádné články.
+          </Text>
         )}
       </Box>
     </Flex>
