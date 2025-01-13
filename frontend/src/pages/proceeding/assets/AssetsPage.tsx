@@ -1,5 +1,6 @@
 import { FC } from 'react';
 import { useMutation, useQuery } from '@apollo/client';
+import { NotAllowedIcon } from '@chakra-ui/icons';
 import { Box, Button, Flex, Heading, Text } from '@chakra-ui/react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { MdSync } from 'react-icons/md';
@@ -7,12 +8,14 @@ import { useOutletContext } from 'react-router-dom';
 import { z } from 'zod';
 
 import { Form } from '@frontend/components/forms/Form';
+import { Role, useAuth } from '@frontend/context/auth/auth-core.tsx';
 import { CREATE_OR_UPDATE_ASSET } from '@frontend/gql/assets/mutations';
 import {
   ASSETS_BY_PROCEEDING_ID,
   AssetsAll,
 } from '@frontend/gql/assets/queries';
 import { useCustomToast } from '@frontend/hooks/useCustomToast';
+import { PROCEEDING_PHASES } from '@frontend/pages/proceeding/constants.ts';
 import { formatTimestamp } from '@frontend/utils/generalUtil';
 
 import { OutletContextType } from '../overview/ProceedingOverviewPage';
@@ -79,6 +82,8 @@ export const AssetsPage: FC = () => {
   const showToast = useCustomToast();
   const { proceeding } = useOutletContext<OutletContextType>();
   const proceedingId = Number(proceeding.id);
+  const { role } = useAuth();
+
   const { data, loading, refetch } = useQuery<{ getAssetById: AssetsAll }>(
     ASSETS_BY_PROCEEDING_ID,
     {
@@ -91,6 +96,7 @@ export const AssetsPage: FC = () => {
           status: 'error',
         });
       },
+      skip: role === Role.ADMIN,
     },
   );
 
@@ -137,6 +143,24 @@ export const AssetsPage: FC = () => {
 
   const asset = data?.getAssetById;
 
+  if (role === Role.ADMIN) {
+    return (
+      <Flex
+        alignItems="center"
+        justifyContent="center"
+        direction="column"
+        gap={6}
+        my="auto"
+      >
+        <NotAllowedIcon color="goldenYellow.500" boxSize="20" />
+        <Text fontSize="xl" fontWeight="medium">
+          Účet administrátora nemůže zasahovat do určení majetku v dědickém
+          řízení.
+        </Text>
+      </Flex>
+    );
+  }
+
   return (
     <Box mt={2}>
       <Flex
@@ -162,14 +186,16 @@ export const AssetsPage: FC = () => {
           </Flex>
         </Flex>
 
-        <Button
-          variant="ghost"
-          onClick={() => {
-            refetch();
-          }}
-        >
-          <MdSync size={24} />
-        </Button>
+        {proceeding.phaseId !== PROCEEDING_PHASES.FINISHED && (
+          <Button
+            variant="ghost"
+            onClick={() => {
+              refetch();
+            }}
+          >
+            <MdSync size={24} />
+          </Button>
+        )}
       </Flex>
       <Form
         resolver={zodResolver(assetsSchema)}
@@ -208,7 +234,9 @@ export const AssetsPage: FC = () => {
           <Valuables />
           <Others />
         </Flex>
-        <AssetsActions loading={loadingOfCreateOrUpdate} />
+        {proceeding.phaseId !== PROCEEDING_PHASES.FINISHED && (
+          <AssetsActions loading={loadingOfCreateOrUpdate} />
+        )}
       </Form>
     </Box>
   );

@@ -2,6 +2,10 @@ import { ReactNode } from 'react';
 import { AddIcon, DeleteIcon } from '@chakra-ui/icons';
 import { Box, Button, Flex, Heading, Stack } from '@chakra-ui/react';
 import { useFieldArray, useFormContext } from 'react-hook-form';
+import { useOutletContext } from 'react-router-dom';
+
+import { PROCEEDING_PHASES } from '@frontend/pages/proceeding/constants.ts';
+import { OutletContextType } from '@frontend/pages/proceeding/overview/ProceedingOverviewPage.tsx';
 
 type AssetListProps = {
   heading: string;
@@ -23,6 +27,7 @@ export const AssetList = ({
     control: methods.control,
     name: nameOfArray,
   });
+  const { proceeding } = useOutletContext<OutletContextType>();
 
   return (
     <>
@@ -50,31 +55,35 @@ export const AssetList = ({
                   justifyContent="space-between"
                 >
                   {children(index)}
-                  <Box>
-                    <Button
-                      color="red.400"
-                      onClick={() => {
-                        remove(index);
-                      }}
-                    >
-                      <DeleteIcon />
-                    </Button>
-                  </Box>
+                  {proceeding.phaseId !== PROCEEDING_PHASES.FINISHED && (
+                    <Box>
+                      <Button
+                        color="red.400"
+                        onClick={() => {
+                          remove(index);
+                        }}
+                      >
+                        <DeleteIcon />
+                      </Button>
+                    </Box>
+                  )}
                 </Stack>
               </Box>
             </Flex>
           ))
         )}
-        <Button
-          size="sm"
-          variant="ghost"
-          onClick={() => {
-            append(empty);
-          }}
-          color="green.500"
-        >
-          <AddIcon />
-        </Button>
+        {proceeding.phaseId !== PROCEEDING_PHASES.FINISHED && (
+          <Button
+            size="sm"
+            variant="ghost"
+            onClick={() => {
+              append(empty);
+            }}
+            color="green.500"
+          >
+            <AddIcon />
+          </Button>
+        )}
       </Flex>
     </>
   );

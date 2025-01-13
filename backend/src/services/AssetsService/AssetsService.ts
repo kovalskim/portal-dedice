@@ -2,6 +2,7 @@ import { AppError } from '@backend/errors/AppError';
 import { CreateAssetsAllInput } from '@backend/graphql/modules/assets/AssetsInput';
 import { AssetsAll } from '@backend/graphql/modules/assets/AssetsType';
 import { AssetRepository } from '@backend/repositories/AssetRepository';
+import { ProceedingService } from '@backend/services/ProceedingService/ProceedingService';
 
 import { ParticipantValidationService } from '../ParticipantValidationService/ParticipantValidationService';
 import { UserService } from '../UserService/UserService';
@@ -10,15 +11,18 @@ export class AssetsService {
   private readonly assetRepository: AssetRepository;
   private readonly participantValidationService: ParticipantValidationService;
   private readonly userService: UserService;
+  private readonly proceedingService: ProceedingService;
 
   constructor(
     participantValidationService: ParticipantValidationService,
     assetRepository: AssetRepository,
     userService: UserService,
+    proceedingService: ProceedingService,
   ) {
     this.participantValidationService = participantValidationService;
     this.assetRepository = assetRepository;
     this.userService = userService;
+    this.proceedingService = proceedingService;
   }
 
   async findAssets(
@@ -26,6 +30,10 @@ export class AssetsService {
     proceedingId: number,
   ): Promise<AssetsAll | null> {
     await this.validateUserBeforeAction(userId, proceedingId);
+
+    if (await this.proceedingService.isProceedingFinished(proceedingId)) {
+      throw new AppError('PROCEEDING_FINISHED');
+    }
 
     const asset =
       await this.assetRepository.getAssetByProceedingId(proceedingId);
@@ -54,6 +62,10 @@ export class AssetsService {
   ) {
     await this.validateUserBeforeAction(userId, proceedingId);
 
+    if (await this.proceedingService.isProceedingFinished(proceedingId)) {
+      throw new AppError('PROCEEDING_FINISHED');
+    }
+
     const asset =
       await this.assetRepository.getAssetByProceedingId(proceedingId);
 
@@ -78,6 +90,10 @@ export class AssetsService {
   async deleteAssets(userId: number, proceedingId: number) {
     await this.validateUserBeforeAction(userId, proceedingId);
 
+    if (await this.proceedingService.isProceedingFinished(proceedingId)) {
+      throw new AppError('PROCEEDING_FINISHED');
+    }
+
     const asset =
       await this.assetRepository.getAssetByProceedingId(proceedingId);
 
@@ -94,8 +110,7 @@ export class AssetsService {
       !(await this.participantValidationService.isUserParticipantOrNotaryOfProceeding(
         userId,
         proceedingId,
-      )) &&
-      !(await this.userService.hasUserAdminRole(userId))
+      ))
     ) {
       throw new AppError('NOT_PROCEEDING_PARTICIPANT');
     }
