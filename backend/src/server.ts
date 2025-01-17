@@ -136,6 +136,10 @@ const init = async () => {
       drizzle?.connection.end();
     });
 
+    container.register({
+      db: asValue(drizzle.db),
+    });
+
     return {
       db: container.resolve('db'),
       authUser: container.resolve('authUser'),

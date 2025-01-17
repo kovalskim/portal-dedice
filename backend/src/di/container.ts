@@ -2,7 +2,6 @@ import { S3Client } from '@aws-sdk/client-s3';
 import { asClass, asValue, createContainer, InjectionMode } from 'awilix';
 import nodemailer from 'nodemailer';
 
-import { getConnection } from '@backend/db/db';
 import { AssetRepository } from '@backend/modules/assets/repositories/AssetRepository';
 import { AssetsService } from '@backend/modules/assets/services/AssetsService';
 import { BlogRepository } from '@backend/modules/blog/repositories/BlogRepository';
@@ -38,10 +37,7 @@ export const createDIContainer = async () => {
     strict: true,
   });
 
-  const drizzle = await getConnection();
-
   container.register({
-    db: asValue(drizzle.db),
     s3Client: asValue(new S3Client({ region: process.env.AWS_REGION })),
     transporter: asValue(
       nodemailer.createTransport({

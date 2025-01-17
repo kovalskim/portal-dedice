@@ -21,7 +21,7 @@ import { NavigationLinks } from '@frontend/components/navigation/atoms/Navigatio
 export const TopNavigation = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const isMobile = useBreakpointValue({ base: true, md: false });
+  const isMobile = useBreakpointValue({ base: true, lg: false });
 
   return (
     <Box position="sticky" top="0" zIndex="100" bg="white">

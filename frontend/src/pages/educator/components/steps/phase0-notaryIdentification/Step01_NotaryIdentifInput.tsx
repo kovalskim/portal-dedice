@@ -25,7 +25,7 @@ export const Step01_NotaryIdentifInput = () => {
       title={'Který notář bude pověřen vedením dědického řízení?'}
       showStep={0}
       midBtnProps={{
-        label: 'Přeskočit idetifikaci',
+        label: 'Přeskočit identifikaci',
         onClick: skipIdentification,
       }}
       nextBtnProps={{

@@ -60,7 +60,7 @@ export const ProceedingsTable: React.FC<ProceedingsTableProps> = ({
           base: 4,
           md: 8,
         }}
-        maxW={{ base: 'sm', md: '100%' }}
+        maxW={{ base: '90vw', md: '95vw', lg: '100vw' }}
       >
         <Heading fontSize="2xl" fontWeight="bold" mb={4}>
           Seznam dědických řízení
